@@ -1,11 +1,13 @@
 class SolanaDerivationPath {
+  int purpose = 44;
+  int coinType = 501;
   int? account;
   int? change;
   int? addressIndex;
-  final int purpose = 44;
-  final int coinType = 501;
 
   SolanaDerivationPath({
+    required this.purpose,
+    required this.coinType,
     this.account,
     this.change,
     this.addressIndex,
@@ -19,12 +21,14 @@ class SolanaDerivationPath {
         .whereType<int>()
         .toList();
 
-    assert(pathParts.length >= 0 && pathParts.length <= 3, "Invalid derivation path: $path");
+    assert(pathParts.isNotEmpty && pathParts.length <= 3, "Invalid derivation path: $path");
 
     return SolanaDerivationPath(
-      account: pathParts.isNotEmpty ? pathParts[0] : null,
-      change: pathParts.length > 1 ? pathParts[1] : null,
-      addressIndex: pathParts.length > 2 ? pathParts[2] : null,
+      purpose: pathParts.isNotEmpty ? pathParts[0] : 44,
+      coinType: pathParts.length > 1 ? pathParts[1] : 501,
+      account: pathParts.length > 2 ? pathParts[2] : null,
+      change: pathParts.length > 3 ? pathParts[3] : null,
+      addressIndex: pathParts.length > 4 ? pathParts[4] : null,
     );
   }
 
