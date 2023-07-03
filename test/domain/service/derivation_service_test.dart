@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:hex/hex.dart';
 import 'package:solana_wallet/domain/model/encryption/solana_derivation_path_model.dart';
 import 'package:solana_wallet/domain/model/encryption/solana_extended_secret_key_model.dart';
+import 'package:solana_wallet/domain/model/encryption/solana_keypair_model.dart';
 import 'package:solana_wallet/domain/service/derivation_service.dart';
 import 'package:test/test.dart';
 
