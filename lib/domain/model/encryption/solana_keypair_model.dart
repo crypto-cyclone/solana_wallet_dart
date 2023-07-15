@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:solana_wallet/domain/model/encryption/solana_extended_secret_key_model.dart';
-import 'package:solana_wallet/encoder/base58/base_58.dart';
+import 'package:solana_wallet/encoder/base58/base_58_encoder.dart';
 
 class SolanaKeyPair {
   Uint8List publicKey;
