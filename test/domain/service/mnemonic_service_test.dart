@@ -15,7 +15,7 @@ void main() {
     test('encodeMnemonic', () {
       var hexEntropy = "2e5a2fb1ecf80b8995b82a2801dc6d03";
 
-      var expected = [
+      var expectedMnemonic = [
         "comic",
         "sphere",
         "unaware",
@@ -30,11 +30,34 @@ void main() {
         "alter"
       ];
 
-      var entropy = mnemonicService.encodeMnemonic(
+      var mnemonic = mnemonicService.encodeMnemonic(
           Uint8List.fromList(HEX.decode(hexEntropy))
       );
 
-      expect(entropy, expected);
+      expect(mnemonic, expectedMnemonic);
+    });
+
+    test('decodeMnemonic', () {
+      var expectedEntropy = "2e5a2fb1ecf80b8995b82a2801dc6d03";
+
+      var mnemonic = [
+        "comic",
+        "sphere",
+        "unaware",
+        "supreme",
+        "level",
+        "shadow",
+        "finger",
+        "aim",
+        "chimney",
+        "auction",
+        "brave",
+        "alter"
+      ];
+
+      var entropy = mnemonicService.decodeMnemonic(mnemonic);
+
+      expect(HEX.encode(entropy), expectedEntropy);
     });
   });
 }

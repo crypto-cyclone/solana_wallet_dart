@@ -34,4 +34,38 @@ class MnemonicService {
       return MNEMONIC_WORDS[index];
     }).toList();
   }
+
+  Uint8List decodeMnemonic(List<String> mnemonic) {
+    List<String> mnemonicBitChunks = mnemonic.map((word) {
+      int index = MNEMONIC_WORDS.indexOf(word);
+      return index.toRadixString(2).padLeft(11, '0');
+    }).toList();
+
+    String mnemonicBits = mnemonicBitChunks.join('');
+
+    int entropyBitsSize = (mnemonicBits.length / 33).floor() * 32;
+    int checksumBitsSize = mnemonicBits.length - entropyBitsSize;
+
+    String entropyBits = mnemonicBits.substring(0, entropyBitsSize);
+    String exactChecksumBits = mnemonicBits.substring(entropyBitsSize);
+
+    Uint8List entropy = Uint8List.fromList(
+      Iterable<int>.generate(
+        (entropyBits.length / 8).round(),
+            (i) => int.parse(entropyBits.substring(i * 8, i * 8 + 8), radix: 2),
+      ).toList(),
+    );
+
+    Uint8List hash = Digest('SHA-256').process(entropy);
+    String checksumBits = hash
+        .map((byte) => byte.toRadixString(2).padLeft(8, '0'))
+        .join('')
+        .substring(0, checksumBitsSize);
+
+    if (checksumBits != exactChecksumBits) {
+      throw Exception("Mnemonic words are invalid, or the checksum is incorrect");
+    }
+
+    return entropy;
+  }
 }
