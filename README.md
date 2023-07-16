@@ -1,4 +1,4 @@
-# Crypto Cyclone Solana Wallet Library
+# Crypto Cyclone Solana Wallet Dart
 
 This Dart library provides a convenient way for developers to work with Solana Wallet, especially for key derivation tasks. The library encapsulates key derivation and handling functionalities within the `DerivationService` class.
 
