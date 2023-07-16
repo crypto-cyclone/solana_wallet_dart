@@ -5,31 +5,22 @@ class SolanaEncoder {
     const firstByteThreshold = 0x7f;
     const secondByteThreshold = 0x3fff;
 
-    String binaryString = number.toRadixString(2).padLeft(16, '0');
-    binaryString = binaryString.substring(binaryString.length - 16);
-
-    List<String> byteStrings;
+    List<int> bytes = [];
     if (number > secondByteThreshold) {
-      byteStrings = [
-        "1${binaryString.substring(9, 16)}",
-        "1${binaryString.substring(2, 9)}",
-        "0${binaryString.substring(0, 2)}",
+      bytes = [
+        0x80 | (number & 0x7F),
+        0x80 | ((number >> 7) & 0x7F),
+        (number >> 14) & 0x03,
       ];
     } else if (number > firstByteThreshold) {
-      byteStrings = [
-        "1${binaryString.substring(9, 16)}",
-        "0${binaryString.substring(2, 9)}",
+      bytes = [
+        0x80 | (number & 0x7F),
+        (number >> 7) & 0x7F,
       ];
     } else {
-      byteStrings = [
-        "0${binaryString.substring(9, 16)}",
-      ];
+      bytes = [number & 0x7F];
     }
 
-    return Uint8List.fromList(byteStrings.map(binaryToByte).toList());
-  }
-
-  int binaryToByte(String binaryString) {
-    return int.parse(binaryString, radix: 2);
+    return Uint8List.fromList(bytes);
   }
 }

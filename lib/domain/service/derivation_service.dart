@@ -5,9 +5,9 @@ import 'package:pointycastle/digests/sha512.dart';
 import 'package:pointycastle/key_derivators/api.dart';
 import 'package:pointycastle/key_derivators/pbkdf2.dart';
 import 'package:pointycastle/macs/hmac.dart';
-import 'package:solana_wallet/domain/model/encryption/solana_derivation_path_model.dart';
+import 'package:solana_wallet/domain/model/encryption/solana/solana_derivation_path_model.dart';
+import 'package:solana_wallet/domain/model/encryption/solana/solana_extended_secret_key_model.dart';
 import 'package:solana_wallet/util/byte_conversion.dart';
-import '../model/encryption/solana_extended_secret_key_model.dart';
 
 class DerivationService {
 
