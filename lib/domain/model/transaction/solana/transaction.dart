@@ -1,5 +1,4 @@
 import 'dart:typed_data';
-
 import 'package:solana_wallet/domain/model/transaction/solana/message.dart';
 import 'package:solana_wallet/encoder/solana/solana_encoder.dart';
 
