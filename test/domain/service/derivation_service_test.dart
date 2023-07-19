@@ -2,8 +2,6 @@ import 'dart:typed_data';
 
 import 'package:hex/hex.dart';
 import 'package:cryptography/cryptography.dart';
-import 'package:solana_wallet/domain/model/encryption/solana/solana_derivation_path_model.dart';
-import 'package:solana_wallet/domain/model/encryption/solana/solana_extended_secret_key_model.dart';
 import 'package:solana_wallet/domain/service/derivation_service.dart';
 import 'package:test/test.dart';
 
@@ -49,8 +47,8 @@ void main() {
           Uint8List.fromList(HEX.decode(seed))
       );
 
-      expect(masterExtendedKey.secretKey.toList(), HEX.decode(secretKey));
-      expect(masterExtendedKey.chainCode.toList(), HEX.decode(chainCode));
+      expect(masterExtendedKey.key.toList(), HEX.decode(secretKey));
+      expect(masterExtendedKey.value.toList(), HEX.decode(chainCode));
     });
 
     test('deriveExtendedSecretKeyForPath', () async {
@@ -121,19 +119,15 @@ void main() {
         "9ee83ce335b62bebe12d6dff76da1d3a87b2e720afbb659db8be7c4546d059a9"
       ];
 
-      var masterExtendedSecretKey = SolanaExtendedSecretKey(
-          secretKey: Uint8List.fromList(HEX.decode("448d941059eaa2e6ea0cba639b1ae64df42757fa47777879280f0bcf24bda383")),
-          chainCode: Uint8List.fromList(HEX.decode("1d4c20be1b0e62c2c279675f79969b6a1960d6cacd4c09a3b0b6e993124c424d"))
-      );
-
       for (var i = 0; i < 64; i++) {
         var extendedSecretKey = derivationService.deriveExtendedSecretKeyForPath(
-            masterExtendedSecretKey,
-            SolanaDerivationPath.fromPath("44'/501'/$i'")
+            Uint8List.fromList(HEX.decode("448d941059eaa2e6ea0cba639b1ae64df42757fa47777879280f0bcf24bda383")),
+            Uint8List.fromList(HEX.decode("1d4c20be1b0e62c2c279675f79969b6a1960d6cacd4c09a3b0b6e993124c424d")),
+            [44, 501, i],
         );
 
         final algorithm = Ed25519();
-        SimpleKeyPair keyPair = await algorithm.newKeyPairFromSeed(extendedSecretKey.secretKey.toList());
+        SimpleKeyPair keyPair = await algorithm.newKeyPairFromSeed(extendedSecretKey.key.toList());
         SimplePublicKey publicKey = await keyPair.extractPublicKey();
 
         expect(

@@ -1,9 +1,39 @@
 import 'dart:math';
 import 'dart:typed_data';
 import 'package:pointycastle/api.dart';
-import '../../constants/mnemonic_words.dart';
+import 'package:solana_wallet/constants/mnemonic_words.dart';
 
 class MnemonicService {
+
+  Uint8List generateEntropy16() {
+    return _generateEntropy(16);
+  }
+
+  Uint8List generateEntropy20() {
+    return _generateEntropy(20);
+  }
+
+  Uint8List generateEntropy24() {
+    return _generateEntropy(24);
+  }
+
+  Uint8List generateEntropy28() {
+    return _generateEntropy(28);
+  }
+
+  Uint8List generateEntropy32() {
+    return _generateEntropy(32);
+  }
+
+  Uint8List _generateEntropy(int byteCount) {
+    var rand = Random.secure();
+    var bytes = Uint8List(byteCount);
+    for (var i=0; i < byteCount; i++) {
+      bytes[i] = rand.nextInt(256);
+    }
+    return bytes;
+  }
+  
   List<String> encodeMnemonic(Uint8List entropy) {
     int checksumBitsSize = entropy.length ~/ 4;
     int entropyBitsSize = entropy.length * 8;

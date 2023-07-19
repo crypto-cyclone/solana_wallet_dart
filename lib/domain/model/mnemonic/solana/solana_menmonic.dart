@@ -8,6 +8,31 @@ class SolanaMnemonic {
 
   final MnemonicService _mnemonicService = MnemonicService();
 
+  SolanaMnemonic.generate16() {
+    entropy = _mnemonicService.generateEntropy16();
+    mnemonic = _mnemonicService.encodeMnemonic(entropy);
+  }
+
+  SolanaMnemonic.generate20() {
+    entropy = _mnemonicService.generateEntropy20();
+    mnemonic = _mnemonicService.encodeMnemonic(entropy);
+  }
+
+  SolanaMnemonic.generate24() {
+    entropy = _mnemonicService.generateEntropy24();
+    mnemonic = _mnemonicService.encodeMnemonic(entropy);
+  }
+
+  SolanaMnemonic.generate28() {
+    entropy = _mnemonicService.generateEntropy28();
+    mnemonic = _mnemonicService.encodeMnemonic(entropy);
+  }
+
+  SolanaMnemonic.generate32() {
+    entropy = _mnemonicService.generateEntropy32();
+    mnemonic = _mnemonicService.encodeMnemonic(entropy);
+  }
+
   SolanaMnemonic.withMnemonic(this.mnemonic) {
     if (mnemonic.isEmpty) {
       throw ArgumentError('Mnemonic must not be null or empty.');
