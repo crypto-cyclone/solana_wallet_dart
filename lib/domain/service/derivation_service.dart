@@ -27,7 +27,7 @@ class DerivationService {
     return derivator.process(Uint8List.fromList(utf8.encode(mnemonicStr)));
   }
 
-  MapEntry<Uint8List, Uint8List> deriveMasterExtendSecretKey(Uint8List seed) {
+  MapEntry<Uint8List, Uint8List> deriveMasterExtendedSecretKey(Uint8List seed) {
     assert(seed.length == 64, 'Invalid seed length');
 
     final masterKey = Uint8List.fromList('ed25519 seed'.codeUnits);
@@ -45,7 +45,7 @@ class DerivationService {
     return MapEntry(privateKey, chainCode);
   }
 
-  MapEntry<Uint8List, Uint8List> deriveExtendedSecretKeyForPath(
+  MapEntry<Uint8List, Uint8List> deriveChildExtendedSecretKey(
       Uint8List secretKey,
       Uint8List chainCode,
       List<int> pathList) {

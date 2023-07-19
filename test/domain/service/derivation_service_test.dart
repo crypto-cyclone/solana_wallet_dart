@@ -43,7 +43,7 @@ void main() {
       var secretKey = "448d941059eaa2e6ea0cba639b1ae64df42757fa47777879280f0bcf24bda383";
       var chainCode = "1d4c20be1b0e62c2c279675f79969b6a1960d6cacd4c09a3b0b6e993124c424d";
 
-      var masterExtendedKey = derivationService.deriveMasterExtendSecretKey(
+      var masterExtendedKey = derivationService.deriveMasterExtendedSecretKey(
           Uint8List.fromList(HEX.decode(seed))
       );
 
@@ -120,7 +120,7 @@ void main() {
       ];
 
       for (var i = 0; i < 64; i++) {
-        var extendedSecretKey = derivationService.deriveExtendedSecretKeyForPath(
+        var extendedSecretKey = derivationService.deriveChildExtendedSecretKey(
             Uint8List.fromList(HEX.decode("448d941059eaa2e6ea0cba639b1ae64df42757fa47777879280f0bcf24bda383")),
             Uint8List.fromList(HEX.decode("1d4c20be1b0e62c2c279675f79969b6a1960d6cacd4c09a3b0b6e993124c424d")),
             [44, 501, i],

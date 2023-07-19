@@ -1,40 +1,47 @@
 import 'dart:typed_data';
 import 'package:cryptography/cryptography.dart';
-import 'solana_extended_secret_key.dart';
+import 'package:solana_wallet/domain/service/derivation_service.dart';
 
 class SolanaKeyPair {
-  final Uint8List publicKey;
-  final Uint8List privateKey;
+  late final Uint8List publicKey;
+  late final Uint8List privateKey;
+
+  final Ed25519 _ed25519 = Ed25519();
 
   SolanaKeyPair(this.publicKey, this.privateKey);
 
-  static Future<SolanaKeyPair> fromSecretKey(Uint8List secretKey) async {
+  static Future<SolanaKeyPair> derive(
+      List<int> path,
+      List<String> phrase,
+      {String passphrase = ""}
+  ) async {
+    final derivationService = DerivationService();
     final Ed25519 ed25519 = Ed25519();
-    SimpleKeyPair keyPair = await ed25519.newKeyPairFromSeed(
-        secretKey.toList()
+
+    var seed = derivationService.deriveSeed(phrase, passphrase);
+    var masterKey = derivationService.deriveMasterExtendedSecretKey(seed);
+    var derivedKey = derivationService.deriveChildExtendedSecretKey(
+        masterKey.key,
+        masterKey.value,
+        path
     );
-    SimplePublicKey publicKey = await keyPair.extractPublicKey();
+
+    var ed25519KeyPair = await ed25519.newKeyPairFromSeed(derivedKey.key);
 
     return SolanaKeyPair(
-      Uint8List.fromList(publicKey.bytes),
+      Uint8List.fromList((await ed25519KeyPair.extractPublicKey()).bytes),
+      Uint8List.fromList(await ed25519KeyPair.extractPrivateKeyBytes()),
+    );
+  }
+
+  static Future<SolanaKeyPair> fromKeyPair(SimpleKeyPair keyPair) async {
+    return SolanaKeyPair(
+      Uint8List.fromList((await keyPair.extractPublicKey()).bytes),
       Uint8List.fromList(await keyPair.extractPrivateKeyBytes()),
     );
   }
 
   Future<SimpleKeyPair> toKeyPair() async {
-    final Ed25519 ed25519 = Ed25519();
-    return ed25519.newKeyPairFromSeed(privateKey.toList());
-  }
-
-  static Future<SolanaKeyPair> fromExtendedSecretKey(SolanaExtendedSecretKey extendedSecretKey) async {
-    final Ed25519 ed25519 = Ed25519();
-    SimpleKeyPair keyPair = await ed25519.newKeyPairFromSeed(
-        extendedSecretKey.secretKey.toList()
-    );
-
-    return SolanaKeyPair(
-      Uint8List.fromList((await keyPair.extractPublicKey()).bytes),
-      Uint8List.fromList(await keyPair.extractPrivateKeyBytes()),
-    );
+    return _ed25519.newKeyPairFromSeed(privateKey.toList());
   }
 }

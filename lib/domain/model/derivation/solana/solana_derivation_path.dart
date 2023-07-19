@@ -6,8 +6,8 @@ class SolanaDerivationPath {
   int? addressIndex;
 
   SolanaDerivationPath({
-    required this.purpose,
-    required this.coinType,
+    this.purpose = 44,
+    this.coinType = 501,
     this.account,
     this.change,
     this.addressIndex,
