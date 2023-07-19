@@ -5,8 +5,6 @@ import 'package:pointycastle/digests/sha512.dart';
 import 'package:pointycastle/key_derivators/api.dart';
 import 'package:pointycastle/key_derivators/pbkdf2.dart';
 import 'package:pointycastle/macs/hmac.dart';
-import 'package:solana_wallet/domain/model/encryption/solana/solana_derivation_path_model.dart';
-import 'package:solana_wallet/domain/model/encryption/solana/solana_extended_secret_key_model.dart';
 import 'package:solana_wallet/util/byte_conversion.dart';
 
 class DerivationService {
@@ -29,7 +27,7 @@ class DerivationService {
     return derivator.process(Uint8List.fromList(utf8.encode(mnemonicStr)));
   }
 
-  SolanaExtendedSecretKey deriveMasterExtendSecretKey(Uint8List seed) {
+  MapEntry<Uint8List, Uint8List> deriveMasterExtendSecretKey(Uint8List seed) {
     assert(seed.length == 64, 'Invalid seed length');
 
     final masterKey = Uint8List.fromList('ed25519 seed'.codeUnits);
@@ -44,28 +42,25 @@ class DerivationService {
     final privateKey = output.sublist(0, 32);
     final chainCode = output.sublist(32, 64);
 
-    return SolanaExtendedSecretKey(
-      secretKey: privateKey,
-      chainCode: chainCode,
-    );
+    return MapEntry(privateKey, chainCode);
   }
 
-  SolanaExtendedSecretKey deriveExtendedSecretKeyForPath(
-      SolanaExtendedSecretKey masterKey,
-      SolanaDerivationPath path) {
+  MapEntry<Uint8List, Uint8List> deriveExtendedSecretKeyForPath(
+      Uint8List secretKey,
+      Uint8List chainCode,
+      List<int> pathList) {
 
-    var pathList = path.toList();
-
-    var next = masterKey;
+    var nextSecretKey = secretKey;
+    var nextChainCode = chainCode;
 
     while (pathList.isNotEmpty) {
       var index = pathList.removeAt(0);
 
       final mac = HMac(SHA512Digest(), 128);
-      final keyParameter = KeyParameter(next.chainCode);
+      final keyParameter = KeyParameter(nextChainCode);
       mac.init(keyParameter);
       mac.update(Uint8List.fromList([0]), 0, 1);
-      mac.update(next.secretKey, 0, next.secretKey.length);
+      mac.update(nextSecretKey, 0, nextSecretKey.length);
 
       // Solana uses hardened derivation
       final hardenedIndex = (1 << 31) | index;
@@ -79,14 +74,10 @@ class DerivationService {
       final derivedSecretKey = output.sublist(0, 32);
       final derivedChainCode = output.sublist(32, 64);
 
-      next = SolanaExtendedSecretKey(
-          depth: next.depth + 1,
-          childIndex: index,
-          secretKey: derivedSecretKey,
-          chainCode: derivedChainCode
-      );
+      nextSecretKey = derivedSecretKey;
+      nextChainCode = derivedChainCode;
     }
 
-    return next;
+    return MapEntry(nextSecretKey, nextChainCode);
   }
 }
