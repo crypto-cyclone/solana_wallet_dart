@@ -1,12 +1,16 @@
 import 'dart:typed_data';
 import 'package:cryptography/cryptography.dart';
 import 'package:solana_wallet/domain/service/derivation_service.dart';
+import 'package:solana_wallet/encoder/base58/base_58_encoder.dart';
 
 class SolanaKeyPair {
   late final Uint8List publicKey;
   late final Uint8List privateKey;
 
   final Ed25519 _ed25519 = Ed25519();
+  final _base58 = Base58Encoder();
+
+  String get publicKeyBase58 => _base58.encodeBase58(publicKey);
 
   SolanaKeyPair(this.publicKey, this.privateKey);
 
