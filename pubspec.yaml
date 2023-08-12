@@ -1,3 +1,4 @@
+publish_to: none
 name: solana_wallet
 description: A new Flutter package project.
 version: 0.0.1
@@ -11,7 +12,11 @@ dependencies:
   flutter:
     sdk: flutter
   pointycastle: ^3.7.3
-  cryptography: ^2.5.0
+  cryptography:
+    git:
+      url: https://github.com/bransundae/cryptography
+      ref: master
+      path: cryptography
   hex: any
 
 dev_dependencies:

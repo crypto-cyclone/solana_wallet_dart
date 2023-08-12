@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:hex/hex.dart';
 import 'package:solana_wallet/constants/base_58.dart';
 
 class Base58Encoder {
