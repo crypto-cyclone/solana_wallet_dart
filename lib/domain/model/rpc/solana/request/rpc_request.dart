@@ -1,4 +1,8 @@
 abstract class RPCRequest {
+  final String jsonrpc;
+  final int id;
+  final String method;
+
   static const getLatestBlockHashMethodId = 1;
   static const getBalanceMethodId = 2;
   static const sendTransactionMethodId = 3;
@@ -12,6 +16,12 @@ abstract class RPCRequest {
   static const getTransactionRPCMethod = "getTransaction";
   static const getTokenAccountsByOwnerRPCMethod = "getTokenAccountsByOwner";
   static const getAccountInfoRPCMethod = "getAccountInfo";
+
+  RPCRequest({
+    this.jsonrpc = "2.0",
+    required this.id,
+    required this.method
+  });
 
   String toJson() {
     throw UnimplementedError("toJson() is not implemented");

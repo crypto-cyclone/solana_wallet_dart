@@ -4,20 +4,18 @@ class GetAccountInfoRequest extends RPCRequest {
   final String address;
   final String commitment;
   final String encoding;
-  final String jsonRPC;
-
-  final int id = RPCRequest.getAccountInfoMethodId;
-  final String method = RPCRequest.getAccountInfoRPCMethod;
 
   GetAccountInfoRequest({
     required this.address,
     this.commitment = "finalized",
     this.encoding = "base64",
-    this.jsonRPC = "2.0"
+    super.jsonrpc = "2.0",
+    super.id = RPCRequest.getAccountInfoMethodId,
+    super.method = RPCRequest.getAccountInfoRPCMethod
   });
 
   @override
   String toJson() {
-    return '{"jsonrpc":"$jsonRPC","id":$id,"method":"$method","params":["$address",{"commitment":"$commitment","encoding":"$encoding"}]}';
+    return '{"jsonrpc":"$jsonrpc","id":$id,"method":"$method","params":["$address",{"commitment":"$commitment","encoding":"$encoding"}]}';
   }
 }

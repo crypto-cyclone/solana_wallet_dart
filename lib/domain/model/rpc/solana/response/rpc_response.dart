@@ -1,18 +1,20 @@
 import 'rpc_error.dart';
-import 'rpc_success.dart';
+import 'rpc_result.dart';
 
 abstract class RPCResponse {
-  final String jsonRPC;
+  final String jsonrpc;
   final int id;
-  final String method;
-  final RPCSuccess? success;
+  final String? method;
+  final RPCResult? result;
   final RPCError? error;
 
   RPCResponse({
-    required this.jsonRPC,
+    required this.jsonrpc,
     required this.id,
-    required this.method,
-    this.success,
+    this.method,
+    this.result,
     this.error
   });
+
+  String toJson();
 }

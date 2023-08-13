@@ -18,6 +18,7 @@ dependencies:
       ref: master
       path: cryptography
   hex: any
+  http: ^0.13.5
 
 dev_dependencies:
   flutter_test:
