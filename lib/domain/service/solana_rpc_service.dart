@@ -37,7 +37,7 @@ class SolanaRPCService {
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
-        body: jsonEncode(request.toJson())
+        body: jsonDecode(request.toJson())
     );
 
     if (response.statusCode == 200) {
@@ -60,7 +60,7 @@ class SolanaRPCService {
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
-        body: jsonEncode(request.toJson())
+        body: jsonDecode(request.toJson())
     );
 
     if (response.statusCode == 200) {
