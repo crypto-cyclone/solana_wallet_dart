@@ -1,5 +1,7 @@
 import 'dart:typed_data';
 
+import 'package:fixnum/fixnum.dart';
+
 Uint8List toBEByteArray(int value) {
   final buffer = Uint8List(4);
   final view = ByteData.view(buffer.buffer);
@@ -10,9 +12,13 @@ Uint8List toBEByteArray(int value) {
 Uint8List toLEByteArray(int value, int byteSize) {
   final buffer = Uint8List(byteSize);
   final view = ByteData.view(buffer.buffer);
+  final intValue = Int64(value);
 
   if (byteSize == 8) {
-    view.setUint64(0, value, Endian.little);
+    for (int i = 0; i < 8; i++) {
+      int byteValue = ((intValue >> (i * 8)) & 0xff).toInt();
+      view.setUint8(i, byteValue);
+    }
   } else if (byteSize == 4) {
     view.setUint32(0, value, Endian.little);
   } else {

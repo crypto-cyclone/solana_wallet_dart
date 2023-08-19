@@ -18,6 +18,7 @@ dependencies:
       ref: master
       path: cryptography
   hex: any
+  fixnum: ^1.1.0
   http: ^0.13.5
 
 dev_dependencies:
