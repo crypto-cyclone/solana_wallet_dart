@@ -12,15 +12,23 @@ import 'package:solana_wallet/domain/model/rpc/solana/response/send_transaction/
 class SolanaRPCService {
   final HttpService httpService;
   final SolanaConfiguration configuration;
+  final bool ssl;
+
+  late final Uri uri;
 
   SolanaRPCService({
     required this.httpService,
-    required this.configuration
-  });
+    required this.configuration,
+    this.ssl = true
+  }) {
+    if (ssl) {
+      uri = Uri.https(configuration.url, "/");
+    } else {
+      uri = Uri.http(configuration.url, "/");
+    }
+  }
 
   Future<RPCResponse> getAccountInfo(GetAccountInfoRequest request) async {
-    Uri uri = Uri.https(configuration.url, "/");
-
     final response = await httpService.post(
         uri,
         headers: <String, String>{
@@ -43,8 +51,6 @@ class SolanaRPCService {
   }
 
   Future<RPCResponse> sendTransaction(SendTransactionRequest request) async {
-    Uri uri = Uri.https(configuration.url, "/");
-
     final response = await httpService.post(
         uri,
         headers: <String, String>{
