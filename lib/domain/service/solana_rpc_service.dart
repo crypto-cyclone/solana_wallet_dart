@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:solana_wallet/api/service/http_service.dart';
+import 'package:solana_wallet/domain/configuration/solana_configuration.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/request/get_account_info_request.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/response/account_info/get_account_info_response.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/response/rpc_error_response.dart';
@@ -8,13 +9,15 @@ import 'package:solana_wallet/domain/model/rpc/solana/response/rpc_response.dart
 
 class SolanaRPCService {
   final HttpService httpService;
+  final SolanaConfiguration configuration;
 
   SolanaRPCService({
-    required this.httpService
+    required this.httpService,
+    required this.configuration
   });
 
   Future<RPCResponse> getAccountInfo(GetAccountInfoRequest request) async {
-    Uri uri = Uri.https("api.devnet.solana.com", "/");
+    Uri uri = Uri.https(configuration.url, "/");
 
     final response = await httpService.post(
         uri,
