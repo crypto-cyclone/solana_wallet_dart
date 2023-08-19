@@ -1,3 +1,4 @@
+import 'package:solana_wallet/domain/configuration/solana_configuration.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/request/get_account_info_request.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/response/account_info/get_account_info_response.dart';
 import 'package:solana_wallet/domain/service/solana_rpc_service.dart';
@@ -12,7 +13,12 @@ void main() {
 
     setUp(() {
       httpsService = HttpServiceImpl();
-      solanaRPCService = SolanaRPCService(httpService: httpsService);
+      solanaRPCService = SolanaRPCService(
+          httpService: httpsService,
+          configuration: SolanaConfiguration.network(
+            SolanaNetwork.devnet
+          )
+      );
     });
 
     test('get account info is success', () async {
