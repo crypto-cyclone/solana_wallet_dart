@@ -1,6 +1,8 @@
 import 'package:solana_wallet/domain/configuration/solana_configuration.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/request/get_account_info_request.dart';
+import 'package:solana_wallet/domain/model/rpc/solana/request/send_transaction_request.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/response/account_info/get_account_info_response.dart';
+import 'package:solana_wallet/domain/model/rpc/solana/response/send_transaction/send_transaction_response.dart';
 import 'package:solana_wallet/domain/service/solana_rpc_service.dart';
 import 'package:test/test.dart';
 
@@ -48,6 +50,30 @@ void main() {
       expect(accountInfoResponse.accountInfo.rentEpoch, 0);
       expect(accountInfoResponse.accountInfo.space, 165);
       expect(accountInfoResponse.accountInfo.data, ["OZD4GarKfuP80i1oVZ+uPPsiSLQum2MYash6e/sezy6Lygg7qRgpImK0ZuDjFIiW7iDjlcjbXakQr+qSUgkkOgEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA","base64"]);
+    });
+
+    test('send transaction is success', () async {
+      httpsService.responseJson = '{"jsonrpc":"2.0","result":"test","id":3}';
+      var requestJson = '{"jsonrpc":"2.0","id":3,"method":"sendTransaction","params":["test"]}';
+
+      var request = SendTransactionRequest(
+          transactions: ["test"]
+      );
+
+      expect(request.toJson(), requestJson);
+
+      var result = await solanaRPCService.sendTransaction(
+          request
+      );
+
+      expect(result is SendTransactionResponse, true);
+
+      var sendTransactionResponse = result as SendTransactionResponse;
+
+      expect(sendTransactionResponse.jsonrpc, "2.0");
+      expect(sendTransactionResponse.id, 3);
+      expect(sendTransactionResponse.method, null);
+      expect(sendTransactionResponse.transactionHash, "test");
     });
   });
 }

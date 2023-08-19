@@ -1,11 +1,11 @@
 import 'context.dart';
 
 class RPCResult {
-  final Context context;
+  final Context? context;
   final dynamic value;
 
   RPCResult({
-    required this.context,
+    this.context,
     required this.value
   });
 
