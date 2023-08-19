@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:logging/logging.dart';
 import 'package:solana_wallet/api/service/http_service.dart';
 import 'package:solana_wallet/domain/configuration/solana_configuration.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/request/get_account_info_request.dart';
@@ -10,6 +11,8 @@ import 'package:solana_wallet/domain/model/rpc/solana/response/rpc_response.dart
 import 'package:solana_wallet/domain/model/rpc/solana/response/send_transaction/send_transaction_response.dart';
 
 class SolanaRPCService {
+  final _logger = Logger('SolanaRPCService');
+
   final HttpService httpService;
   final SolanaConfiguration configuration;
   final bool ssl;
@@ -41,6 +44,7 @@ class SolanaRPCService {
       Map<String, dynamic> jsonMap = jsonDecode(response.body);
 
       if (jsonMap["error"] != null) {
+        _logger.severe(jsonMap);
         return RPCErrorResponse.fromJson(jsonMap);
       } else {
         return GetAccountInfoResponse.fromJson(jsonMap);
@@ -63,6 +67,7 @@ class SolanaRPCService {
       Map<String, dynamic> jsonMap = jsonDecode(response.body);
 
       if (jsonMap["error"] != null) {
+        _logger.severe(jsonMap);
         return RPCErrorResponse.fromJson(jsonMap);
       } else {
         return SendTransactionResponse.fromJson(jsonMap);
