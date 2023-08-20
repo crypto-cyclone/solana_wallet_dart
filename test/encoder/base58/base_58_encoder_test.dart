@@ -1,8 +1,8 @@
 import 'dart:typed_data';
 
-import 'package:flutter_test/flutter_test.dart';
 import 'package:hex/hex.dart';
 import 'package:solana_wallet/encoder/base58/base_58_encoder.dart';
+import 'package:test/test.dart';
 
 void main() {
   group('Base58Encoder', () {

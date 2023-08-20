@@ -1,8 +1,8 @@
 import 'dart:typed_data';
 
 import 'package:hex/hex.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:solana_wallet/domain/service/mnemonic_service.dart';
+import 'package:test/test.dart';
 
 void main() {
   group('MnemonicService', () {
