@@ -8,7 +8,7 @@ environment:
   sdk: ">=2.12.0 <3.0.0"
 
 executables:
-  solidl: idl_generator.dart
+  seagen: idl_generator.dart
 
 dependencies:
   pointycastle: ^3.7.3
