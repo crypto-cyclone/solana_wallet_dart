@@ -320,19 +320,15 @@ class AnchorFieldVector<T> extends AnchorField<T> {
   @override
   Uint8List serialize() {
     Uint8List lengthBytes = toLEByteArray(value.length, 4);
-    if (value is AnchorField) {
-      return Uint8List.fromList([
-        ...lengthBytes,
-        ...value.map((e) => e.serialize()).toList().fold<Uint8List>(
-            Uint8List(0),
-                (previousValue, element) => Uint8List.fromList([
-              ...previousValue,
-              ...element
-            ])
-        )
-      ]);
-    } else {
-      throw ArgumentError('Unknown type structure');
-    }
+    return Uint8List.fromList([
+      ...lengthBytes,
+      ...value.map((e) {
+        if (e is AnchorField) {
+          return e.serialize();
+        }
+        throw ArgumentError('Unknown type structure');
+      }).toList().fold<Uint8List>(Uint8List(0), (previousValue, element) =>
+          Uint8List.fromList([...previousValue, ...element]))
+    ]);
   }
 }
