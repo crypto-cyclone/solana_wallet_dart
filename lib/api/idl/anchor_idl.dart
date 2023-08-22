@@ -120,6 +120,14 @@ class AnchorAccount {
   });
 }
 
+class AnchorStruct {
+  final String name;
+
+  AnchorStruct({
+    required this.name,
+  });
+}
+
 class AnchorError {
   final int code;
   final String name;
@@ -300,8 +308,8 @@ class AnchorFieldNullableBytes extends AnchorField<Uint8List?> {
   }
 }
 
-class AnchorFieldVector extends AnchorField<List<AnchorField>> {
-  final List<AnchorField> value;
+class AnchorFieldVector<T> extends AnchorField<T> {
+  final List<T> value;
 
   AnchorFieldVector({
     required int index,
@@ -312,23 +320,19 @@ class AnchorFieldVector extends AnchorField<List<AnchorField>> {
   @override
   Uint8List serialize() {
     Uint8List lengthBytes = toLEByteArray(value.length, 4);
-    return Uint8List.fromList([
-      ...lengthBytes,
-      ...value.map((e) => e.serialize()).toList().fold<Uint8List>(
-        Uint8List(0),
-        (previousValue, element) => Uint8List.fromList([
-          ...previousValue,
-          ...element
-        ])
-      )
-    ]);
+    if (value is AnchorField) {
+      return Uint8List.fromList([
+        ...lengthBytes,
+        ...value.map((e) => e.serialize()).toList().fold<Uint8List>(
+            Uint8List(0),
+                (previousValue, element) => Uint8List.fromList([
+              ...previousValue,
+              ...element
+            ])
+        )
+      ]);
+    } else {
+      throw ArgumentError('Unknown type structure');
+    }
   }
-}
-
-class AnchorStruct {
-  final String name;
-
-  AnchorStruct({
-    required this.name,
-  });
 }
