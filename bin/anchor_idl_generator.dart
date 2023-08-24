@@ -43,7 +43,7 @@ class $className extends ${AnchorIDLClassName()} {
         .map((e) => _generateInstructionFieldInitialization(idlName, e));
 
     var accountFieldInitializations = idl['accounts']
-        .map((e) => _generateAccountFieldInitialization(e));
+        .map((e) => _generateAccountFieldInitialization(idlName, e));
 
     var fieldInitializations = [...instructionFieldInitializations, ...accountFieldInitializations]
         .join(',\n$TabPlusHalf');
@@ -72,11 +72,11 @@ $className()
 
   String _generateAccountFieldDeclaration(String idlName, Map<String, dynamic> account) {
     var name = account['name'];
-    return "final ${AnchorAccountClassName()} ${toCamelCase(name)}Account;";
+    return "final ${ExtendedAccountClassName(idlName, name)} ${toCamelCase(name)}Account;";
   }
 
-  String _generateAccountFieldInitialization(Map<String, dynamic> account) {
+  String _generateAccountFieldInitialization(String idlName, Map<String, dynamic> account) {
     var name = account['name'];
-    return "${toCamelCase(name)}Account = ${AnchorAccountClassName()}(name: '$name')";
+    return "${toCamelCase(name)}Account = ${ExtendedAccountClassName(idlName, name)}()";
   }
 }

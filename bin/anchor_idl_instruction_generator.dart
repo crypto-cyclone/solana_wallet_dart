@@ -11,10 +11,10 @@ class AnchorInstructionGenerator {
 
           var instructionName = instruction['name'];
           var className = ExtendedInstructionClassName(idlName, instructionName);
-          var classFieldDeclarations = _generateFieldDeclarations(idlName, instruction);
-          var defaultConstructor = _generateDefaultConstructor(idlName, instruction);
+          var classFieldDeclarations = _generateFieldDeclarations(idlName, instruction, idl['types']);
+          var defaultConstructor = _generateDefaultConstructor(idlName, instruction, idl['types']);
           var withArgsConstructor = _generateWithArgsConstructor(idlName, instruction);
-          var withAllConstructor = _generateWithAllConstructor(idlName, instruction);
+          var withAllConstructor = _generateWithAllConstructor(idlName, instruction, idl['types']);
           var withAccountsConstructor = _generateWithAccountsConstructor(idlName, instruction);
 
           return '''
@@ -34,9 +34,9 @@ class $className extends ${AnchorInstructionClassName()} {
         .join('\n');
   }
 
-  String _generateFieldDeclarations(String idlName, instruction) {
+  String _generateFieldDeclarations(String idlName, instruction, List<dynamic> types) {
     var argumentDeclarations = instruction['args']
-        .map((e) => _generateArgumentFieldDeclaration(idlName, e));
+        .map((e) => _generateArgumentFieldDeclaration(idlName, e, types));
 
     var accountDeclarations = instruction['accounts']
         .map((e) => _generateAccountFieldDeclaration(e));
@@ -45,7 +45,7 @@ class $className extends ${AnchorInstructionClassName()} {
         .join('\n$HalfTab');
   }
 
-  String _generateDefaultConstructor(String idlName, instruction) {
+  String _generateDefaultConstructor(String idlName, instruction, List<dynamic> types) {
     var instructionName = instruction['name'];
     var className = ExtendedInstructionClassName(idlName, instructionName);
 
@@ -56,7 +56,7 @@ class $className extends ${AnchorInstructionClassName()} {
       var index = e.key;
       var arg = e.value;
 
-      return _generateArgumentFieldDefaultInitialization(idlName, arg, index);
+      return _generateArgumentFieldDefaultInitialization(idlName, arg, index, types);
     });
 
     var accountInitializations = instruction['accounts']
@@ -76,7 +76,7 @@ class $className extends ${AnchorInstructionClassName()} {
       var index = e.key;
       var arg = e.value;
 
-      return _generateArgumentFieldMapParameterDefaultInitialization(idlName, arg, index);
+      return _generateArgumentFieldMapParameterDefaultInitialization(idlName, arg, index, types);
     })
         .join(',\n$TripleTab');
 
@@ -161,7 +161,7 @@ class $className extends ${AnchorInstructionClassName()} {
     }''';
   }
 
-  String _generateWithAllConstructor(String idlName, instruction) {
+  String _generateWithAllConstructor(String idlName, instruction, List<dynamic> types) {
     var instructionName = instruction['name'];
 
     var className = ExtendedInstructionClassName(idlName, instructionName);
@@ -184,7 +184,7 @@ class $className extends ${AnchorInstructionClassName()} {
       var index = e.key;
       var arg = e.value;
 
-      return _generateArgumentFieldInitialization(idlName, arg, index);
+      return _generateArgumentFieldInitialization(idlName, arg, index, types);
     });
 
     var accountInitializations = instruction['accounts']
@@ -207,7 +207,7 @@ class $className extends ${AnchorInstructionClassName()} {
       var index = e.key;
       var arg = e.value;
 
-      return _generateArgumentFieldMapParameterInitialization(idlName, arg, index);
+      return _generateArgumentFieldMapParameterInitialization(idlName, arg, index, types);
     })
         .join(',\n$TripleTab');
 
@@ -234,16 +234,16 @@ class $className extends ${AnchorInstructionClassName()} {
   ''';
   }
 
-  String _generateArgumentFieldDeclaration(String idlName, Map<String, dynamic> arg) {
-    return "final ${ExtendedAnchorFieldClassName(idlName, arg['type'])} ${toCamelCase(arg['name'])}Field;";
+  String _generateArgumentFieldDeclaration(String idlName, Map<String, dynamic> arg, List<dynamic> types) {
+    return "final ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)} ${toCamelCase(arg['name'])}Field;";
   }
 
-  String _generateArgumentFieldDefaultInitialization(String idlName, Map<String, dynamic> arg, int index) {
-    return "${toCamelCase(arg['name'])}Field = ${ExtendedAnchorFieldClassName(idlName, arg['type'])}(name: '${arg['name']}', value: ${AnchorFieldDefaultValue(arg['type'])}, index: $index)";
+  String _generateArgumentFieldDefaultInitialization(String idlName, Map<String, dynamic> arg, int index, List<dynamic> types) {
+    return "${toCamelCase(arg['name'])}Field = ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}(name: '${arg['name']}', value: ${AnchorFieldDefaultValue(arg['type'])}, index: $index)";
   }
 
-  String _generateArgumentFieldInitialization(String idlName, Map<String, dynamic> arg, int index) {
-    return "${toCamelCase(arg['name'])}Field = ${ExtendedAnchorFieldClassName(idlName, arg['type'])}(name: '${arg['name']}', value: ${arg['name']}, index: $index)";
+  String _generateArgumentFieldInitialization(String idlName, Map<String, dynamic> arg, int index, List<dynamic> types) {
+    return "${toCamelCase(arg['name'])}Field = ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}(name: '${arg['name']}', value: ${arg['name']}, index: $index)";
   }
 
   String _generateAccountFieldDeclaration(Map<String, dynamic> account) {
@@ -258,16 +258,16 @@ class $className extends ${AnchorInstructionClassName()} {
     return "${toCamelCase(account['name'])}Account = ${AnchorInstructionAccountClassName()}(name: '${account['name']}', isMut: ${account['isMut']}, isSigner: ${account['isSigner']}, address: ${account['name']}, index: $index)";
   }
 
-  String _generateArgumentFieldMapParameterDefaultInitialization(String idlName, Map<String, dynamic> arg, int index) {
-    return "'${toCamelCase(arg['name'])}': ${ExtendedAnchorFieldClassName(idlName, arg['type'])}(name: '${arg['name']}', value: ${AnchorFieldDefaultValue(arg['type'])}, index: $index)";
+  String _generateArgumentFieldMapParameterDefaultInitialization(String idlName, Map<String, dynamic> arg, int index, List<dynamic> types) {
+    return "'${toCamelCase(arg['name'])}': ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}(name: '${arg['name']}', value: ${AnchorFieldDefaultValue(arg['type'])}, index: $index)";
   }
 
   String _generateAccountFieldMapParameterDefaultInitialization(Map<String, dynamic> account, int index) {
     return "'${toCamelCase(account['name'])}': ${AnchorInstructionAccountClassName()}(name: '${account['name']}', isMut: ${account['isMut']}, isSigner: ${account['isSigner']}, address: '', index: $index)";
   }
 
-  String _generateArgumentFieldMapParameterInitialization(String idlName, Map<String, dynamic> arg, int index) {
-    return "'${toCamelCase(arg['name'])}': ${ExtendedAnchorFieldClassName(idlName, arg['type'])}(name: '${arg['name']}', value: ${arg['name']}, index: $index)";
+  String _generateArgumentFieldMapParameterInitialization(String idlName, Map<String, dynamic> arg, int index, List<dynamic> types) {
+    return "'${toCamelCase(arg['name'])}': ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}(name: '${arg['name']}', value: ${arg['name']}, index: $index)";
   }
 
   String _generateAccountFieldMapParameterInitialization(Map<String, dynamic> account, int index) {

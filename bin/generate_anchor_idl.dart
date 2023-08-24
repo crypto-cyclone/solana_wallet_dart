@@ -3,11 +3,11 @@ import 'dart:io';
 import 'package:path/path.dart';
 import 'package:solana_wallet/util/string.dart';
 
-import 'idl_generator.dart';
-import 'idl_instruction_generator.dart';
-import 'idl_type_generator.dart';
-
-var idlName = "";
+import 'anchor_idl_account_generator.dart';
+import 'anchor_idl_error_generator.dart';
+import 'anchor_idl_generator.dart';
+import 'anchor_idl_instruction_generator.dart';
+import 'anchor_idl_type_generator.dart';
 
 void main(List<String> args) {
   if (args.contains('--help') || args.contains('-h')) {
@@ -55,7 +55,9 @@ void main(List<String> args) {
 String generateIDL(Map<String, dynamic> idl) {
   AnchorIDLGenerator idlGenerator = AnchorIDLGenerator();
   AnchorInstructionGenerator instructionGenerator = AnchorInstructionGenerator();
+  AnchorIDLAccountGenerator accountGenerator = AnchorIDLAccountGenerator();
   AnchorIDlTypeGenerator typeGenerator = AnchorIDlTypeGenerator();
+  AnchorIDLErrorGenerator errorGenerator = AnchorIDLErrorGenerator();
 
   return '''
 import 'dart:typed_data';
@@ -64,23 +66,9 @@ import 'package:solana_wallet/api/idl/anchor_idl.dart';
 
 ${idlGenerator.generate(idl)}
 ${instructionGenerator.generate(idl)}
+${accountGenerator.generate(idl)}
 ${typeGenerator.generate(idl)}
-''';
-}
-
-String generateErrorClass(Map<String, dynamic> error) {
-  var name = error['name'];
-  var code = error['code'];
-  var msg = error['msg'];
-
-  var pascalName = toPascalCase(name);
-  var pascalIdlName = toPascalCase(idlName);
-
-    return '''
-class $pascalIdlName$pascalName extends AnchorError {
-  $pascalIdlName$pascalName():
-        super(code: $code, name: '$name', msg: '$msg');
-}
+${errorGenerator.generate(idl)}
 ''';
 }
 

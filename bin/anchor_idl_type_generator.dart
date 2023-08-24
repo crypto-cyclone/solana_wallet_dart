@@ -8,7 +8,7 @@ class AnchorIDlTypeGenerator {
     var types = idl['types']
       .map((e) {
         if (e['type']['kind'] == 'struct') {
-          return _generateStructClass(idlName, e);
+          return _generateStructClass(idlName, e, idl['types']);
         } else if (e['type']['kind'] == 'enum') {
           return _generateEnumClass(idlName, e);
         }
@@ -21,15 +21,15 @@ class AnchorIDlTypeGenerator {
     return types;
   }
 
-  String _generateStructClass(String idlName, object) {
+  String _generateStructClass(String idlName, object, List<dynamic> types) {
     var name = object['name'];
 
     var className = ExtendedStructClassName(idlName, name);
     var fieldDeclarations = object['type']['fields']
-        .map((e) => _generateStructFieldDeclaration(idlName, e))
+        .map((e) => _generateStructFieldDeclaration(idlName, e, types))
         .join('\n$HalfTab');
 
-    var defaultConstructor = _generateStructDefaultConstructor(idlName, object);
+    var defaultConstructor = _generateStructDefaultConstructor(idlName, object, types);
 
     return '''
 class $className extends ${AnchorStructClassName()} {
@@ -53,14 +53,14 @@ enum $enumName {
 ''';
   }
 
-  String _generateStructFieldDeclaration(String idlName, field) {
+  String _generateStructFieldDeclaration(String idlName, field, List<dynamic> types) {
     var name = field['name'];
     var type = field['type'];
 
-    return "final ${ExtendedAnchorFieldClassName(idlName, type)} ${name}Field;";
+    return "final ${ExtendedAnchorFieldClassName(idlName, type, types)} ${name}Field;";
   }
 
-  String _generateStructDefaultConstructor(String idlName, object) {
+  String _generateStructDefaultConstructor(String idlName, object, List<dynamic> types) {
     var name = object['name'];
     var className = ExtendedStructClassName(idlName, name);
 
@@ -70,7 +70,7 @@ enum $enumName {
         .map((e) {
           var index = e.key;
           var object = e.value;
-          return _generateStructArgumentFieldDefaultInitialization(idlName, object, index);
+          return _generateStructArgumentFieldDefaultInitialization(idlName, object, index, types);
         })
         .join(',\n$TabPlusHalf');
 
@@ -84,8 +84,8 @@ $className()
 ''';
   }
 
-  String _generateStructArgumentFieldDefaultInitialization(String idlName, Map<String, dynamic> arg, int index) {
-    return "${toCamelCase(arg['name'])}Field = ${ExtendedAnchorFieldClassName(idlName, arg['type'])}(name: '${arg['name']}', value: ${AnchorFieldDefaultValue(arg['type'])}, index: $index)";
+  String _generateStructArgumentFieldDefaultInitialization(String idlName, Map<String, dynamic> arg, int index, List<dynamic> types) {
+    return "${toCamelCase(arg['name'])}Field = ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}(name: '${arg['name']}', value: ${AnchorFieldDefaultValue(arg['type'])}, index: $index)";
   }
 
   String _generateEnumOptions(object) {

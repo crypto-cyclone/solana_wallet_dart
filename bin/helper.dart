@@ -40,12 +40,8 @@ String AnchorStructClassName() {
   return "AnchorStruct";
 }
 
-String ExtendedEnumName(String idlName, String name) {
-  return "${toPascalCase(idlName)}${toPascalCase(name)}";
-}
-
-String ExtendedStructClassName(String idlName, String name) {
-  return "${toPascalCase(idlName)}${toPascalCase(name)}";
+String AnchorErrorClassName() {
+  return "AnchorError";
 }
 
 String ExtendedAnchorIDLClassName(String idlName) {
@@ -56,7 +52,14 @@ String ExtendedAnchorInstructionClassName(String instructionName) {
   return toPascalCase("$instructionName${AnchorInstructionClassName()}");
 }
 
-String ExtendedAnchorFieldClassName(String idlName, dynamic type) {
+String ExtendedAnchorErrorClassName(String errorName) {
+  return toPascalCase("$errorName${AnchorErrorClassName()}");
+}
+
+String ExtendedAnchorFieldClassName(
+    String idlName, 
+    dynamic type,
+    List<dynamic> types) {
   if (type is String) {
     switch (type) {
       case 'string':
@@ -74,16 +77,22 @@ String ExtendedAnchorFieldClassName(String idlName, dynamic type) {
       case 'publicKey':
         return '${AnchorFieldClassName()}Bytes';
       default:
-        return type;
+        var custom = types.firstWhere((e) => e['name'] == type);
+
+        if (custom == null) {
+          throw ArgumentError('Unknown type structure: $type');
+        } else {
+          return "${type}${toPascalCase(custom['type']['kind'])}";
+        }
     }
   } else if (type is Map) {
     if (type['option'] != null) {
-      return ExtendedAnchorFieldClassName(idlName, type['option'])
+      return ExtendedAnchorFieldClassName(idlName, type['option'], types)
           .replaceAll("AnchorField", "AnchorFieldNullable");
     } else if (type['vec'] != null) {
-      return "AnchorFieldVector<${ExtendedAnchorFieldClassName(idlName, type['vec'])}>";
+      return "AnchorFieldVector<${ExtendedAnchorFieldClassName(idlName, type['vec'], types)}>";
     } else if (type['defined'] != null) {
-      return "${toPascalCase(idlName)}${ExtendedAnchorFieldClassName(idlName, type['defined'])}";
+      return "${toPascalCase(idlName)}${ExtendedAnchorFieldClassName(idlName, type['defined'], types)}";
     }
   }
 
@@ -91,7 +100,23 @@ String ExtendedAnchorFieldClassName(String idlName, dynamic type) {
 }
 
 String ExtendedInstructionClassName(String prefix, String instructionName) {
-  return "${toPascalCase(prefix)}${toPascalCase(instructionName)}";
+  return "${toPascalCase(prefix)}${toPascalCase(instructionName)}Instruction";
+}
+
+String ExtendedAccountClassName(String prefix, String accountName) {
+  return "${toPascalCase(prefix)}${toPascalCase(accountName)}Account";
+}
+
+String ExtendedEnumName(String idlName, String name) {
+  return "${toPascalCase(idlName)}${toPascalCase(name)}Enum";
+}
+
+String ExtendedStructClassName(String idlName, String name) {
+  return "${toPascalCase(idlName)}${toPascalCase(name)}Struct";
+}
+
+String ExtendedErrorClassName(String prefix, String errorName) {
+  return "${toPascalCase(prefix)}${toPascalCase(errorName)}Error";
 }
 
 String AnchorFieldDefaultValue(dynamic type) {
