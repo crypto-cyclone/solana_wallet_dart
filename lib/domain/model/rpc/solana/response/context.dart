@@ -1,6 +1,6 @@
 class Context {
-  final String apiVersion;
-  final int slot;
+  final String? apiVersion;
+  final int? slot;
 
   Context({
     required this.apiVersion,
@@ -9,8 +9,8 @@ class Context {
 
   static Context fromJson(Map<String, dynamic> json) {
     return Context(
-      apiVersion: json['apiVersion'] as String,
-      slot: json['slot'] as int,
+      apiVersion: json['apiVersion'] as String?,
+      slot: json['slot'] as int?,
     );
   }
 }

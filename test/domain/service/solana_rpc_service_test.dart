@@ -1,7 +1,9 @@
 import 'package:solana_wallet/domain/configuration/solana_configuration.dart';
-import 'package:solana_wallet/domain/model/rpc/solana/request/get_account_info_request.dart';
-import 'package:solana_wallet/domain/model/rpc/solana/request/send_transaction_request.dart';
+import 'package:solana_wallet/domain/model/rpc/solana/request/account_info/get_account_info_request.dart';
+import 'package:solana_wallet/domain/model/rpc/solana/request/latest_blockhash/get_latest_blockhash_request.dart';
+import 'package:solana_wallet/domain/model/rpc/solana/request/send_transaction/send_transaction_request.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/response/account_info/get_account_info_response.dart';
+import 'package:solana_wallet/domain/model/rpc/solana/response/latest_blockhash/get_latest_blockhash_response.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/response/send_transaction/send_transaction_response.dart';
 import 'package:solana_wallet/domain/service/solana_rpc_service.dart';
 import 'package:test/test.dart';
@@ -21,6 +23,30 @@ void main() {
             SolanaNetwork.devnet
           )
       );
+    });
+
+    test('get latest blockhash is success', () async {
+      httpsService.responseJson = '{"jsonrpc": "2.0","result": {"context": {"slot": 2792},"value": {"blockhash": "EkSnNWid2cvwEVnVx9aBqawnmiCNiDgp3gUdkDPTKN1N","lastValidBlockHeight": 3090}},"id": 1}';
+      var requestJson = '{"jsonrpc":"2.0","id":1,"method":"getLatestBlockhash","params":[{"commitment":"processed"}]}';
+
+      var request = GetLatestBlockhashRequest();
+
+      expect(request.toJson(), requestJson);
+
+      var result = await solanaRPCService.getLatestBlockhash(
+          GetLatestBlockhashRequest()
+      );
+
+      expect(result is GetLatestBlockhashResponse, true);
+
+      var latestBlockhashResponse = result as GetLatestBlockhashResponse;
+
+      expect(latestBlockhashResponse.jsonrpc, "2.0");
+      expect(latestBlockhashResponse.id, 1);
+      expect(latestBlockhashResponse.method, null);
+      expect(latestBlockhashResponse.context?.slot, 2792);
+      expect(latestBlockhashResponse.blockhash.blockhash, "EkSnNWid2cvwEVnVx9aBqawnmiCNiDgp3gUdkDPTKN1N");
+      expect(latestBlockhashResponse.blockhash.lastValidBlockHeight, 3090);
     });
 
     test('get account info is success', () async {
