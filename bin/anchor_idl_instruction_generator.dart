@@ -273,6 +273,6 @@ class $className extends ${AnchorInstructionClassName()} {
   }
 
   String _generateAccountFieldMapParameterInitialization(Map<String, dynamic> account, int index) {
-    return "'${toCamelCase(account['name'])}': ${AnchorInstructionAccountClassName()}(name: '${account['name']}', isMut: ${account['isMut']}, isSigner: ${account['isSigner']}, address: '${account['name']}', index: $index)";
+    return "'${toCamelCase(account['name'])}': ${AnchorInstructionAccountClassName()}(name: '${account['name']}', isMut: ${account['isMut']}, isSigner: ${account['isSigner']}, address: ${account['name']}, index: $index)";
   }
 }
