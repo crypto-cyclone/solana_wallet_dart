@@ -226,7 +226,8 @@ class $className extends ${AnchorInstructionClassName()} {
         "name: '$instructionName',\n$DoublePlusHalfTab" +
         "args: {\n$TripleTab$argsMapFieldInitializations},\n$DoublePlusHalfTab" +
         "accounts: {\n$TripleTab$accountMapFieldInitializations},\n$DoublePlusHalfTab" +
-        "argsSet: argsSet,\naccountsSet: accountsSet);";
+        "argsSet: argsSet,\n$DoublePlusHalfTab" +
+        "accountsSet: accountsSet);";
 
     return '''
   $className._withAll($withAllParameters)
