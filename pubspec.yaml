@@ -8,7 +8,7 @@ environment:
   sdk: ">=2.17.0 <3.0.0"
 
 executables:
-  cyclone-anchor-idl: generate_anchor_idl
+  cyclone-anchor-idl:
 
 dependencies:
   pointycastle: ^3.7.3
