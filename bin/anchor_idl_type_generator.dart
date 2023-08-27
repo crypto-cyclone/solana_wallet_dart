@@ -30,12 +30,15 @@ class AnchorIDlTypeGenerator {
         .join('\n$HalfTab');
 
     var defaultConstructor = _generateStructDefaultConstructor(idlName, object, types);
+    var withFieldsConstructor = _generateWithFieldsConstructor(idlName, object, types);
 
     return '''
 class $className extends ${AnchorStructClassName()} {
   $fieldDeclarations
   
   $defaultConstructor
+  
+  $withFieldsConstructor
 }
 ''';
   }
@@ -74,8 +77,22 @@ enum $enumName {
         })
         .join(',\n$TabPlusHalf');
 
+    var fieldsMapFieldInitializations = object['type']['fields']
+        .asMap()
+        .entries
+        .map((e) {
+      var index = e.key;
+      var arg = e.value;
+
+      return _generateArgumentFieldMapParameterInitialization(idlName, arg, index, types);
+    })
+        .join(',\n$TripleTab');
+
     var superInitialization = "super(\n$DoublePlusHalfTab" +
-        "name: '$name');";
+        "name: '$name',\n$DoublePlusHalfTab" +
+        "fields: {\n$TripleTab" +
+        "$fieldsMapFieldInitializations" +
+        "});";
 
     return '''
 $className()
@@ -84,8 +101,48 @@ $className()
 ''';
   }
 
+  String _generateWithFieldsConstructor(String idlName, object, List<dynamic> types) {
+    var accountName = object['name'];
+
+    var className = ExtendedStructClassName(idlName, accountName);
+
+    var fieldParameters = object['type']['fields']
+        .map((field) => _generateArgumentFieldConstructorInitialization(idlName, field, types))
+        .join(',\n$DoubleTab');
+
+    var fieldsMapFieldInitializations = object['type']['fields']
+        .asMap()
+        .entries
+        .map((e) {
+      var index = e.key;
+      var arg = e.value;
+
+      return _generateArgumentFieldMapParameterInitialization(idlName, arg, index, types);
+    })
+        .join(',\n$TripleTab');
+
+    var superInitialization = "super(\n$DoublePlusHalfTab" +
+        "name: '$accountName',\n$DoublePlusHalfTab" +
+        "fields: {\n$TripleTab" +
+        "$fieldsMapFieldInitializations" +
+        "});";
+
+    return '''
+  $className.withFields({
+    $Tab$fieldParameters}) : $superInitialization
+    ''';
+  }
+
+  String _generateArgumentFieldConstructorInitialization(String idlName, Map<String, dynamic> arg, List<dynamic> types) {
+    return "required this.${toCamelCase(arg['name'])}Field";
+  }
+
   String _generateStructArgumentFieldDefaultInitialization(String idlName, Map<String, dynamic> arg, int index, List<dynamic> types) {
     return "${toCamelCase(arg['name'])}Field = ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}(name: '${arg['name']}', value: ${AnchorFieldDefaultValue(arg['type'])}, index: $index)";
+  }
+
+  String _generateArgumentFieldMapParameterInitialization(String idlName, Map<String, dynamic> arg, int index, List<dynamic> types) {
+    return "'${toCamelCase(arg['name'])}': ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}(name: '${arg['name']}', value: ${AnchorFieldDefaultValue(arg['type'])}, index: $index)";
   }
 
   String _generateEnumOptions(object) {

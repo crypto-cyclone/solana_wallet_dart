@@ -9,12 +9,14 @@ class AnchorIDLGenerator {
     var className = ExtendedAnchorIDLClassName(idlName);
     var classFieldDeclarations = _generateFieldDeclarations(idl);
     var defaultConstructor = _generateDefaultConstructor(idl);
+    var initializeFunction = _initializeFunctionGenerator(idl);
 
     return '''
 class $className extends ${AnchorIDLClassName()} {
   $classFieldDeclarations
   
   $defaultConstructor
+  $initializeFunction
 }
 ''';
   }
@@ -60,6 +62,43 @@ $className()
 ''';
   }
 
+  String _initializeFunctionGenerator(idl) {
+    var idlName = idl['name'];
+
+    var instructionArgs = idl['instructions']
+        .expand((e) => e['args'] as Iterable)
+        .map((e) => _generateInstructionArgRegistration(idlName, e, idl['types']))
+        .join('\n$TabPlusHalf');
+
+    var accountArgs = idl['accounts']
+        .expand((e) => e['type']['fields'] as Iterable? ?? [])
+        .map((e) {
+          if (e == null) {
+            return "";
+          }
+          return _generateInstructionArgRegistration(idlName, e, idl['types']);
+        })
+        .join('\n$TabPlusHalf');
+
+    var typesArgs = idl['types']
+        .expand((e) => e['type']['fields'] as Iterable? ?? [])
+        .map((e) {
+      if (e == null) {
+        return "";
+      }
+      return _generateInstructionArgRegistration(idlName, e, idl['types']);
+    })
+        .join('\n$TabPlusHalf');
+
+    return '''
+void initialize() {
+$TabPlusHalf$instructionArgs
+$TabPlusHalf$accountArgs
+$TabPlusHalf$typesArgs
+$HalfTab}
+''';
+  }
+
   String _generateInstructionFieldDeclaration(String idlName, Map<String, dynamic> instruction) {
     var name = instruction['name'];
     return "final ${ExtendedInstructionClassName(idlName, name)} ${toCamelCase(name)}Instruction;";
@@ -78,5 +117,10 @@ $className()
   String _generateAccountFieldInitialization(String idlName, Map<String, dynamic> account) {
     var name = account['name'];
     return "${toCamelCase(name)}Account = ${ExtendedAccountClassName(idlName, name)}()";
+  }
+
+  String _generateInstructionArgRegistration(String idlName, arg, List<dynamic> types) {
+    var className = ExtendedAnchorFieldClassName(idlName, arg['type'], types);
+    return "deserializationRegistry.register<$className>(() => $className.factory());";
   }
 }

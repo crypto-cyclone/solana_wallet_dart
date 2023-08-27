@@ -14,18 +14,48 @@ Uint8List toLEByteArray(int value, int byteSize) {
   final view = ByteData.view(buffer.buffer);
   final intValue = Int64(value);
 
-  if (byteSize == 8) {
-    for (int i = 0; i < 8; i++) {
-      int byteValue = ((intValue >> (i * 8)) & 0xff).toInt();
-      view.setUint8(i, byteValue);
-    }
-  } else if (byteSize == 4) {
-    view.setUint32(0, value, Endian.little);
-  } else {
-    throw Exception('Unsupported byteSize: $byteSize. Supported sizes are 4 and 8.');
+  switch (byteSize) {
+    case 8:
+      for (int i = 0; i < 8; i++) {
+        int byteValue = ((intValue >> (i * 8)) & 0xff).toInt();
+        view.setUint8(i, byteValue);
+      }
+      break;
+    case 4:
+      view.setInt32(0, value, Endian.little);
+      break;
+    case 2:
+      view.setInt16(0, value, Endian.little);
+      break;
+    case 1:
+      view.setInt8(0, value);
+      break;
+    default:
+      throw Exception('Unsupported byteSize: $byteSize. Supported sizes are 1, 2, 4, and 8.');
   }
 
   return buffer;
+}
+
+int fromLEByteArray(Uint8List bytes) {
+  final view = ByteData.view(bytes.buffer);
+
+  switch (bytes.length) {
+    case 8:
+      int value = 0;
+      for (int i = 0; i < 8; i++) {
+        value |= (view.getUint8(i) & 0xff) << (i * 8);
+      }
+      return value;
+    case 4:
+      return view.getInt32(0, Endian.little);
+    case 2:
+      return view.getInt16(0, Endian.little);
+    case 1:
+      return view.getInt8(0);
+    default:
+      throw Exception('Unsupported byte length: ${bytes.length}. Supported lengths are 1, 2, 4, and 8.');
+  }
 }
 
 Uint8List toBEByteArrayBigInt(BigInt value) {

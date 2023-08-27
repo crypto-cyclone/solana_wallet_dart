@@ -63,6 +63,7 @@ String generateIDL(Map<String, dynamic> idl) {
 import 'dart:typed_data';
  
 import 'package:solana_wallet/api/idl/anchor_idl.dart';
+import 'package:solana_wallet/api/idl/anchor_idl_deserialization_registry.dart';
 
 ${idlGenerator.generate(idl)}
 ${instructionGenerator.generate(idl)}

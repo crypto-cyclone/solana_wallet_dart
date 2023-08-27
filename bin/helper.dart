@@ -75,7 +75,7 @@ String ExtendedAnchorFieldClassName(
       case 'bytes':
         return '${AnchorFieldClassName()}Bytes';
       case 'publicKey':
-        return '${AnchorFieldClassName()}Bytes';
+        return '${AnchorFieldClassName()}PublicKey';
       default:
         var custom = types.firstWhere((e) => e['name'] == type);
 
