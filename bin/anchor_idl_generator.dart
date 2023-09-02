@@ -67,8 +67,7 @@ $className()
 
     var instructionArgs = idl['instructions']
         .expand((e) => e['args'] as Iterable)
-        .map((e) => _generateInstructionArgRegistration(idlName, e, idl['types']))
-        .join('\n$TabPlusHalf');
+        .map((e) => _generateInstructionArgRegistration(idlName, e, idl['types']));
 
     var accountArgs = idl['accounts']
         .expand((e) => e['type']['fields'] as Iterable? ?? [])
@@ -77,8 +76,15 @@ $className()
             return "";
           }
           return _generateInstructionArgRegistration(idlName, e, idl['types']);
-        })
-        .join('\n$TabPlusHalf');
+        });
+
+    var types = idl['types']
+        .map((e) {
+          if (e['type']['kind'] != 'struct') {
+            return "";
+          }
+          return _generateStructRegistration(idlName, e);
+    });
 
     var typesArgs = idl['types']
         .expand((e) => e['type']['fields'] as Iterable? ?? [])
@@ -87,14 +93,16 @@ $className()
         return "";
       }
       return _generateInstructionArgRegistration(idlName, e, idl['types']);
-    })
+    });
+
+    var args = [...instructionArgs, ...accountArgs, ...types, ...typesArgs]
+        .where((e) => e != "")
+        .toSet()
         .join('\n$TabPlusHalf');
 
     return '''
 void initialize() {
-$TabPlusHalf$instructionArgs
-$TabPlusHalf$accountArgs
-$TabPlusHalf$typesArgs
+$TabPlusHalf$args
 $HalfTab}
 ''';
   }
@@ -119,8 +127,22 @@ $HalfTab}
     return "${toCamelCase(name)}Account = ${ExtendedAccountClassName(idlName, name)}()";
   }
 
+  String _generateStructRegistration(String idlName, struct) {
+    var name = struct['name'];
+    var className = ExtendedStructClassName(idlName, name);
+
+    return "deserializationRegistry.register<$className>(() => $className());";
+  }
+
   String _generateInstructionArgRegistration(String idlName, arg, List<dynamic> types) {
     var className = ExtendedAnchorFieldClassName(idlName, arg['type'], types);
-    return "deserializationRegistry.register<$className>(() => $className.factory());";
+
+    if (className.contains("AnchorFieldVector")) {
+      var typeT = className.replaceAll('>', '');
+      typeT = typeT.split('<').last;
+      return "deserializationRegistry.register<AnchorFieldVector<$typeT>>(() => AnchorFieldVector.factory<$typeT>());";
+    } else {
+      return "deserializationRegistry.register<$className>(() => $className.factory());";
+    }
   }
 }

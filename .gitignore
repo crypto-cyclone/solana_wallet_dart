@@ -8,7 +8,7 @@
 .buildlog/
 .history
 .svn/
-idl/
+test/idl/
 lib/generated/
 migrate_working_dir/
 

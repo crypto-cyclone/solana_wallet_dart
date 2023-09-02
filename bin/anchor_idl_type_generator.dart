@@ -31,6 +31,7 @@ class AnchorIDlTypeGenerator {
 
     var defaultConstructor = _generateStructDefaultConstructor(idlName, object, types);
     var withFieldsConstructor = _generateWithFieldsConstructor(idlName, object, types);
+    var deserializeFunction = _generateDeserializeFunction(idlName, object, types);
 
     return '''
 class $className extends ${AnchorStructClassName()} {
@@ -39,6 +40,8 @@ class $className extends ${AnchorStructClassName()} {
   $defaultConstructor
   
   $withFieldsConstructor
+  
+  $deserializeFunction
 }
 ''';
   }
@@ -133,6 +136,25 @@ $className()
     ''';
   }
 
+  String _generateDeserializeFunction(String idlName, object, List<dynamic> types) {
+    var structName = object['name'];
+
+    var className = ExtendedStructClassName(idlName, structName);
+
+    var constructorDeclarations = object['type']['fields']
+        .map((field) => _generateDeserializedArgumentFieldMapParameterInitialization(idlName, field, types))
+        .join(',\n$DoubleTab');
+
+    return '''
+@override
+$HalfTab$className deserialize(List<int> bytes) {
+${Tab}var deserialized = Map.fromEntries(
+${TabPlusHalf}fields.entries.map((element) => MapEntry(element.key, element.value.deserialize(bytes))));
+${Tab}return $className.withFields(
+${DoubleTab}$constructorDeclarations);
+$HalfTab}''';
+  }
+
   String _generateArgumentFieldConstructorInitialization(String idlName, Map<String, dynamic> arg, List<dynamic> types) {
     return "required this.${toCamelCase(arg['name'])}Field";
   }
@@ -143,6 +165,10 @@ $className()
 
   String _generateArgumentFieldMapParameterInitialization(String idlName, Map<String, dynamic> arg, int index, List<dynamic> types) {
     return "'${toCamelCase(arg['name'])}': ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}(name: '${arg['name']}', value: ${AnchorFieldDefaultValue(arg['type'])}, index: $index)";
+  }
+
+  String _generateDeserializedArgumentFieldMapParameterInitialization(String idlName, Map<String, dynamic> arg, List<dynamic> types) {
+    return "${toCamelCase(arg['name'])}Field: deserialized['${arg['name']}'] as ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}";
   }
 
   String _generateEnumOptions(object) {

@@ -16,9 +16,10 @@ void main() {
     late Base58Encoder _base58Encoder;
     late AnchorEncoder _anchorEncoder;
 
-    setUp(() {
+    setUp(() async {
       _base58Encoder = Base58Encoder();
       _anchorEncoder = AnchorEncoder();
+
       SolRaiderAnchorIDL().initialize();
     });
 

@@ -1,0 +1,7 @@
+builders:
+  generateFiles:
+    import: "package:solana_wallet/builders/idl_builder.dart"
+    builder_factories: ["generateIDL"]
+    build_extensions: {".dart": [".g.dart"]}
+    auto_apply: root_package
+    required_inputs: [".dart"]
