@@ -53,12 +53,14 @@ class $className extends ${AnchorIDLClassName()} {
     var superInitialization = "super(\n$DoublePlusHalfTab" +
         "version: '$version',\n$DoublePlusHalfTab" +
         "name: '$idlName',\n$DoublePlusHalfTab" +
-        "metadata: ${AnchorMetadataClassName()}(address: '${metadata['address']}'));";
+        "metadata: ${AnchorMetadataClassName()}(address: '${metadata['address']}'))";
 
     return '''
 $className()
     : $fieldInitializations,
-      $superInitialization
+      $superInitialization {
+        initialize();
+      }
 ''';
   }
 
@@ -131,7 +133,7 @@ $HalfTab}
     var name = struct['name'];
     var className = ExtendedStructClassName(idlName, name);
 
-    return "deserializationRegistry.register<$className>(() => $className());";
+    return "serializationRegistry.register<$className>(() => $className());";
   }
 
   String _generateInstructionArgRegistration(String idlName, arg, List<dynamic> types) {
@@ -140,9 +142,9 @@ $HalfTab}
     if (className.contains("AnchorFieldVector")) {
       var typeT = className.replaceAll('>', '');
       typeT = typeT.split('<').last;
-      return "deserializationRegistry.register<AnchorFieldVector<$typeT>>(() => AnchorFieldVector.factory<$typeT>());";
+      return "serializationRegistry.register<AnchorFieldVector<$typeT>>(() => AnchorFieldVector.factory<$typeT>());";
     } else {
-      return "deserializationRegistry.register<$className>(() => $className.factory());";
+      return "serializationRegistry.register<$className>(() => $className.factory());";
     }
   }
 }

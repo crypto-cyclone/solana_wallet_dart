@@ -14,7 +14,7 @@ class AnchorIDLAccountGenerator {
       var classFieldDeclarations = _generateFieldDeclarations(idlName, account, idl['types']);
       var defaultConstructor = _generateDefaultConstructor(idlName, account, idl['types']);
       var withFieldsConstructor = _generateWithFieldsConstructor(idlName, account, idl['types']);
-      var fromBytesFunction = _generateFromBytesFunction(idlName, account, idl['types']);
+      var deserializeFunction = _generateDeserializeFunction(idlName, account, idl['types']);
 
       return '''
 class $className extends ${AnchorAccountClassName()} {
@@ -24,7 +24,7 @@ class $className extends ${AnchorAccountClassName()} {
   
   $withFieldsConstructor
   
-  $fromBytesFunction
+  $deserializeFunction
 }
 ''';
     })
@@ -118,7 +118,7 @@ class $className extends ${AnchorAccountClassName()} {
     ''';
   }
 
-  String _generateFromBytesFunction(String idlName, account, List<dynamic> types) {
+  String _generateDeserializeFunction(String idlName, account, List<dynamic> types) {
     var accountName = account['name'];
 
     var className = ExtendedAccountClassName(idlName, accountName);
@@ -135,7 +135,8 @@ class $className extends ${AnchorAccountClassName()} {
         .join(',\n$DoublePlusHalfTab');
 
     return '''
-  $className fromBytes(List<int> bytes) {
+  @override
+  $HalfTab$className deserialize(List<int> bytes) {
       consumeDiscriminator(bytes);
       
       var deserialized = Map.fromEntries(

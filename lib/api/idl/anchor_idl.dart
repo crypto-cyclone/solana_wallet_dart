@@ -13,7 +13,7 @@ import 'package:solana_wallet/util/string.dart';
 
 import 'package:collection/collection.dart';
 
-import 'anchor_idl_deserialization_registry.dart';
+import 'anchor_idl_serialization_registry.dart';
 
 class AnchorIDL {
   final String version;
@@ -113,7 +113,7 @@ class AnchorInstructionAccount {
   });
 }
 
-class AnchorAccount {
+class AnchorAccount extends AnchorSerializable {
   final _anchorEncoder = AnchorEncoder();
 
   final String name;
@@ -135,11 +135,21 @@ class AnchorAccount {
 
     bytes.removeRange(0, 8);
   }
+
+  @override
+  AnchorSerializable deserialize(List<int> bytes) {
+    throw UnimplementedError();
+  }
+
+  @override
+  List<int> serialize() {
+    throw UnimplementedError();
+  }
 }
 
-class AnchorStruct extends AnchorDeserializable {
+class AnchorStruct extends AnchorSerializable {
   final String name;
-  final Map<String, AnchorDeserializable> fields;
+  final Map<String, AnchorSerializable> fields;
 
   AnchorStruct({
     required this.name,
@@ -147,7 +157,12 @@ class AnchorStruct extends AnchorDeserializable {
   });
 
   AnchorStruct deserialize(List<int> bytes) {
-    throw Exception('Not implemented');
+    throw UnimplementedError();
+  }
+
+  @override
+  List<int> serialize() {
+    throw UnimplementedError();
   }
 }
 
@@ -163,7 +178,7 @@ class AnchorError {
   });
 }
 
-class AnchorField<T> extends AnchorDeserializable {
+class AnchorField<T> extends AnchorSerializable {
   final int index;
   final String name;
 
@@ -745,7 +760,7 @@ class AnchorFieldVector<T> extends AnchorField<T> {
 
     List<T> result = [];
     for (int i = 0; i < resultLength; i++) {
-      final instance = deserializationRegistry.getInstance(T);
+      final instance = serializationRegistry.getInstance(T);
 
       if (instance == null) {
         throw ArgumentError('Unknown type structure $T');
@@ -762,6 +777,7 @@ class AnchorFieldVector<T> extends AnchorField<T> {
   }
 }
 
-abstract class AnchorDeserializable {
-  AnchorDeserializable deserialize(List<int> bytes);
+abstract class AnchorSerializable {
+  List<int> serialize();
+  AnchorSerializable deserialize(List<int> bytes);
 }

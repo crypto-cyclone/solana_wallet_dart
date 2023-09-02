@@ -1,7 +1,7 @@
 import 'dart:typed_data';
  
 import 'package:solana_wallet/api/idl/anchor_idl.dart';
-import 'package:solana_wallet/api/idl/anchor_idl_deserialization_registry.dart';
+import 'package:solana_wallet/api/idl/anchor_idl_serialization_registry.dart';
 
 class SolRaiderAnchorIDL extends AnchorIDL {
   final SolRaiderCreateMapInstruction createMapInstruction;
@@ -15,21 +15,23 @@ class SolRaiderAnchorIDL extends AnchorIDL {
       super(
           version: '0.1.0',
           name: 'sol_raider',
-          metadata: AnchorMetadata(address: '8WdhLFkpr5sudFiCP1WknJvxVRagsUV6ohmKXuNBMZwG'));
+          metadata: AnchorMetadata(address: '8WdhLFkpr5sudFiCP1WknJvxVRagsUV6ohmKXuNBMZwG')) {
+        initialize();
+      }
 
   void initialize() {
-      deserializationRegistry.register<AnchorFieldString>(() => AnchorFieldString.factory());
-      deserializationRegistry.register<AnchorFieldU64>(() => AnchorFieldU64.factory());
-      deserializationRegistry.register<AnchorFieldBytes>(() => AnchorFieldBytes.factory());
-      deserializationRegistry.register<AnchorFieldNullableBytes>(() => AnchorFieldNullableBytes.factory());
-      deserializationRegistry.register<AnchorFieldNullableString>(() => AnchorFieldNullableString.factory());
-      deserializationRegistry.register<AnchorFieldNullableU64>(() => AnchorFieldNullableU64.factory());
-      deserializationRegistry.register<AnchorFieldPublicKey>(() => AnchorFieldPublicKey.factory());
-      deserializationRegistry.register<AnchorFieldVector<SolRaiderTileStruct>>(() => AnchorFieldVector.factory<SolRaiderTileStruct>());
-      deserializationRegistry.register<SolRaiderTileStruct>(() => SolRaiderTileStruct());
-      deserializationRegistry.register<SolRaiderObjectStruct>(() => SolRaiderObjectStruct());
-      deserializationRegistry.register<AnchorFieldU32>(() => AnchorFieldU32.factory());
-      deserializationRegistry.register<AnchorFieldVector<SolRaiderObjectStruct>>(() => AnchorFieldVector.factory<SolRaiderObjectStruct>());
+      serializationRegistry.register<AnchorFieldString>(() => AnchorFieldString.factory());
+      serializationRegistry.register<AnchorFieldU64>(() => AnchorFieldU64.factory());
+      serializationRegistry.register<AnchorFieldBytes>(() => AnchorFieldBytes.factory());
+      serializationRegistry.register<AnchorFieldNullableBytes>(() => AnchorFieldNullableBytes.factory());
+      serializationRegistry.register<AnchorFieldNullableString>(() => AnchorFieldNullableString.factory());
+      serializationRegistry.register<AnchorFieldNullableU64>(() => AnchorFieldNullableU64.factory());
+      serializationRegistry.register<AnchorFieldPublicKey>(() => AnchorFieldPublicKey.factory());
+      serializationRegistry.register<AnchorFieldVector<SolRaiderTileStruct>>(() => AnchorFieldVector.factory<SolRaiderTileStruct>());
+      serializationRegistry.register<SolRaiderTileStruct>(() => SolRaiderTileStruct());
+      serializationRegistry.register<SolRaiderObjectStruct>(() => SolRaiderObjectStruct());
+      serializationRegistry.register<AnchorFieldU32>(() => AnchorFieldU32.factory());
+      serializationRegistry.register<AnchorFieldVector<SolRaiderObjectStruct>>(() => AnchorFieldVector.factory<SolRaiderObjectStruct>());
   }
 
 }
@@ -203,7 +205,8 @@ class SolRaiderMapAccount extends AnchorAccount {
             'reward': AnchorFieldU64(name: 'reward', value: 0, index: 3)});
     
   
-    SolRaiderMapAccount fromBytes(List<int> bytes) {
+    @override
+    SolRaiderMapAccount deserialize(List<int> bytes) {
       consumeDiscriminator(bytes);
       
       var deserialized = Map.fromEntries(

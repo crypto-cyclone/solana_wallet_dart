@@ -1,22 +1,22 @@
 import 'package:solana_wallet/api/idl/anchor_idl.dart';
 
-class AnchorIDLDeserializationRegistry {
-  final Map<Type, AnchorDeserializable Function()> _registry = {};
+class AnchorIDLSerializationRegistry {
+  final Map<Type, AnchorSerializable Function()> _registry = {};
   bool _initialized = false;
 
-  AnchorIDLDeserializationRegistry._internal();
+  AnchorIDLSerializationRegistry._internal();
 
-  static final AnchorIDLDeserializationRegistry _singleton = AnchorIDLDeserializationRegistry._internal();
+  static final AnchorIDLSerializationRegistry _singleton = AnchorIDLSerializationRegistry._internal();
 
-  factory AnchorIDLDeserializationRegistry() {
+  factory AnchorIDLSerializationRegistry() {
     return _singleton;
   }
 
-  void register<T extends AnchorDeserializable>(AnchorDeserializable Function() factoryFn) {
+  void register<T extends AnchorSerializable>(AnchorSerializable Function() factoryFn) {
     _registry[T] = factoryFn;
   }
 
-  AnchorDeserializable? getInstance(Type T) {
+  AnchorSerializable? getInstance(Type T) {
     final factoryFn = _registry[T];
     return factoryFn?.call();
   }
@@ -44,4 +44,4 @@ class AnchorIDLDeserializationRegistry {
   }
 }
 
-final deserializationRegistry = AnchorIDLDeserializationRegistry()..initialize();
+final serializationRegistry = AnchorIDLSerializationRegistry()..initialize();
