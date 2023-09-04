@@ -13,7 +13,7 @@ class AnchorInstructionGenerator {
           var className = ExtendedInstructionClassName(idlName, instructionName);
           var classFieldDeclarations = _generateFieldDeclarations(idlName, instruction, idl['types']);
           var defaultConstructor = _generateDefaultConstructor(idlName, instruction, idl['types']);
-          var withArgsConstructor = _generateWithArgsConstructor(idlName, instruction);
+          var withArgsConstructor = _generateWithArgsConstructor(idlName, instruction, idl['types']);
           var withAllConstructor = _generateWithAllConstructor(idlName, instruction, idl['types']);
           var withAccountsConstructor = _generateWithAccountsConstructor(idlName, instruction);
 
@@ -105,13 +105,13 @@ class $className extends ${AnchorInstructionClassName()} {
       $superInitialization''';
   }
 
-  String _generateWithArgsConstructor(String idlName, instruction) {
+  String _generateWithArgsConstructor(String idlName, instruction, List<dynamic> types) {
     var instructionName = instruction['name'];
 
     var className = ExtendedInstructionClassName(idlName, instructionName);
 
     var argsParameters = instruction['args']
-        .map((arg) => "${AnchorFieldDartType(arg['type'])} ${arg['name']}")
+        .map((arg) => "${AnchorFieldDartType(idlName, arg['type'], types)} ${arg['name']}")
         .join(', ');
 
     var argsValues = instruction['args']
@@ -167,7 +167,7 @@ class $className extends ${AnchorInstructionClassName()} {
     var className = ExtendedInstructionClassName(idlName, instructionName);
 
     var withAllArgParameters = instruction['args']
-        .map((arg) => "${AnchorFieldDartType(arg['type'])} ${arg['name']}");
+        .map((arg) => "${AnchorFieldDartType(idlName, arg['type'], types)} ${arg['name']}");
 
     var withAllAccountParameters = instruction['accounts']
         .map((account) => "String ${account['name']}");

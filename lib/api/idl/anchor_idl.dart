@@ -769,7 +769,75 @@ class AnchorFieldVector<T> extends AnchorField<T> {
       result.add(instance.deserialize(bytes) as T);
     }
 
-    return AnchorFieldVector(index: index, name: name, value: result);
+    return AnchorFieldVector<T>(index: index, name: name, value: result);
+  }
+
+  static AnchorFieldVector<T> factory<T>() {
+    return AnchorFieldVector<T>(index: 0, name: '', value: []);
+  }
+}
+
+class AnchorFieldNullableVector<T> extends AnchorField<T> {
+  final List<T>? value;
+
+  AnchorFieldNullableVector({
+    required int index,
+    required String name,
+    required this.value
+  }) : super(index: index, name: name);
+
+  @override
+  Uint8List serialize() {
+    if (value == null) {
+      return Uint8List(0);
+    }
+
+    Uint8List lengthBytes = toLEByteArray(value!.length, 4);
+    return Uint8List.fromList([
+      ...lengthBytes,
+      ...value!.map((e) {
+        if (e is AnchorField) {
+          return e.serialize();
+        }
+        throw ArgumentError('Unknown type structure');
+      }).toList().fold<Uint8List>(Uint8List(0), (previousValue, element) =>
+          Uint8List.fromList([...previousValue, ...element]))
+    ]);
+  }
+
+  @override
+  AnchorFieldNullableVector<T> deserialize(List<int> bytes) {
+    if (bytes.isEmpty) {
+      throw Exception('Empty byte array provided');
+    }
+
+    if (bytes.first == 0) {
+      return AnchorFieldNullableVector<T>(index: index, name: name, value: null);
+    }
+
+    if (bytes.first != 1) {
+      throw Exception('Invalid bytes');
+    }
+
+    if (bytes.length < 33) {
+      throw Exception('Insufficient bytes for length field');
+    }
+
+    int resultLength = fromLEByteArray(Uint8List.fromList(bytes.sublist(0, 4)));
+    bytes.removeRange(0, 4);
+
+    List<T> result = [];
+    for (int i = 0; i < resultLength; i++) {
+      final instance = serializationRegistry.getInstance(T);
+
+      if (instance == null) {
+        throw ArgumentError('Unknown type structure $T');
+      }
+
+      result.add(instance.deserialize(bytes) as T);
+    }
+
+    return AnchorFieldNullableVector<T>(index: index, name: name, value: result);
   }
 
   static AnchorFieldVector<T> factory<T>() {

@@ -152,7 +152,10 @@ String AnchorFieldDefaultValue(dynamic type) {
   throw ArgumentError('Unknown type structure: $type');
 }
 
-String AnchorFieldDartType(dynamic type) {
+String AnchorFieldDartType(
+    String idlName,
+    dynamic type,
+    List<dynamic> types) {
   if (type is String) {
     switch (type) {
       case 'string':
@@ -169,14 +172,16 @@ String AnchorFieldDartType(dynamic type) {
         return 'Uint8List';
       case 'publicKey':
         return 'Uint8List';
+      default:
+        return ExtendedAnchorFieldClassName(idlName, {'defined' : type}, types);
     }
   } else if (type is Map) {
     if (type['option'] != null) {
-      return '${AnchorFieldDartType(type['option'])}?';
+      return '${AnchorFieldDartType(idlName, type['option'], types)}?';
     } else if (type['vec'] != null) {
-      return 'List<${AnchorFieldDartType(type['vec'])}>';
+      return 'List<${AnchorFieldDartType(idlName, type['vec'], types)}>';
     } else if (type['defined'] != null) {
-      return AnchorFieldDartType(type['defined']);
+      return AnchorFieldDartType(idlName, type['defined'], types);
     }
   }
 
