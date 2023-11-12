@@ -1,0 +1,231 @@
+{
+  "version": "0.1.0",
+  "name": "sol_raider",
+  "instructions": [
+    {
+      "name": "createMap",
+      "accounts": [
+        {
+          "name": "mapAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "owner",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "size",
+          "type": "u32"
+        }
+      ]
+    },
+    {
+      "name": "updateMap",
+      "accounts": [
+        {
+          "name": "mapAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "rowAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "owner",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "name",
+          "type": {
+            "option": "string"
+          }
+        },
+        {
+          "name": "rowIndex",
+          "type": "u32"
+        },
+        {
+          "name": "tileUpdates",
+          "type": {
+            "option": {
+              "vec": {
+                "defined": "Tile"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Map",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "owner",
+            "type": "publicKey"
+          },
+          {
+            "name": "size",
+            "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MapRow",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "row",
+            "type": "u32"
+          },
+          {
+            "name": "state",
+            "type": {
+              "vec": {
+                "defined": "Tile"
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "types": [
+    {
+      "name": "Tile",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "row",
+            "type": "u32"
+          },
+          {
+            "name": "col",
+            "type": "u32"
+          },
+          {
+            "name": "class",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Object",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "class",
+            "type": "u32"
+          },
+          {
+            "name": "name",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TileClass",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "None"
+          },
+          {
+            "name": "Tundra"
+          },
+          {
+            "name": "Rainforest"
+          },
+          {
+            "name": "Desert"
+          },
+          {
+            "name": "Taiga"
+          },
+          {
+            "name": "Grassland"
+          },
+          {
+            "name": "Mountain"
+          },
+          {
+            "name": "Wetland"
+          },
+          {
+            "name": "Savannah"
+          },
+          {
+            "name": "Chaparral"
+          },
+          {
+            "name": "CoralReef"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ObjectClass",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Infantry"
+          },
+          {
+            "name": "Structure"
+          },
+          {
+            "name": "Trap"
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "StateMismatch",
+      "msg": "Current state does not match on-chain state"
+    }
+  ],
+  "metadata": {
+    "address": "8WdhLFkpr5sudFiCP1WknJvxVRagsUV6ohmKXuNBMZwG"
+  }
+}

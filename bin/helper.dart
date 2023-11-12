@@ -72,6 +72,8 @@ String ExtendedAnchorFieldClassName(
         return '${AnchorFieldClassName()}U16';
       case 'u8':
         return '${AnchorFieldClassName()}U8';
+      case 'i64':
+        return '${AnchorFieldClassName()}I64';
       case 'bytes':
         return '${AnchorFieldClassName()}Bytes';
       case 'publicKey':
@@ -85,14 +87,33 @@ String ExtendedAnchorFieldClassName(
           return "${type}${toPascalCase(custom['type']['kind'])}";
         }
     }
-  } else if (type is Map) {
+  }
+  else if (type is Map) {
     if (type['option'] != null) {
       return ExtendedAnchorFieldClassName(idlName, type['option'], types)
           .replaceAll("AnchorField", "AnchorFieldNullable");
-    } else if (type['vec'] != null) {
+    }
+    else if (type['vec'] != null) {
       return "AnchorFieldVector<${ExtendedAnchorFieldClassName(idlName, type['vec'], types)}>";
-    } else if (type['defined'] != null) {
-      return "${toPascalCase(idlName)}${ExtendedAnchorFieldClassName(idlName, type['defined'], types)}";
+    }
+    else if (type['array'] != null) {
+      return "AnchorFieldVector<${ExtendedAnchorFieldClassName(idlName, type['array'][0], types)}>";
+    }
+    else if (type['defined'] != null) {
+      var custom = types.firstWhere((e) => e['name'] == type['defined']);
+
+      if (custom == null) {
+        throw ArgumentError('Unknown type structure: $type');
+      }
+
+      if (custom['type']['kind'] == "struct") {
+        return "AnchorFieldStruct<${toPascalCase(idlName)}${ExtendedAnchorFieldClassName(idlName, type['defined'], types)}>";
+      }
+      else if (custom['type']['kind'] == "enum") {
+        return "AnchorFieldEnum<${toPascalCase(idlName)}${ExtendedAnchorFieldClassName(idlName, type['defined'], types)}>";
+      }
+
+      throw ArgumentError('Unknown type structure: $type');
     }
   }
 
@@ -119,7 +140,10 @@ String ExtendedErrorClassName(String prefix, String errorName) {
   return "${toPascalCase(prefix)}${toPascalCase(errorName)}Error";
 }
 
-String AnchorFieldDefaultValue(dynamic type) {
+String AnchorFieldDefaultValue(
+    String idlName,
+    dynamic type,
+    List<dynamic> types) {
   if (type is String) {
     switch (type) {
       case 'string':
@@ -132,6 +156,8 @@ String AnchorFieldDefaultValue(dynamic type) {
         return '0';
       case 'u8':
         return '0';
+      case 'i64':
+        return '0';
       case 'bytes':
         return 'Uint8List(0)';
       case 'publicKey':
@@ -139,13 +165,32 @@ String AnchorFieldDefaultValue(dynamic type) {
       default:
         return 'null';
     }
-  } else if (type is Map) {
+  }
+  else if (type is Map) {
     if (type['option'] != null) {
       return 'null';
-    } else if (type['vec'] != null) {
+    }
+    else if (type['vec'] != null) {
       return '[]';
-    } else if (type['defined'] != null) {
-      return AnchorFieldDefaultValue(type['defined']);
+    }
+    else if (type['array'] != null) {
+      return "[]";
+    }
+    else if (type['defined'] != null) {
+      var custom = types.firstWhere((e) => e['name'] == type['defined']);
+
+      if (custom == null) {
+        throw ArgumentError('Unknown type structure: $type');
+      }
+
+      if (custom['type']['kind'] == "struct") {
+        return "${toPascalCase(idlName)}${ExtendedAnchorFieldClassName(idlName, type['defined'], types)}.factory()";
+      }
+      else if (custom['type']['kind'] == "enum") {
+        return "${toPascalCase(idlName)}${ExtendedAnchorFieldClassName(idlName, type['defined'], types)}.values.first";
+      }
+
+      throw ArgumentError('Unknown type structure: $type');
     }
   }
 
@@ -168,19 +213,27 @@ String AnchorFieldDartType(
         return 'int';
       case 'u8':
         return 'int';
+      case 'i64':
+        return 'int';
       case 'bytes':
         return 'Uint8List';
       case 'publicKey':
         return 'Uint8List';
       default:
-        return ExtendedAnchorFieldClassName(idlName, {'defined' : type}, types);
+        return "${toPascalCase(idlName)}${ExtendedAnchorFieldClassName(idlName, type, types)}";
     }
-  } else if (type is Map) {
+  }
+  else if (type is Map) {
     if (type['option'] != null) {
       return '${AnchorFieldDartType(idlName, type['option'], types)}?';
-    } else if (type['vec'] != null) {
+    }
+    else if (type['vec'] != null) {
       return 'List<${AnchorFieldDartType(idlName, type['vec'], types)}>';
-    } else if (type['defined'] != null) {
+    }
+    else if (type['array'] != null) {
+      return 'List<${AnchorFieldDartType(idlName, type['array'][0], types)}>';
+    }
+    else if (type['defined'] != null) {
       return AnchorFieldDartType(idlName, type['defined'], types);
     }
   }

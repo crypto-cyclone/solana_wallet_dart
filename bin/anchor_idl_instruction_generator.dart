@@ -118,15 +118,27 @@ class $className extends ${AnchorInstructionClassName()} {
         .map((arg) => arg['name'])
         .join(', ');
 
+    if (argsValues.toString().trim().isNotEmpty) {
+      argsValues += ',';
+    } else {
+      argsValues = "";
+    }
+
     var accountValues = instruction['accounts']
         .map((account) => "${toCamelCase(account['name'])}Account.address")
         .join(', ');
 
+    if (accountValues.toString().trim().isNotEmpty) {
+      accountValues += ',';
+    } else {
+      accountValues = "";
+    }
+
     return '''
   $className withArgs($argsParameters) {
       return $className._withAll(
-        $argsValues,
-        $accountValues,
+        $argsValues
+        $accountValues
         true,
         accountsSet
       );
@@ -146,15 +158,27 @@ class $className extends ${AnchorInstructionClassName()} {
         .map((arg) => "${toCamelCase(arg['name'])}Field.value")
         .join(', ');
 
+    if (argsValues.toString().trim().isNotEmpty) {
+      argsValues += ',';
+    } else {
+      argsValues = "";
+    }
+
     var accountValues = instruction['accounts']
         .map((account) => account['name'])
         .join(', ');
 
+    if (accountValues.toString().trim().isNotEmpty) {
+      accountValues += ',';
+    } else {
+      accountValues = "";
+    }
+
     return '''
   $className withAccounts($accountsParameters) {
       return $className._withAll(
-        $argsValues,
-        $accountValues,
+        $argsValues
+        $accountValues
         argsSet,
         true
       );
@@ -241,7 +265,7 @@ class $className extends ${AnchorInstructionClassName()} {
   }
 
   String _generateArgumentFieldDefaultInitialization(String idlName, Map<String, dynamic> arg, int index, List<dynamic> types) {
-    return "${toCamelCase(arg['name'])}Field = ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}(name: '${arg['name']}', value: ${AnchorFieldDefaultValue(arg['type'])}, index: $index)";
+    return "${toCamelCase(arg['name'])}Field = ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}(name: '${arg['name']}', value: ${AnchorFieldDefaultValue(idlName, arg['type'], types)}, index: $index)";
   }
 
   String _generateArgumentFieldInitialization(String idlName, Map<String, dynamic> arg, int index, List<dynamic> types) {
@@ -261,7 +285,7 @@ class $className extends ${AnchorInstructionClassName()} {
   }
 
   String _generateArgumentFieldMapParameterDefaultInitialization(String idlName, Map<String, dynamic> arg, int index, List<dynamic> types) {
-    return "'${toCamelCase(arg['name'])}': ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}(name: '${arg['name']}', value: ${AnchorFieldDefaultValue(arg['type'])}, index: $index)";
+    return "'${toCamelCase(arg['name'])}': ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}(name: '${arg['name']}', value: ${AnchorFieldDefaultValue(idlName, arg['type'], types)}, index: $index)";
   }
 
   String _generateAccountFieldMapParameterDefaultInitialization(Map<String, dynamic> account, int index) {

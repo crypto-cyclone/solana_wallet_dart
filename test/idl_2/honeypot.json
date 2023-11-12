@@ -1,0 +1,514 @@
+{
+  "version": "0.1.0",
+  "name": "honeypot",
+  "instructions": [
+    {
+      "name": "login",
+      "accounts": [
+        {
+          "name": "playerAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "gameAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "player",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "recentSlotHashes",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "ping",
+      "accounts": [
+        {
+          "name": "playerAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "gameAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "player",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "engage",
+      "accounts": [
+        {
+          "name": "challengerAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "defenderAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "gameAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "engageAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "player",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "challenger",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            ": CHECK"
+          ]
+        },
+        {
+          "name": "defender",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            ": CHECK"
+          ]
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "play",
+      "accounts": [
+        {
+          "name": "playerAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "opponentAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "gameAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "engageAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "player",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "opponent",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            ": CHECK"
+          ]
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "sealedMove",
+          "type": {
+            "defined": "SealedMove"
+          }
+        }
+      ]
+    },
+    {
+      "name": "reveal",
+      "accounts": [
+        {
+          "name": "playerAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "opponentAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "gameAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "engageAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "player",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "opponent",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            ": CHECK"
+          ]
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "revealedMove",
+          "type": {
+            "defined": "RevealedMove"
+          }
+        }
+      ]
+    },
+    {
+      "name": "drain",
+      "accounts": [
+        {
+          "name": "playerAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "gameAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "player",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Player",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "gameId",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "lamports",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "lastSeen",
+            "type": "i64"
+          },
+          {
+            "name": "state",
+            "type": {
+              "defined": "PlayerState"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Game",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "id",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "state",
+            "type": {
+              "defined": "GameState"
+            }
+          },
+          {
+            "name": "playerCount",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Engage",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "challenger",
+            "type": "publicKey"
+          },
+          {
+            "name": "defender",
+            "type": "publicKey"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "challengerSealedMove",
+            "type": {
+              "defined": "SealedMove"
+            }
+          },
+          {
+            "name": "defenderSealedMove",
+            "type": {
+              "defined": "SealedMove"
+            }
+          },
+          {
+            "name": "challengerMove",
+            "type": {
+              "defined": "MoveType"
+            }
+          },
+          {
+            "name": "defenderMove",
+            "type": {
+              "defined": "MoveType"
+            }
+          },
+          {
+            "name": "result",
+            "type": {
+              "defined": "EngageResult"
+            }
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    }
+  ],
+  "types": [
+    {
+      "name": "SealedMove",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "hashedMove",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "RevealedMove",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "play",
+            "type": {
+              "defined": "MoveType"
+            }
+          },
+          {
+            "name": "nonce",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EngageResult",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "None"
+          },
+          {
+            "name": "Draw"
+          },
+          {
+            "name": "Challenger"
+          },
+          {
+            "name": "Defender"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PlayerState",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Idle"
+          },
+          {
+            "name": "Engaged"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MoveType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "None"
+          },
+          {
+            "name": "SmartContract"
+          },
+          {
+            "name": "Token"
+          },
+          {
+            "name": "Hack"
+          },
+          {
+            "name": "Oracle"
+          },
+          {
+            "name": "Audit"
+          }
+        ]
+      }
+    },
+    {
+      "name": "GameState",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "New"
+          },
+          {
+            "name": "Started"
+          },
+          {
+            "name": "Ended"
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "MaxPlayersReached",
+      "msg": "Maximum number of Players Reached"
+    },
+    {
+      "code": 6001,
+      "name": "InvalidGame",
+      "msg": "Game ID is not valid"
+    },
+    {
+      "code": 6002,
+      "name": "PlayerOffline",
+      "msg": "Player is offline"
+    },
+    {
+      "code": 6003,
+      "name": "PlayerEngaged",
+      "msg": "Player is engaged"
+    },
+    {
+      "code": 6004,
+      "name": "InvalidPlayerState",
+      "msg": "Invalid Player state"
+    },
+    {
+      "code": 6005,
+      "name": "InvalidPlayer",
+      "msg": "Invalid Player"
+    },
+    {
+      "code": 6006,
+      "name": "MissingCommitment",
+      "msg": "One or more player moves have not been committed"
+    },
+    {
+      "code": 6007,
+      "name": "IllegalReveal",
+      "msg": "Reveal did not match the commitment"
+    }
+  ],
+  "metadata": {
+    "address": "D3Fmzy6k3JnHt6rxxrExxW9MnjdSCBF8A7PfFnyvxZY6"
+  }
+}

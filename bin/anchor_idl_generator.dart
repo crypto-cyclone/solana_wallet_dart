@@ -143,11 +143,23 @@ $HalfTab}
       var typeT = className.replaceAll('>', '');
       typeT = typeT.split('<').last;
       return "serializationRegistry.register<AnchorFieldVector<$typeT>>(() => AnchorFieldVector.factory<$typeT>());";
-    } else if (className.contains("AnchorFieldNullableVector")) {
+    }
+    else if (className.contains("AnchorFieldNullableVector")) {
       var typeT = className.replaceAll('>', '');
       typeT = typeT.split('<').last;
       return "serializationRegistry.register<AnchorFieldNullableVector<$typeT>>(() => AnchorFieldNullableVector.factory<$typeT>());";
-    } else {
+    }
+    else if (className.contains("AnchorFieldStruct")) {
+      var typeT = className.replaceAll('>', '');
+      typeT = typeT.split('<').last;
+      return "serializationRegistry.register<AnchorFieldStruct<$typeT>>(() => AnchorFieldStruct.factory<$typeT>());";
+    }
+    else if (className.contains("AnchorFieldEnum")) {
+      var typeT = className.replaceAll('>', '');
+      typeT = typeT.split('<').last;
+      return "serializationRegistry.register<AnchorFieldEnum<$typeT>>(() => AnchorFieldEnum.factory<$typeT>());";
+    }
+    else {
       return "serializationRegistry.register<$className>(() => $className.factory());";
     }
   }
