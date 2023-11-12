@@ -19,7 +19,7 @@ dependencies:
       path: cryptography
   hex: any
   fixnum: ^1.1.0
-  http: ^0.13.5
+  http: ^1.0.0
   logging: ^1.2.0
   path: ^1.8.0
 
