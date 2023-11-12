@@ -45,6 +45,15 @@ class SolanaKeyPair {
     );
   }
 
+  static Future<SolanaKeyPair> fromSecretKey(List<int> secretKey) async {
+    Ed25519 _ed25519 = Ed25519();
+    var keyPair = await _ed25519.newKeyPairFromSeed(secretKey);
+    return SolanaKeyPair(
+      Uint8List.fromList((await keyPair.extractPublicKey()).bytes),
+      Uint8List.fromList(await keyPair.extractPrivateKeyBytes()),
+    );
+  }
+
   Future<SimpleKeyPair> toKeyPair() async {
     return _ed25519.newKeyPairFromSeed(privateKey.toList());
   }
