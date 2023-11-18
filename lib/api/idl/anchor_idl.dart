@@ -65,25 +65,60 @@ class AnchorInstruction {
   }
 
   Transaction _toTransactionUnsafe(String programId, String blockhash) {
-    var accountList = accounts.values.toList();
-    accountList.sort(compareAccounts);
+    var accountsList = accounts.values.toList();
+
+    final distinctAccountsList = <AnchorInstructionAccount>[];
+    final seenFields = <String>{};
+
+    for (var obj in accountsList) {
+      if (!seenFields.contains(obj.address)) {
+        distinctAccountsList.add(obj);
+        seenFields.add(obj.address);
+      } else {
+        var existingIndex = distinctAccountsList.indexWhere((element) =>
+          element.address == obj.address);
+
+        var existing = distinctAccountsList[existingIndex];
+
+        existing = existing.withMut(
+            existing.isMut || obj.isMut,
+            existing.isSigner || obj.isSigner);
+
+        distinctAccountsList[existingIndex] = existing;
+      }
+    }
+
+    var programAccount = AnchorInstructionAccount(
+        index: distinctAccountsList.length,
+        name: name,
+        isMut: false,
+        isSigner: false,
+        address: programId
+    );
+
+    var sortedAccountsList = [...distinctAccountsList, programAccount];
+    sortedAccountsList.sort(compareAccounts);
+
+    var programIdIndex = sortedAccountsList.indexWhere((e) => e.address == programId);
+    programAccount = programAccount.withIndex(programIdIndex);
+    sortedAccountsList[programIdIndex] = programAccount;
 
     Transaction transaction = Transaction(
         message: Message(
             header: Header(
-                noSigs: accountList.where((element) => element.isSigner).length,
-                noSignedReadOnlyAccounts: accountList.where((element) => element.isSigner && !element.isMut).length,
-                noUnsignedReadOnlyAccounts: accountList.where((element) => !element.isSigner && !element.isMut).length + 1
+                noSigs: distinctAccountsList.where((element) => element.isSigner).length,
+                noSignedReadOnlyAccounts: distinctAccountsList.where((element) => element.isSigner && !element.isMut).length,
+                noUnsignedReadOnlyAccounts: distinctAccountsList.where((element) => !element.isSigner && !element.isMut).length + 1
             ),
-            accountAddresses: [
-              ...accountList.map((e) => e.address).toList(),
-              programId
-            ],
+            accountAddresses: sortedAccountsList.map((e) => e.address).toList(),
             blockhash: blockhash,
             instructions: [
               Instruction(
-                  programIdIndex: accountList.length,
-                  accountIndices: Uint8List.fromList(accountList.map((e) => e.index).toList()),
+                  programIdIndex: programIdIndex,
+                  accountIndices: Uint8List.fromList(
+                      accountsList
+                          .map((e) => sortedAccountsList
+                          .indexWhere((element) => element.address == e.address)).toList()),
                   data: AnchorInstructionData(
                       discriminator: _anchorEncoder.encodeDiscriminator("global", toSnakeCase(name)),
                       args: args.values.toList()
@@ -111,6 +146,24 @@ class AnchorInstructionAccount {
     required this.isSigner,
     required this.address
   });
+
+  AnchorInstructionAccount withIndex(int index) {
+    return AnchorInstructionAccount(
+        index : index,
+        name: name,
+        isMut: isMut,
+        isSigner: isSigner,
+        address: address);
+  }
+
+  AnchorInstructionAccount withMut(bool isMut, bool isSigner) {
+    return AnchorInstructionAccount(
+        index : index,
+        name: name,
+        isMut: isMut,
+        isSigner: isSigner,
+        address: address);
+  }
 }
 
 class AnchorAccount extends AnchorSerializable {
