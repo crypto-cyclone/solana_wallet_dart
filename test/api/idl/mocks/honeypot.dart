@@ -34,7 +34,7 @@ class HoneypotAnchorIDL extends AnchorIDL {
   void initialize() {
     serializationRegistry.register<AnchorFieldStruct<HoneypotSealedMoveStruct>>(() => AnchorFieldStruct.factory<HoneypotSealedMoveStruct>());
     serializationRegistry.register<AnchorFieldStruct<HoneypotRevealedMoveStruct>>(() => AnchorFieldStruct.factory<HoneypotRevealedMoveStruct>());
-    serializationRegistry.register<AnchorFieldVector<AnchorFieldU8>>(() => AnchorFieldVector.factory<AnchorFieldU8>());
+    serializationRegistry.register<AnchorFieldArray<AnchorFieldU8>>(() => AnchorFieldArray.factory<AnchorFieldU8>());
     serializationRegistry.register<AnchorFieldU64>(() => AnchorFieldU64.factory());
     serializationRegistry.register<AnchorFieldU8>(() => AnchorFieldU8.factory());
     serializationRegistry.register<AnchorFieldI64>(() => AnchorFieldI64.factory());
@@ -255,7 +255,7 @@ class HoneypotPlayInstruction extends AnchorInstruction {
   final AnchorInstructionAccount systemProgramAccount;
 
   HoneypotPlayInstruction()
-      : sealedMoveField = AnchorFieldStruct<HoneypotSealedMoveStruct>(name: 'sealedMove', value: HoneypotSealedMoveStruct.factory(), index: 0),
+      : sealedMoveField = AnchorFieldStruct<HoneypotSealedMoveStruct>(value: HoneypotSealedMoveStruct.factory()),
         playerAccountAccount = AnchorInstructionAccount(name: 'playerAccount', isMut: true, isSigner: false, address: '', index: 0),
         opponentAccountAccount = AnchorInstructionAccount(name: 'opponentAccount', isMut: true, isSigner: false, address: '', index: 1),
         gameAccountAccount = AnchorInstructionAccount(name: 'gameAccount', isMut: true, isSigner: false, address: '', index: 2),
@@ -266,7 +266,7 @@ class HoneypotPlayInstruction extends AnchorInstruction {
         super(
           name: 'play',
           args: {
-            'sealedMove': AnchorFieldStruct<HoneypotSealedMoveStruct>(name: 'sealedMove', value: HoneypotSealedMoveStruct.factory(), index: 0)},
+            'sealedMove': AnchorFieldStruct<HoneypotSealedMoveStruct>(value: HoneypotSealedMoveStruct.factory())},
           accounts: {
             'playerAccount': AnchorInstructionAccount(name: 'playerAccount', isMut: true, isSigner: false, address: '', index: 0),
             'opponentAccount': AnchorInstructionAccount(name: 'opponentAccount', isMut: true, isSigner: false, address: '', index: 1),
@@ -295,7 +295,7 @@ class HoneypotPlayInstruction extends AnchorInstruction {
   }
 
   HoneypotPlayInstruction._withAll(HoneypotSealedMoveStruct sealedMove, String playerAccount, String opponentAccount, String gameAccount, String engageAccount, String player, String opponent, String systemProgram, bool argsSet, bool accountsSet)
-      : sealedMoveField = AnchorFieldStruct<HoneypotSealedMoveStruct>(name: 'sealedMove', value: sealedMove, index: 0),
+      : sealedMoveField = AnchorFieldStruct<HoneypotSealedMoveStruct>(value: sealedMove),
         playerAccountAccount = AnchorInstructionAccount(name: 'playerAccount', isMut: true, isSigner: false, address: playerAccount, index: 0),
         opponentAccountAccount = AnchorInstructionAccount(name: 'opponentAccount', isMut: true, isSigner: false, address: opponentAccount, index: 1),
         gameAccountAccount = AnchorInstructionAccount(name: 'gameAccount', isMut: true, isSigner: false, address: gameAccount, index: 2),
@@ -306,7 +306,7 @@ class HoneypotPlayInstruction extends AnchorInstruction {
         super(
           name: 'play',
           args: {
-            'sealedMove': AnchorFieldStruct<HoneypotSealedMoveStruct>(name: 'sealedMove', value: sealedMove, index: 0)},
+            'sealedMove': AnchorFieldStruct<HoneypotSealedMoveStruct>(value: sealedMove)},
           accounts: {
             'playerAccount': AnchorInstructionAccount(name: 'playerAccount', isMut: true, isSigner: false, address: playerAccount, index: 0),
             'opponentAccount': AnchorInstructionAccount(name: 'opponentAccount', isMut: true, isSigner: false, address: opponentAccount, index: 1),
@@ -331,7 +331,7 @@ class HoneypotRevealInstruction extends AnchorInstruction {
   final AnchorInstructionAccount systemProgramAccount;
 
   HoneypotRevealInstruction()
-      : revealedMoveField = AnchorFieldStruct<HoneypotRevealedMoveStruct>(name: 'revealedMove', value: HoneypotRevealedMoveStruct.factory(), index: 0),
+      : revealedMoveField = AnchorFieldStruct<HoneypotRevealedMoveStruct>(value: HoneypotRevealedMoveStruct.factory()),
         playerAccountAccount = AnchorInstructionAccount(name: 'playerAccount', isMut: true, isSigner: false, address: '', index: 0),
         opponentAccountAccount = AnchorInstructionAccount(name: 'opponentAccount', isMut: true, isSigner: false, address: '', index: 1),
         gameAccountAccount = AnchorInstructionAccount(name: 'gameAccount', isMut: true, isSigner: false, address: '', index: 2),
@@ -342,7 +342,7 @@ class HoneypotRevealInstruction extends AnchorInstruction {
         super(
           name: 'reveal',
           args: {
-            'revealedMove': AnchorFieldStruct<HoneypotRevealedMoveStruct>(name: 'revealedMove', value: HoneypotRevealedMoveStruct.factory(), index: 0)},
+            'revealedMove': AnchorFieldStruct<HoneypotRevealedMoveStruct>(value: HoneypotRevealedMoveStruct.factory())},
           accounts: {
             'playerAccount': AnchorInstructionAccount(name: 'playerAccount', isMut: true, isSigner: false, address: '', index: 0),
             'opponentAccount': AnchorInstructionAccount(name: 'opponentAccount', isMut: true, isSigner: false, address: '', index: 1),
@@ -371,7 +371,7 @@ class HoneypotRevealInstruction extends AnchorInstruction {
   }
 
   HoneypotRevealInstruction._withAll(HoneypotRevealedMoveStruct revealedMove, String playerAccount, String opponentAccount, String gameAccount, String engageAccount, String player, String opponent, String systemProgram, bool argsSet, bool accountsSet)
-      : revealedMoveField = AnchorFieldStruct<HoneypotRevealedMoveStruct>(name: 'revealedMove', value: revealedMove, index: 0),
+      : revealedMoveField = AnchorFieldStruct<HoneypotRevealedMoveStruct>(value: revealedMove),
         playerAccountAccount = AnchorInstructionAccount(name: 'playerAccount', isMut: true, isSigner: false, address: playerAccount, index: 0),
         opponentAccountAccount = AnchorInstructionAccount(name: 'opponentAccount', isMut: true, isSigner: false, address: opponentAccount, index: 1),
         gameAccountAccount = AnchorInstructionAccount(name: 'gameAccount', isMut: true, isSigner: false, address: gameAccount, index: 2),
@@ -382,7 +382,7 @@ class HoneypotRevealInstruction extends AnchorInstruction {
         super(
           name: 'reveal',
           args: {
-            'revealedMove': AnchorFieldStruct<HoneypotRevealedMoveStruct>(name: 'revealedMove', value: revealedMove, index: 0)},
+            'revealedMove': AnchorFieldStruct<HoneypotRevealedMoveStruct>(value: revealedMove)},
           accounts: {
             'playerAccount': AnchorInstructionAccount(name: 'playerAccount', isMut: true, isSigner: false, address: playerAccount, index: 0),
             'opponentAccount': AnchorInstructionAccount(name: 'opponentAccount', isMut: true, isSigner: false, address: opponentAccount, index: 1),
@@ -450,26 +450,26 @@ class HoneypotDrainInstruction extends AnchorInstruction {
 }
 
 class HoneypotPlayerAccount extends AnchorAccount {
-  final AnchorFieldVector<AnchorFieldU8> gameIdField;
+  final AnchorFieldArray<AnchorFieldU8> gameIdField;
   final AnchorFieldU64 lamportsField;
   final AnchorFieldU8 bumpField;
   final AnchorFieldI64 lastSeenField;
   final AnchorFieldEnum<HoneypotPlayerStateEnum> stateField;
 
   HoneypotPlayerAccount()
-      : gameIdField = AnchorFieldVector<AnchorFieldU8>(name: 'gameId', value: [], index: 0),
-        lamportsField = AnchorFieldU64(name: 'lamports', value: 0, index: 1),
-        bumpField = AnchorFieldU8(name: 'bump', value: 0, index: 2),
-        lastSeenField = AnchorFieldI64(name: 'lastSeen', value: 0, index: 3),
-        stateField = AnchorFieldEnum<HoneypotPlayerStateEnum>(name: 'state', value: HoneypotPlayerStateEnum.values.first, index: 4),
+      : gameIdField = AnchorFieldArray<AnchorFieldU8>(value: []),
+        lamportsField = AnchorFieldU64(value: 0),
+        bumpField = AnchorFieldU8(value: 0),
+        lastSeenField = AnchorFieldI64(value: 0),
+        stateField = AnchorFieldEnum<HoneypotPlayerStateEnum>(value: HoneypotPlayerStateEnum.values.first),
         super(
           name: 'Player',
           fields: {
-            'gameId': AnchorFieldVector<AnchorFieldU8>(name: 'gameId', value: [], index: 0),
-            'lamports': AnchorFieldU64(name: 'lamports', value: 0, index: 1),
-            'bump': AnchorFieldU8(name: 'bump', value: 0, index: 2),
-            'lastSeen': AnchorFieldI64(name: 'lastSeen', value: 0, index: 3),
-            'state': AnchorFieldEnum<HoneypotPlayerStateEnum>(name: 'state', value: HoneypotPlayerStateEnum.values.first, index: 4)});
+            'gameId': AnchorFieldArray<AnchorFieldU8>(value: []),
+            'lamports': AnchorFieldU64(value: 0),
+            'bump': AnchorFieldU8(value: 0),
+            'lastSeen': AnchorFieldI64(value: 0),
+            'state': AnchorFieldEnum<HoneypotPlayerStateEnum>(value: HoneypotPlayerStateEnum.values.first)});
 
   HoneypotPlayerAccount.withFields({
     required this.gameIdField,
@@ -479,11 +479,11 @@ class HoneypotPlayerAccount extends AnchorAccount {
     required this.stateField}) : super(
       name: 'Player',
       fields: {
-        'gameId': AnchorFieldVector<AnchorFieldU8>(name: 'gameId', value: [], index: 0),
-        'lamports': AnchorFieldU64(name: 'lamports', value: 0, index: 1),
-        'bump': AnchorFieldU8(name: 'bump', value: 0, index: 2),
-        'lastSeen': AnchorFieldI64(name: 'lastSeen', value: 0, index: 3),
-        'state': AnchorFieldEnum<HoneypotPlayerStateEnum>(name: 'state', value: HoneypotPlayerStateEnum.values.first, index: 4)});
+        'gameId': AnchorFieldArray<AnchorFieldU8>(value: []),
+        'lamports': AnchorFieldU64(value: 0),
+        'bump': AnchorFieldU8(value: 0),
+        'lastSeen': AnchorFieldI64(value: 0),
+        'state': AnchorFieldEnum<HoneypotPlayerStateEnum>(value: HoneypotPlayerStateEnum.values.first)});
 
 
   @override
@@ -495,7 +495,7 @@ class HoneypotPlayerAccount extends AnchorAccount {
             MapEntry(element.key, element.value.deserialize(bytes))));
 
     return HoneypotPlayerAccount.withFields(
-        gameIdField: deserialized['gameId'] as AnchorFieldVector<AnchorFieldU8>,
+        gameIdField: deserialized['gameId'] as AnchorFieldArray<AnchorFieldU8>,
         lamportsField: deserialized['lamports'] as AnchorFieldU64,
         bumpField: deserialized['bump'] as AnchorFieldU8,
         lastSeenField: deserialized['lastSeen'] as AnchorFieldI64,
@@ -506,23 +506,23 @@ class HoneypotPlayerAccount extends AnchorAccount {
 }
 
 class HoneypotGameAccount extends AnchorAccount {
-  final AnchorFieldVector<AnchorFieldU8> idField;
+  final AnchorFieldArray<AnchorFieldU8> idField;
   final AnchorFieldEnum<HoneypotGameStateEnum> stateField;
   final AnchorFieldU64 playerCountField;
   final AnchorFieldU8 bumpField;
 
   HoneypotGameAccount()
-      : idField = AnchorFieldVector<AnchorFieldU8>(name: 'id', value: [], index: 0),
-        stateField = AnchorFieldEnum<HoneypotGameStateEnum>(name: 'state', value: HoneypotGameStateEnum.values.first, index: 1),
-        playerCountField = AnchorFieldU64(name: 'playerCount', value: 0, index: 2),
-        bumpField = AnchorFieldU8(name: 'bump', value: 0, index: 3),
+      : idField = AnchorFieldArray<AnchorFieldU8>(value: []),
+        stateField = AnchorFieldEnum<HoneypotGameStateEnum>(value: HoneypotGameStateEnum.values.first),
+        playerCountField = AnchorFieldU64(value: 0),
+        bumpField = AnchorFieldU8(value: 0),
         super(
           name: 'Game',
           fields: {
-            'id': AnchorFieldVector<AnchorFieldU8>(name: 'id', value: [], index: 0),
-            'state': AnchorFieldEnum<HoneypotGameStateEnum>(name: 'state', value: HoneypotGameStateEnum.values.first, index: 1),
-            'playerCount': AnchorFieldU64(name: 'playerCount', value: 0, index: 2),
-            'bump': AnchorFieldU8(name: 'bump', value: 0, index: 3)});
+            'id': AnchorFieldArray<AnchorFieldU8>(value: []),
+            'state': AnchorFieldEnum<HoneypotGameStateEnum>(value: HoneypotGameStateEnum.values.first),
+            'playerCount': AnchorFieldU64(value: 0),
+            'bump': AnchorFieldU8(value: 0)});
 
   HoneypotGameAccount.withFields({
     required this.idField,
@@ -531,10 +531,10 @@ class HoneypotGameAccount extends AnchorAccount {
     required this.bumpField}) : super(
       name: 'Game',
       fields: {
-        'id': AnchorFieldVector<AnchorFieldU8>(name: 'id', value: [], index: 0),
-        'state': AnchorFieldEnum<HoneypotGameStateEnum>(name: 'state', value: HoneypotGameStateEnum.values.first, index: 1),
-        'playerCount': AnchorFieldU64(name: 'playerCount', value: 0, index: 2),
-        'bump': AnchorFieldU8(name: 'bump', value: 0, index: 3)});
+        'id': AnchorFieldArray<AnchorFieldU8>(value: []),
+        'state': AnchorFieldEnum<HoneypotGameStateEnum>(value: HoneypotGameStateEnum.values.first),
+        'playerCount': AnchorFieldU64(value: 0),
+        'bump': AnchorFieldU8(value: 0)});
 
 
   @override
@@ -546,7 +546,7 @@ class HoneypotGameAccount extends AnchorAccount {
             MapEntry(element.key, element.value.deserialize(bytes))));
 
     return HoneypotGameAccount.withFields(
-        idField: deserialized['id'] as AnchorFieldVector<AnchorFieldU8>,
+        idField: deserialized['id'] as AnchorFieldArray<AnchorFieldU8>,
         stateField: deserialized['state'] as AnchorFieldEnum<HoneypotGameStateEnum>,
         playerCountField: deserialized['playerCount'] as AnchorFieldU64,
         bumpField: deserialized['bump'] as AnchorFieldU8
@@ -567,27 +567,27 @@ class HoneypotEngageAccount extends AnchorAccount {
   final AnchorFieldU8 bumpField;
 
   HoneypotEngageAccount()
-      : challengerField = AnchorFieldPublicKey(name: 'challenger', value: Uint8List(0), index: 0),
-        defenderField = AnchorFieldPublicKey(name: 'defender', value: Uint8List(0), index: 1),
-        timestampField = AnchorFieldI64(name: 'timestamp', value: 0, index: 2),
-        challengerSealedMoveField = AnchorFieldStruct<HoneypotSealedMoveStruct>(name: 'challengerSealedMove', value: HoneypotSealedMoveStruct.factory(), index: 3),
-        defenderSealedMoveField = AnchorFieldStruct<HoneypotSealedMoveStruct>(name: 'defenderSealedMove', value: HoneypotSealedMoveStruct.factory(), index: 4),
-        challengerMoveField = AnchorFieldEnum<HoneypotMoveTypeEnum>(name: 'challengerMove', value: HoneypotMoveTypeEnum.values.first, index: 5),
-        defenderMoveField = AnchorFieldEnum<HoneypotMoveTypeEnum>(name: 'defenderMove', value: HoneypotMoveTypeEnum.values.first, index: 6),
-        resultField = AnchorFieldEnum<HoneypotEngageResultEnum>(name: 'result', value: HoneypotEngageResultEnum.values.first, index: 7),
-        bumpField = AnchorFieldU8(name: 'bump', value: 0, index: 8),
+      : challengerField = AnchorFieldPublicKey(value: Uint8List(0)),
+        defenderField = AnchorFieldPublicKey(value: Uint8List(0)),
+        timestampField = AnchorFieldI64(value: 0),
+        challengerSealedMoveField = AnchorFieldStruct<HoneypotSealedMoveStruct>(value: HoneypotSealedMoveStruct.factory()),
+        defenderSealedMoveField = AnchorFieldStruct<HoneypotSealedMoveStruct>(value: HoneypotSealedMoveStruct.factory()),
+        challengerMoveField = AnchorFieldEnum<HoneypotMoveTypeEnum>(value: HoneypotMoveTypeEnum.values.first),
+        defenderMoveField = AnchorFieldEnum<HoneypotMoveTypeEnum>(value: HoneypotMoveTypeEnum.values.first),
+        resultField = AnchorFieldEnum<HoneypotEngageResultEnum>(value: HoneypotEngageResultEnum.values.first),
+        bumpField = AnchorFieldU8(value: 0),
         super(
           name: 'Engage',
           fields: {
-            'challenger': AnchorFieldPublicKey(name: 'challenger', value: Uint8List(0), index: 0),
-            'defender': AnchorFieldPublicKey(name: 'defender', value: Uint8List(0), index: 1),
-            'timestamp': AnchorFieldI64(name: 'timestamp', value: 0, index: 2),
-            'challengerSealedMove': AnchorFieldStruct<HoneypotSealedMoveStruct>(name: 'challengerSealedMove', value: HoneypotSealedMoveStruct.factory(), index: 3),
-            'defenderSealedMove': AnchorFieldStruct<HoneypotSealedMoveStruct>(name: 'defenderSealedMove', value: HoneypotSealedMoveStruct.factory(), index: 4),
-            'challengerMove': AnchorFieldEnum<HoneypotMoveTypeEnum>(name: 'challengerMove', value: HoneypotMoveTypeEnum.values.first, index: 5),
-            'defenderMove': AnchorFieldEnum<HoneypotMoveTypeEnum>(name: 'defenderMove', value: HoneypotMoveTypeEnum.values.first, index: 6),
-            'result': AnchorFieldEnum<HoneypotEngageResultEnum>(name: 'result', value: HoneypotEngageResultEnum.values.first, index: 7),
-            'bump': AnchorFieldU8(name: 'bump', value: 0, index: 8)});
+            'challenger': AnchorFieldPublicKey(value: Uint8List(0)),
+            'defender': AnchorFieldPublicKey(value: Uint8List(0)),
+            'timestamp': AnchorFieldI64(value: 0),
+            'challengerSealedMove': AnchorFieldStruct<HoneypotSealedMoveStruct>(value: HoneypotSealedMoveStruct.factory()),
+            'defenderSealedMove': AnchorFieldStruct<HoneypotSealedMoveStruct>(value: HoneypotSealedMoveStruct.factory()),
+            'challengerMove': AnchorFieldEnum<HoneypotMoveTypeEnum>(value: HoneypotMoveTypeEnum.values.first),
+            'defenderMove': AnchorFieldEnum<HoneypotMoveTypeEnum>(value: HoneypotMoveTypeEnum.values.first),
+            'result': AnchorFieldEnum<HoneypotEngageResultEnum>(value: HoneypotEngageResultEnum.values.first),
+            'bump': AnchorFieldU8(value: 0)});
 
   HoneypotEngageAccount.withFields({
     required this.challengerField,
@@ -601,15 +601,15 @@ class HoneypotEngageAccount extends AnchorAccount {
     required this.bumpField}) : super(
       name: 'Engage',
       fields: {
-        'challenger': AnchorFieldPublicKey(name: 'challenger', value: Uint8List(0), index: 0),
-        'defender': AnchorFieldPublicKey(name: 'defender', value: Uint8List(0), index: 1),
-        'timestamp': AnchorFieldI64(name: 'timestamp', value: 0, index: 2),
-        'challengerSealedMove': AnchorFieldStruct<HoneypotSealedMoveStruct>(name: 'challengerSealedMove', value: HoneypotSealedMoveStruct.factory(), index: 3),
-        'defenderSealedMove': AnchorFieldStruct<HoneypotSealedMoveStruct>(name: 'defenderSealedMove', value: HoneypotSealedMoveStruct.factory(), index: 4),
-        'challengerMove': AnchorFieldEnum<HoneypotMoveTypeEnum>(name: 'challengerMove', value: HoneypotMoveTypeEnum.values.first, index: 5),
-        'defenderMove': AnchorFieldEnum<HoneypotMoveTypeEnum>(name: 'defenderMove', value: HoneypotMoveTypeEnum.values.first, index: 6),
-        'result': AnchorFieldEnum<HoneypotEngageResultEnum>(name: 'result', value: HoneypotEngageResultEnum.values.first, index: 7),
-        'bump': AnchorFieldU8(name: 'bump', value: 0, index: 8)});
+        'challenger': AnchorFieldPublicKey(value: Uint8List(0)),
+        'defender': AnchorFieldPublicKey(value: Uint8List(0)),
+        'timestamp': AnchorFieldI64(value: 0),
+        'challengerSealedMove': AnchorFieldStruct<HoneypotSealedMoveStruct>(value: HoneypotSealedMoveStruct.factory()),
+        'defenderSealedMove': AnchorFieldStruct<HoneypotSealedMoveStruct>(value: HoneypotSealedMoveStruct.factory()),
+        'challengerMove': AnchorFieldEnum<HoneypotMoveTypeEnum>(value: HoneypotMoveTypeEnum.values.first),
+        'defenderMove': AnchorFieldEnum<HoneypotMoveTypeEnum>(value: HoneypotMoveTypeEnum.values.first),
+        'result': AnchorFieldEnum<HoneypotEngageResultEnum>(value: HoneypotEngageResultEnum.values.first),
+        'bump': AnchorFieldU8(value: 0)});
 
 
   @override
@@ -636,29 +636,34 @@ class HoneypotEngageAccount extends AnchorAccount {
 }
 
 class HoneypotSealedMoveStruct extends AnchorStruct {
-  final AnchorFieldVector<AnchorFieldU8> hashedMoveField;
+  final AnchorFieldArray<AnchorFieldU8> hashedMoveField;
 
   HoneypotSealedMoveStruct()
-      : hashedMoveField = AnchorFieldVector<AnchorFieldU8>(name: 'hashedMove', value: [], index: 0),
+      : hashedMoveField = AnchorFieldArray<AnchorFieldU8>(value: []),
         super(
           name: 'SealedMove',
           fields: {
-            'hashedMove': AnchorFieldVector<AnchorFieldU8>(name: 'hashedMove', value: [], index: 0)});
+            'hashedMove': AnchorFieldArray<AnchorFieldU8>(value: [])});
 
 
   HoneypotSealedMoveStruct.withFields({
     required this.hashedMoveField}) : super(
       name: 'SealedMove',
       fields: {
-        'hashedMove': AnchorFieldVector<AnchorFieldU8>(name: 'hashedMove', value: [], index: 0)});
+        'hashedMove': AnchorFieldArray<AnchorFieldU8>(value: hashedMoveField.value)});
 
+  @override
+  List<int> serialize() {
+   return fields.entries.map((element) => element.value.serialize())
+       .reduce((value, element) => [...value, ...element]);
+  }
 
   @override
   HoneypotSealedMoveStruct deserialize(List<int> bytes) {
     var deserialized = Map.fromEntries(
         fields.entries.map((element) => MapEntry(element.key, element.value.deserialize(bytes))));
     return HoneypotSealedMoveStruct.withFields(
-        hashedMoveField: deserialized['hashedMove'] as AnchorFieldVector<AnchorFieldU8>);
+        hashedMoveField: deserialized['hashedMove'] as AnchorFieldArray<AnchorFieldU8>);
   }
 
   static HoneypotSealedMoveStruct factory() {
@@ -671,13 +676,13 @@ class HoneypotRevealedMoveStruct extends AnchorStruct {
   final AnchorFieldString nonceField;
 
   HoneypotRevealedMoveStruct()
-      : playField = AnchorFieldEnum<HoneypotMoveTypeEnum>(name: 'play', value: HoneypotMoveTypeEnum.values.first, index: 0),
-        nonceField = AnchorFieldString(name: 'nonce', value: '', index: 1),
+      : playField = AnchorFieldEnum<HoneypotMoveTypeEnum>(value: HoneypotMoveTypeEnum.values.first),
+        nonceField = AnchorFieldString(value: ''),
         super(
           name: 'RevealedMove',
           fields: {
-            'play': AnchorFieldEnum<HoneypotMoveTypeEnum>(name: 'play', value: HoneypotMoveTypeEnum.values.first, index: 0),
-            'nonce': AnchorFieldString(name: 'nonce', value: '', index: 1)});
+            'play': AnchorFieldEnum<HoneypotMoveTypeEnum>(value: HoneypotMoveTypeEnum.values.first),
+            'nonce': AnchorFieldString(value: '')});
 
 
   HoneypotRevealedMoveStruct.withFields({
@@ -685,8 +690,8 @@ class HoneypotRevealedMoveStruct extends AnchorStruct {
     required this.nonceField}) : super(
       name: 'RevealedMove',
       fields: {
-        'play': AnchorFieldEnum<HoneypotMoveTypeEnum>(name: 'play', value: HoneypotMoveTypeEnum.values.first, index: 0),
-        'nonce': AnchorFieldString(name: 'nonce', value: '', index: 1)});
+        'play': AnchorFieldEnum<HoneypotMoveTypeEnum>(value: playField.value),
+        'nonce': AnchorFieldString(value: nonceField.value)});
 
 
   @override
@@ -696,6 +701,15 @@ class HoneypotRevealedMoveStruct extends AnchorStruct {
     return HoneypotRevealedMoveStruct.withFields(
         playField: deserialized['play'] as AnchorFieldEnum<HoneypotMoveTypeEnum>,
         nonceField: deserialized['nonce'] as AnchorFieldString);
+  }
+
+  @override
+  Uint8List serialize() {
+    return Uint8List.fromList(
+        fields.values
+            .map((element) => (element).serialize())
+            .reduce((value, element) => [...value, ...element])
+    );
   }
 
   static HoneypotRevealedMoveStruct factory() {
@@ -738,7 +752,7 @@ enum HoneypotPlayerStateEnum implements AnchorEnum {
   @override
   AnchorEnum deserialize(List<int> bytes) {
     var index = bytes[0];
-    var values = HoneypotEngageResultEnum.values;
+    var values = HoneypotPlayerStateEnum.values;
 
     if (index < 0 || index >= values.length) {
       throw Exception("Invalid enum index.");
@@ -766,7 +780,7 @@ enum HoneypotMoveTypeEnum implements AnchorEnum {
   @override
   AnchorEnum deserialize(List<int> bytes) {
     var index = bytes[0];
-    var values = HoneypotEngageResultEnum.values;
+    var values = HoneypotMoveTypeEnum.values;
 
     if (index < 0 || index >= values.length) {
       throw Exception("Invalid enum index.");
@@ -791,7 +805,7 @@ enum HoneypotGameStateEnum implements AnchorEnum {
   @override
   AnchorEnum deserialize(List<int> bytes) {
     var index = bytes[0];
-    var values = HoneypotEngageResultEnum.values;
+    var values = HoneypotGameStateEnum.values;
 
     if (index < 0 || index >= values.length) {
       throw Exception("Invalid enum index.");
@@ -853,4 +867,3 @@ class HoneypotIllegalRevealError extends AnchorError {
       : super(code: 6007, name: 'IllegalReveal', msg: 'Reveal did not match the commitment');
 
 }
-

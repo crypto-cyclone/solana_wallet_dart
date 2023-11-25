@@ -144,6 +144,11 @@ $HalfTab}
       typeT = typeT.split('<').last;
       return "serializationRegistry.register<AnchorFieldVector<$typeT>>(() => AnchorFieldVector.factory<$typeT>());";
     }
+    if (className.contains("AnchorFieldArray")) {
+      var typeT = className.replaceAll('>', '');
+      typeT = typeT.split('<').last;
+      return "serializationRegistry.register<AnchorFieldArray<$typeT>>(() => AnchorFieldArray.factory<$typeT>());";
+    }
     else if (className.contains("AnchorFieldNullableVector")) {
       var typeT = className.replaceAll('>', '');
       typeT = typeT.split('<').last;

@@ -97,7 +97,7 @@ String ExtendedAnchorFieldClassName(
       return "AnchorFieldVector<${ExtendedAnchorFieldClassName(idlName, type['vec'], types)}>";
     }
     else if (type['array'] != null) {
-      return "AnchorFieldVector<${ExtendedAnchorFieldClassName(idlName, type['array'][0], types)}>";
+      return "AnchorFieldArray<${ExtendedAnchorFieldClassName(idlName, type['array'][0], types)}>";
     }
     else if (type['defined'] != null) {
       var custom = types.firstWhere((e) => e['name'] == type['defined']);

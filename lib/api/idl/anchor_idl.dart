@@ -249,13 +249,7 @@ class AnchorError {
 }
 
 class AnchorField<T> extends AnchorSerializable {
-  final int index;
-  final String name;
-
-  AnchorField({
-    required this.index,
-    required this.name,
-  });
+  AnchorField();
 
   Uint8List serialize() {
     return Uint8List(0);
@@ -270,10 +264,8 @@ class AnchorFieldString extends AnchorField<String> {
   final String value;
 
   AnchorFieldString({
-    required int index,
-    required String name,
     required this.value
-  }) : super(index: index, name: name);
+  }) : super();
 
   @override
   Uint8List serialize() {
@@ -290,11 +282,11 @@ class AnchorFieldString extends AnchorField<String> {
     int resultLength = fromLEByteArray(Uint8List.fromList(bytes.sublist(0, 4)));
     String result = utf8.decode(bytes.sublist(4, 4 + resultLength));
     bytes.removeRange(0, 4 + resultLength);
-    return AnchorFieldString(index: index, name: name, value: result);
+    return AnchorFieldString(value: result);
   }
 
   static AnchorFieldString factory() {
-    return AnchorFieldString(index: 0, name: '', value: '');
+    return AnchorFieldString(value: '');
   }
 }
 
@@ -302,10 +294,8 @@ class AnchorFieldNullableString extends AnchorField<String?> {
   final String? value;
 
   AnchorFieldNullableString({
-    required int index,
-    required String name,
     required this.value
-  }) : super(index: index, name: name);
+  }) : super();
 
   @override
   Uint8List serialize() {
@@ -329,7 +319,7 @@ class AnchorFieldNullableString extends AnchorField<String?> {
     }
 
     if (bytes.first == 0) {
-      return AnchorFieldNullableString(index: index, name: name, value: null);
+      return AnchorFieldNullableString(value: null);
     }
 
     if (bytes.first != 1) {
@@ -343,11 +333,11 @@ class AnchorFieldNullableString extends AnchorField<String?> {
     int resultLength = fromLEByteArray(Uint8List.fromList(bytes.sublist(1, 5)));
     String result = utf8.decode(bytes.sublist(5, 5 + resultLength));
     bytes.removeRange(0, 5 + resultLength);
-    return AnchorFieldNullableString(index: index, name: name, value: result);
+    return AnchorFieldNullableString(value: result);
   }
 
   static AnchorFieldNullableString factory() {
-    return AnchorFieldNullableString(index: 0, name: '', value: null);
+    return AnchorFieldNullableString(value: null);
   }
 }
 
@@ -355,10 +345,8 @@ class AnchorFieldU64 extends AnchorField<int> {
   final int value;
 
   AnchorFieldU64({
-    required int index,
-    required String name,
     required this.value
-  }) : super(index: index, name: name);
+  }) : super();
 
   @override
   Uint8List serialize() {
@@ -369,11 +357,11 @@ class AnchorFieldU64 extends AnchorField<int> {
   AnchorFieldU64 deserialize(List<int> bytes) {
     int result = fromLEByteArray(Uint8List.fromList(bytes.sublist(0, 8)));
     bytes.removeRange(0, 8);
-    return AnchorFieldU64(index: index, name: name, value: result);
+    return AnchorFieldU64(value: result);
   }
 
   static AnchorFieldU64 factory() {
-    return AnchorFieldU64(index: 0, name: '', value: 0);
+    return AnchorFieldU64(value: 0);
   }
 }
 
@@ -381,10 +369,8 @@ class AnchorFieldNullableU64 extends AnchorField<int?> {
   final int? value;
 
   AnchorFieldNullableU64({
-    required int index,
-    required String name,
     required this.value
-  }) : super(index: index, name: name);
+  }) : super();
 
   @override
   Uint8List serialize() {
@@ -402,7 +388,7 @@ class AnchorFieldNullableU64 extends AnchorField<int?> {
     }
 
     if (bytes.first == 0) {
-      return AnchorFieldNullableU64(index: index, name: name, value: null);
+      return AnchorFieldNullableU64(value: null);
     }
 
     if (bytes.first != 1) {
@@ -415,11 +401,11 @@ class AnchorFieldNullableU64 extends AnchorField<int?> {
 
     int result = fromLEByteArray(Uint8List.fromList(bytes.sublist(1, 9)));
     bytes.removeRange(0, 9);
-    return AnchorFieldNullableU64(index: index, name: name, value: result);
+    return AnchorFieldNullableU64(value: result);
   }
 
   static AnchorFieldNullableU64 factory() {
-    return AnchorFieldNullableU64(index: 0, name: '', value: null);
+    return AnchorFieldNullableU64(value: null);
   }
 }
 
@@ -427,10 +413,8 @@ class AnchorFieldI64 extends AnchorField<int> {
   final int value;
 
   AnchorFieldI64({
-    required int index,
-    required String name,
     required this.value
-  }) : super(index: index, name: name);
+  }) : super();
 
   @override
   Uint8List serialize() {
@@ -441,11 +425,11 @@ class AnchorFieldI64 extends AnchorField<int> {
   AnchorFieldU64 deserialize(List<int> bytes) {
     int result = fromLEByteArray(Uint8List.fromList(bytes.sublist(0, 8)));
     bytes.removeRange(0, 8);
-    return AnchorFieldU64(index: index, name: name, value: result);
+    return AnchorFieldU64(value: result);
   }
 
   static AnchorFieldU64 factory() {
-    return AnchorFieldU64(index: 0, name: '', value: 0);
+    return AnchorFieldU64(value: 0);
   }
 }
 
@@ -456,7 +440,7 @@ class AnchorFieldNullableI64 extends AnchorField<int?> {
     required int index,
     required String name,
     required this.value
-  }) : super(index: index, name: name);
+  }) : super();
 
   @override
   Uint8List serialize() {
@@ -474,7 +458,7 @@ class AnchorFieldNullableI64 extends AnchorField<int?> {
     }
 
     if (bytes.first == 0) {
-      return AnchorFieldNullableU64(index: index, name: name, value: null);
+      return AnchorFieldNullableU64(value: null);
     }
 
     if (bytes.first != 1) {
@@ -487,11 +471,11 @@ class AnchorFieldNullableI64 extends AnchorField<int?> {
 
     int result = fromLEByteArray(Uint8List.fromList(bytes.sublist(1, 9)));
     bytes.removeRange(0, 9);
-    return AnchorFieldNullableU64(index: index, name: name, value: result);
+    return AnchorFieldNullableU64(value: result);
   }
 
   static AnchorFieldNullableU64 factory() {
-    return AnchorFieldNullableU64(index: 0, name: '', value: null);
+    return AnchorFieldNullableU64(value: null);
   }
 }
 
@@ -499,10 +483,8 @@ class AnchorFieldU32 extends AnchorField<int> {
   final int value;
 
   AnchorFieldU32({
-    required int index,
-    required String name,
     required this.value
-  }) : super(index: index, name: name);
+  }) : super();
 
   @override
   Uint8List serialize() {
@@ -513,11 +495,11 @@ class AnchorFieldU32 extends AnchorField<int> {
   AnchorFieldU32 deserialize(List<int> bytes) {
     int result = fromLEByteArray(Uint8List.fromList(bytes.sublist(0, 4)));
     bytes.removeRange(0, 4);
-    return AnchorFieldU32(index: index, name: name, value: result);
+    return AnchorFieldU32(value: result);
   }
 
   static AnchorFieldU32 factory() {
-    return AnchorFieldU32(index: 0, name: '', value: 0);
+    return AnchorFieldU32(value: 0);
   }
 }
 
@@ -525,10 +507,8 @@ class AnchorFieldNullableU32 extends AnchorField<int?> {
   final int? value;
 
   AnchorFieldNullableU32({
-    required int index,
-    required String name,
     required this.value
-  }) : super(index: index, name: name);
+  }) : super();
 
   @override
   Uint8List serialize() {
@@ -546,7 +526,7 @@ class AnchorFieldNullableU32 extends AnchorField<int?> {
     }
 
     if (bytes.first == 0) {
-      return AnchorFieldNullableU32(index: index, name: name, value: null);
+      return AnchorFieldNullableU32(value: null);
     }
 
     if (bytes.first != 1) {
@@ -559,11 +539,11 @@ class AnchorFieldNullableU32 extends AnchorField<int?> {
 
     int result = fromLEByteArray(Uint8List.fromList(bytes.sublist(1, 5)));
     bytes.removeRange(0, 5);
-    return AnchorFieldNullableU32(index: index, name: name, value: result);
+    return AnchorFieldNullableU32(value: result);
   }
 
   static AnchorFieldNullableU32 factory() {
-    return AnchorFieldNullableU32(index: 0, name: '', value: null);
+    return AnchorFieldNullableU32(value: null);
   }
 }
 
@@ -571,10 +551,8 @@ class AnchorFieldU16 extends AnchorField<int> {
   final int value;
 
   AnchorFieldU16({
-    required int index,
-    required String name,
     required this.value
-  }) : super(index: index, name: name);
+  }) : super();
 
   @override
   Uint8List serialize() {
@@ -585,11 +563,11 @@ class AnchorFieldU16 extends AnchorField<int> {
   AnchorFieldU16 deserialize(List<int> bytes) {
     int result = fromLEByteArray(Uint8List.fromList(bytes.sublist(0, 2)));
     bytes.removeRange(0, 2);
-    return AnchorFieldU16(index: index, name: name, value: result);
+    return AnchorFieldU16(value: result);
   }
 
   static AnchorFieldU16 factory() {
-    return AnchorFieldU16(index: 0, name: '', value: 0);
+    return AnchorFieldU16(value: 0);
   }
 }
 
@@ -597,10 +575,8 @@ class AnchorFieldNullableU16 extends AnchorField<int?> {
   final int? value;
 
   AnchorFieldNullableU16({
-    required int index,
-    required String name,
     required this.value
-  }) : super(index: index, name: name);
+  }) : super();
 
   @override
   Uint8List serialize() {
@@ -618,7 +594,7 @@ class AnchorFieldNullableU16 extends AnchorField<int?> {
     }
 
     if (bytes.first == 0) {
-      return AnchorFieldNullableU16(index: index, name: name, value: null);
+      return AnchorFieldNullableU16(value: null);
     }
 
     if (bytes.first != 1) {
@@ -631,11 +607,11 @@ class AnchorFieldNullableU16 extends AnchorField<int?> {
 
     int result = fromLEByteArray(Uint8List.fromList(bytes.sublist(1, 3)));
     bytes.removeRange(0, 3);
-    return AnchorFieldNullableU16(index: index, name: name, value: result);
+    return AnchorFieldNullableU16(value: result);
   }
 
   static AnchorFieldNullableU16 factory() {
-    return AnchorFieldNullableU16(index: 0, name: '', value: null);
+    return AnchorFieldNullableU16(value: null);
   }
 }
 
@@ -643,10 +619,8 @@ class AnchorFieldU8 extends AnchorField<int> {
   final int value;
 
   AnchorFieldU8({
-    required int index,
-    required String name,
     required this.value
-  }) : super(index: index, name: name);
+  }) : super();
 
   @override
   Uint8List serialize() {
@@ -657,11 +631,11 @@ class AnchorFieldU8 extends AnchorField<int> {
   AnchorFieldU8 deserialize(List<int> bytes) {
     int result = fromLEByteArray(Uint8List.fromList(bytes.sublist(0, 1)));
     bytes.removeRange(0, 1);
-    return AnchorFieldU8(index: index, name: name, value: result);
+    return AnchorFieldU8(value: result);
   }
 
   static AnchorFieldU8 factory() {
-    return AnchorFieldU8(index: 0, name: '', value: 0);
+    return AnchorFieldU8(value: 0);
   }
 }
 
@@ -669,10 +643,8 @@ class AnchorFieldNullableU8 extends AnchorField<int?> {
   final int? value;
 
   AnchorFieldNullableU8({
-    required int index,
-    required String name,
     required this.value
-  }) : super(index: index, name: name);
+  }) : super();
 
   @override
   Uint8List serialize() {
@@ -690,7 +662,7 @@ class AnchorFieldNullableU8 extends AnchorField<int?> {
     }
 
     if (bytes.first == 0) {
-      return AnchorFieldNullableU8(index: index, name: name, value: null);
+      return AnchorFieldNullableU8(value: null);
     }
 
     if (bytes.first != 1) {
@@ -703,11 +675,11 @@ class AnchorFieldNullableU8 extends AnchorField<int?> {
 
     int result = fromLEByteArray(Uint8List.fromList(bytes.sublist(1, 2)));
     bytes.removeRange(0, 2);
-    return AnchorFieldNullableU8(index: index, name: name, value: result);
+    return AnchorFieldNullableU8(value: result);
   }
 
   static AnchorFieldNullableU8 factory() {
-    return AnchorFieldNullableU8(index: 0, name: '', value: null);
+    return AnchorFieldNullableU8(value: null);
   }
 }
 
@@ -715,10 +687,8 @@ class AnchorFieldBytes extends AnchorField<Uint8List> {
   final Uint8List value;
 
   AnchorFieldBytes({
-    required int index,
-    required String name,
     required this.value
-  }) : super(index: index, name: name);
+  }) : super();
 
   @override
   Uint8List serialize() {
@@ -733,11 +703,11 @@ class AnchorFieldBytes extends AnchorField<Uint8List> {
   AnchorFieldBytes deserialize(List<int> bytes) {
     Uint8List result = Uint8List.fromList(bytes.sublist(0, 32));
     bytes.removeRange(0, 32);
-    return AnchorFieldBytes(index: index, name: name, value: result);
+    return AnchorFieldBytes(value: result);
   }
 
   static AnchorFieldBytes factory() {
-    return AnchorFieldBytes(index: 0, name: '', value: Uint8List(0));
+    return AnchorFieldBytes(value: Uint8List(0));
   }
 }
 
@@ -745,10 +715,8 @@ class AnchorFieldNullableBytes extends AnchorField<Uint8List?> {
   final Uint8List? value;
 
   AnchorFieldNullableBytes({
-    required int index,
-    required String name,
     required this.value
-  }) : super(index: index, name: name);
+  }) : super();
 
   @override
   Uint8List serialize() {
@@ -770,7 +738,7 @@ class AnchorFieldNullableBytes extends AnchorField<Uint8List?> {
     }
 
     if (bytes.first == 0) {
-      return AnchorFieldNullableBytes(index: index, name: name, value: null);
+      return AnchorFieldNullableBytes(value: null);
     }
 
     if (bytes.first != 1) {
@@ -783,11 +751,11 @@ class AnchorFieldNullableBytes extends AnchorField<Uint8List?> {
 
     Uint8List result = Uint8List.fromList(bytes.sublist(1, 33));
     bytes.removeRange(0, 33);
-    return AnchorFieldNullableBytes(index: index, name: name, value: result);
+    return AnchorFieldNullableBytes(value: result);
   }
 
   static AnchorFieldNullableBytes factory() {
-    return AnchorFieldNullableBytes(index: 0, name: '', value: null);
+    return AnchorFieldNullableBytes(value: null);
   }
 }
 
@@ -795,10 +763,8 @@ class AnchorFieldPublicKey extends AnchorField<Uint8List> {
   final Uint8List value;
 
   AnchorFieldPublicKey({
-    required int index,
-    required String name,
     required this.value
-  }) : super(index: index, name: name);
+  }) : super();
 
   @override
   Uint8List serialize() {
@@ -813,11 +779,11 @@ class AnchorFieldPublicKey extends AnchorField<Uint8List> {
   AnchorFieldPublicKey deserialize(List<int> bytes) {
     Uint8List result = Uint8List.fromList(bytes.sublist(0, 32));
     bytes.removeRange(0, 32);
-    return AnchorFieldPublicKey(index: index, name: name, value: result);
+    return AnchorFieldPublicKey(value: result);
   }
 
   static AnchorFieldPublicKey factory() {
-    return AnchorFieldPublicKey(index: 0, name: '', value: Uint8List(0));
+    return AnchorFieldPublicKey(value: Uint8List(0));
   }
 }
 
@@ -825,10 +791,8 @@ class AnchorFieldNullablePublicKey extends AnchorField<Uint8List?> {
   final Uint8List? value;
 
   AnchorFieldNullablePublicKey({
-    required int index,
-    required String name,
     required this.value
-  }) : super(index: index, name: name);
+  }) : super();
 
   @override
   Uint8List serialize() {
@@ -850,7 +814,7 @@ class AnchorFieldNullablePublicKey extends AnchorField<Uint8List?> {
     }
 
     if (bytes.first == 0) {
-      return AnchorFieldNullablePublicKey(index: index, name: name, value: null);
+      return AnchorFieldNullablePublicKey(value: null);
     }
 
     if (bytes.first != 1) {
@@ -863,11 +827,11 @@ class AnchorFieldNullablePublicKey extends AnchorField<Uint8List?> {
 
     Uint8List result = Uint8List.fromList(bytes.sublist(1, 33));
     bytes.removeRange(0, 33);
-    return AnchorFieldNullablePublicKey(index: index, name: name, value: result);
+    return AnchorFieldNullablePublicKey(value: result);
   }
 
   static AnchorFieldNullablePublicKey factory() {
-    return AnchorFieldNullablePublicKey(index: 0, name: '', value: null);
+    return AnchorFieldNullablePublicKey(value: null);
   }
 }
 
@@ -875,10 +839,12 @@ class AnchorFieldVector<T extends AnchorSerializable> extends AnchorField<T> {
   final List<T> value;
 
   AnchorFieldVector({
-    required int index,
-    required String name,
     required this.value
-  }) : super(index: index, name: name);
+  }) : super();
+
+  AnchorFieldVector<T> withValue(List<T> value) {
+    return AnchorFieldVector(value: value);
+  }
 
   @override
   Uint8List serialize() {
@@ -908,11 +874,11 @@ class AnchorFieldVector<T extends AnchorSerializable> extends AnchorField<T> {
       result.add(instance.deserialize(bytes) as T);
     }
 
-    return AnchorFieldVector<T>(index: index, name: name, value: result);
+    return AnchorFieldVector<T>(value: result);
   }
 
-  static AnchorFieldVector<AnchorSerializable> factory<T>() {
-    return AnchorFieldVector<AnchorSerializable>(index: 0, name: '', value: []);
+  static AnchorFieldVector<T> factory<T extends AnchorSerializable>() {
+    return AnchorFieldVector<T>(value: []);
   }
 }
 
@@ -920,10 +886,8 @@ class AnchorFieldNullableVector<T extends AnchorSerializable> extends AnchorFiel
   final List<T>? value;
 
   AnchorFieldNullableVector({
-    required int index,
-    required String name,
     required this.value
-  }) : super(index: index, name: name);
+  }) : super();
 
   @override
   Uint8List serialize() {
@@ -948,7 +912,7 @@ class AnchorFieldNullableVector<T extends AnchorSerializable> extends AnchorFiel
     }
 
     if (bytes.first == 0) {
-      return AnchorFieldNullableVector<T>(index: index, name: name, value: null);
+      return AnchorFieldNullableVector<T>(value: null);
     }
 
     if (bytes.first != 1) {
@@ -973,11 +937,117 @@ class AnchorFieldNullableVector<T extends AnchorSerializable> extends AnchorFiel
       result.add(instance.deserialize(bytes) as T);
     }
 
-    return AnchorFieldNullableVector<T>(index: index, name: name, value: result);
+    return AnchorFieldNullableVector<T>(value: result);
   }
 
   static AnchorFieldVector<AnchorSerializable> factory<T>() {
-    return AnchorFieldVector<AnchorSerializable>(index: 0, name: '', value: []);
+    return AnchorFieldVector<AnchorSerializable>(value: []);
+  }
+}
+
+class AnchorFieldArray<T extends AnchorSerializable> extends AnchorField<T> {
+  final List<T> value;
+
+  AnchorFieldArray({
+    required this.value
+  }) : super();
+
+  AnchorFieldArray<T> withValue(List<T> value) {
+    return AnchorFieldArray(value: value);
+  }
+
+  @override
+  Uint8List serialize() {
+    return Uint8List.fromList([
+      ...value
+          .map((e) => e.serialize())
+          .toList().fold<Uint8List>(Uint8List(0), (previousValue, element) =>
+          Uint8List.fromList([...previousValue, ...element]))
+    ]);
+  }
+
+  @override
+  AnchorFieldArray<T> deserialize(List<int> bytes) {
+    int resultLength = fromLEByteArray(Uint8List.fromList(bytes.sublist(0, 4)));
+    bytes.removeRange(0, 4);
+
+    List<T> result = [];
+    for (int i = 0; i < resultLength; i++) {
+      final instance = serializationRegistry.getInstance(T);
+
+      if (instance == null) {
+        throw ArgumentError('Unknown type structure $T');
+      }
+
+      result.add(instance.deserialize(bytes) as T);
+    }
+
+    return AnchorFieldArray<T>(value: result);
+  }
+
+  static AnchorFieldArray<T> factory<T extends AnchorSerializable>() {
+    return AnchorFieldArray<T>(value: []);
+  }
+}
+
+class AnchorFieldNullableArray<T extends AnchorSerializable> extends AnchorField<T> {
+  final List<T>? value;
+
+  AnchorFieldNullableArray({
+    required this.value
+  }) : super();
+
+  @override
+  Uint8List serialize() {
+    if (value == null) {
+      return Uint8List(0);
+    }
+
+    return Uint8List.fromList([
+      ...value!
+          .map((e) => e.serialize())
+          .toList().fold<Uint8List>(Uint8List(0), (previousValue, element) =>
+          Uint8List.fromList([...previousValue, ...element]))
+    ]);
+  }
+
+  @override
+  AnchorFieldNullableArray<T> deserialize(List<int> bytes) {
+    if (bytes.isEmpty) {
+      throw Exception('Empty byte array provided');
+    }
+
+    if (bytes.first == 0) {
+      return AnchorFieldNullableArray<T>(value: null);
+    }
+
+    if (bytes.first != 1) {
+      throw Exception('Invalid bytes');
+    }
+
+    if (bytes.length < 33) {
+      throw Exception('Insufficient bytes for length field');
+    }
+
+    int resultLength = fromLEByteArray(Uint8List.fromList(bytes.sublist(0, 4)));
+    bytes.removeRange(0, 4);
+
+    List<T> result = [];
+    for (int i = 0; i < resultLength; i++) {
+      final instance = serializationRegistry.getInstance(T);
+
+      if (instance == null) {
+        throw ArgumentError('Unknown type structure $T');
+      }
+
+      result.add(instance.deserialize(bytes) as T);
+    }
+
+    return AnchorFieldNullableArray<T>(value: result);
+  }
+
+  static AnchorFieldNullableArray<AnchorSerializable> factory<T>() {
+    return AnchorFieldNullableArray<AnchorSerializable>(value: []);
   }
 }
 
@@ -985,10 +1055,8 @@ class AnchorFieldStruct<T extends AnchorStruct> extends AnchorField<T> {
   final T value;
 
   AnchorFieldStruct({
-    required int index,
-    required String name,
     required this.value
-  }) : super(index: index, name: name);
+  }) : super();
 
   @override
   Uint8List serialize() {
@@ -1004,12 +1072,12 @@ class AnchorFieldStruct<T extends AnchorStruct> extends AnchorField<T> {
     }
 
     return AnchorFieldStruct(
-        index: index, name: name, value: instance.deserialize(bytes) as T);
+        value: instance.deserialize(bytes) as T);
   }
 
   static AnchorFieldStruct<AnchorStruct> factory<T>() {
     return AnchorFieldStruct<AnchorStruct>(
-        index: 0, name: '', value: AnchorStruct(name: '', fields: {}, ));
+        value: AnchorStruct(name: '', fields: {}, ));
   }
 }
 
@@ -1017,10 +1085,8 @@ class AnchorFieldNullableStruct<T extends AnchorStruct> extends AnchorField<T> {
   final T? value;
 
   AnchorFieldNullableStruct({
-    required int index,
-    required String name,
     required this.value
-  }) : super(index: index, name: name);
+  }) : super();
 
   @override
   Uint8List serialize() {
@@ -1039,13 +1105,12 @@ class AnchorFieldNullableStruct<T extends AnchorStruct> extends AnchorField<T> {
       throw ArgumentError('Unknown type structure $T');
     }
 
-    return AnchorFieldStruct(
-        index: index, name: name, value: instance.deserialize(bytes) as T);
+    return AnchorFieldStruct(value: instance.deserialize(bytes) as T);
   }
 
   static AnchorFieldStruct<AnchorStruct> factory<T>() {
     return AnchorFieldStruct<AnchorStruct>(
-        index: 0, name: '', value: AnchorStruct(name: '', fields: {}, ));
+        value: AnchorStruct(name: '', fields: {}, ));
   }
 }
 
@@ -1053,10 +1118,8 @@ class AnchorFieldEnum<T extends AnchorEnum> extends AnchorField<T> {
   final T value;
 
   AnchorFieldEnum({
-    required int index,
-    required String name,
     required this.value
-  }) : super(index: index, name: name);
+  }) : super();
 
   @override
   Uint8List serialize() {
@@ -1075,13 +1138,12 @@ class AnchorFieldEnum<T extends AnchorEnum> extends AnchorField<T> {
       throw ArgumentError('Unknown type structure $T');
     }
 
-    return AnchorFieldEnum(
-        index: index, name: name, value: instance.deserialize(bytes) as T);
+    return AnchorFieldEnum(value: instance.deserialize(bytes) as T);
   }
 
   static AnchorFieldEnum<AnchorEnum> factory<T>() {
     return AnchorFieldEnum<AnchorEnum>(
-        index: 0, name: '', value: AnchorEnum(value: AnchorEnumDefault.DEFAULT));
+        value: AnchorEnum(value: AnchorEnumDefault.DEFAULT));
   }
 }
 
