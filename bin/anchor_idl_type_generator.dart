@@ -32,6 +32,7 @@ class AnchorIDlTypeGenerator {
     var defaultConstructor = _generateStructDefaultConstructor(idlName, object, types);
     var withFieldsConstructor = _generateWithFieldsConstructor(idlName, object, types);
     var deserializeFunction = _generateDeserializeFunction(idlName, object, types);
+    var serializeFunction = _generateSerializeFunction(idlName, object, types);
     var factoryFunction = _generateFactoryFunction(idlName, object, types);
 
     return '''
@@ -43,6 +44,8 @@ class $className extends ${AnchorStructClassName()} {
   $withFieldsConstructor
   
   $deserializeFunction
+  
+  $serializeFunction
   
   $factoryFunction
 }
@@ -109,7 +112,7 @@ enum $enumName implements AnchorEnum {
       var index = e.key;
       var arg = e.value;
 
-      return _generateArgumentFieldMapParameterInitialization(idlName, arg, index, types);
+      return _generateArgumentFieldMapDefaultParameterInitialization(idlName, arg, index, types);
     })
         .join(',\n$TripleTab');
 
@@ -177,7 +180,19 @@ ${DoubleTab}$constructorDeclarations);
 $HalfTab}''';
   }
 
-  String _generateFactoryFunction(String idlName, object, List<dynamic> types) {
+  String _generateSerializeFunction(String idlName, object, List<dynamic> types) {
+    return '''
+@override
+${HalfTab}Uint8List serialize() {
+${Tab}return Uint8List.fromList(
+${DoubleTab}fields.values
+${DoublePlusHalfTab}.map((element) => element.serialize())
+${DoublePlusHalfTab}.reduce((value, element) => [...value, ...element])
+${Tab});
+$HalfTab}''';
+  }
+
+    String _generateFactoryFunction(String idlName, object, List<dynamic> types) {
     var structName = object['name'];
 
     var className = ExtendedStructClassName(idlName, structName);
@@ -193,14 +208,23 @@ $HalfTab}''';
   }
 
   String _generateStructArgumentFieldDefaultInitialization(String idlName, Map<String, dynamic> arg, int index, List<dynamic> types) {
-    return "${toCamelCase(arg['name'])}Field = ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}(name: '${arg['name']}', value: ${AnchorFieldDefaultValue(idlName, arg['type'], types)}, index: $index)";
+    return "${toCamelCase(arg['name'])}Field = ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}(value: ${AnchorFieldDefaultValue(idlName, arg['type'], types)})";
+  }
+
+  String _generateArgumentFieldMapDefaultParameterInitialization(String idlName, Map<String, dynamic> arg, int index, List<dynamic> types) {
+    return "'${toCamelCase(arg['name'])}': ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}(value: ${AnchorFieldDefaultValue(idlName, arg['type'], types)})";
   }
 
   String _generateArgumentFieldMapParameterInitialization(String idlName, Map<String, dynamic> arg, int index, List<dynamic> types) {
-    return "'${toCamelCase(arg['name'])}': ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}(name: '${arg['name']}', value: ${AnchorFieldDefaultValue(idlName, arg['type'], types)}, index: $index)";
+    return "'${toCamelCase(arg['name'])}': ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}(value: ${toCamelCase(arg['name'])}Field.value)";
   }
 
+
   String _generateDeserializedArgumentFieldMapParameterInitialization(String idlName, Map<String, dynamic> arg, List<dynamic> types) {
+    return "${toCamelCase(arg['name'])}Field: deserialized['${arg['name']}'] as ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}";
+  }
+
+  String _generateSerializedArgumentFieldMapParameterInitialization(String idlName, Map<String, dynamic> arg, List<dynamic> types) {
     return "${toCamelCase(arg['name'])}Field: deserialized['${arg['name']}'] as ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}";
   }
 

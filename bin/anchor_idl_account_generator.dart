@@ -68,7 +68,7 @@ class $className extends ${AnchorAccountClassName()} {
       var index = e.key;
       var arg = e.value;
 
-      return _generateArgumentFieldMapParameterInitialization(idlName, arg, index, types);
+      return _generateArgumentFieldMapDefaultParameterInitialization(idlName, arg, index, types);
     })
         .join(',\n$TripleTab');
 
@@ -154,11 +154,15 @@ class $className extends ${AnchorAccountClassName()} {
     return "${toCamelCase(arg['name'])}Field: deserialized['${toCamelCase(arg['name'])}'] as ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}";
   }
 
+  String _generateArgumentFieldMapDefaultParameterInitialization(String idlName, Map<String, dynamic> arg, int index, List<dynamic> types) {
+    return "'${toCamelCase(arg['name'])}': ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}(value: ${AnchorFieldDefaultValue(idlName, arg['type'], types)})";
+  }
+
   String _generateArgumentFieldMapParameterInitialization(String idlName, Map<String, dynamic> arg, int index, List<dynamic> types) {
-    return "'${toCamelCase(arg['name'])}': ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}(name: '${arg['name']}', value: ${AnchorFieldDefaultValue(idlName, arg['type'], types)}, index: $index)";
+    return "'${toCamelCase(arg['name'])}': ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}(value: ${toCamelCase(arg['name'])}Field.value)";
   }
 
   String _generateArgumentFieldDefaultInitialization(String idlName, Map<String, dynamic> arg, int index, List<dynamic> types) {
-    return "${toCamelCase(arg['name'])}Field = ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}(name: '${arg['name']}', value: ${AnchorFieldDefaultValue(idlName, arg['type'], types)}, index: $index)";
+    return "${toCamelCase(arg['name'])}Field = ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}(value: ${AnchorFieldDefaultValue(idlName, arg['type'], types)})";
   }
 }

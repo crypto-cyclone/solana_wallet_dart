@@ -479,11 +479,11 @@ class HoneypotPlayerAccount extends AnchorAccount {
     required this.stateField}) : super(
       name: 'Player',
       fields: {
-        'gameId': AnchorFieldArray<AnchorFieldU8>(value: []),
-        'lamports': AnchorFieldU64(value: 0),
-        'bump': AnchorFieldU8(value: 0),
-        'lastSeen': AnchorFieldI64(value: 0),
-        'state': AnchorFieldEnum<HoneypotPlayerStateEnum>(value: HoneypotPlayerStateEnum.values.first)});
+        'gameId': AnchorFieldArray<AnchorFieldU8>(value: gameIdField.value),
+        'lamports': AnchorFieldU64(value: lamportsField.value),
+        'bump': AnchorFieldU8(value: bumpField.value),
+        'lastSeen': AnchorFieldI64(value: lastSeenField.value),
+        'state': AnchorFieldEnum<HoneypotPlayerStateEnum>(value: stateField.value)});
 
 
   @override
@@ -531,10 +531,10 @@ class HoneypotGameAccount extends AnchorAccount {
     required this.bumpField}) : super(
       name: 'Game',
       fields: {
-        'id': AnchorFieldArray<AnchorFieldU8>(value: []),
-        'state': AnchorFieldEnum<HoneypotGameStateEnum>(value: HoneypotGameStateEnum.values.first),
-        'playerCount': AnchorFieldU64(value: 0),
-        'bump': AnchorFieldU8(value: 0)});
+        'id': AnchorFieldArray<AnchorFieldU8>(value: idField.value),
+        'state': AnchorFieldEnum<HoneypotGameStateEnum>(value: stateField.value),
+        'playerCount': AnchorFieldU64(value: playerCountField.value),
+        'bump': AnchorFieldU8(value: bumpField.value)});
 
 
   @override
@@ -601,15 +601,15 @@ class HoneypotEngageAccount extends AnchorAccount {
     required this.bumpField}) : super(
       name: 'Engage',
       fields: {
-        'challenger': AnchorFieldPublicKey(value: Uint8List(0)),
-        'defender': AnchorFieldPublicKey(value: Uint8List(0)),
-        'timestamp': AnchorFieldI64(value: 0),
-        'challengerSealedMove': AnchorFieldStruct<HoneypotSealedMoveStruct>(value: HoneypotSealedMoveStruct.factory()),
-        'defenderSealedMove': AnchorFieldStruct<HoneypotSealedMoveStruct>(value: HoneypotSealedMoveStruct.factory()),
-        'challengerMove': AnchorFieldEnum<HoneypotMoveTypeEnum>(value: HoneypotMoveTypeEnum.values.first),
-        'defenderMove': AnchorFieldEnum<HoneypotMoveTypeEnum>(value: HoneypotMoveTypeEnum.values.first),
-        'result': AnchorFieldEnum<HoneypotEngageResultEnum>(value: HoneypotEngageResultEnum.values.first),
-        'bump': AnchorFieldU8(value: 0)});
+        'challenger': AnchorFieldPublicKey(value: challengerField.value),
+        'defender': AnchorFieldPublicKey(value: defenderField.value),
+        'timestamp': AnchorFieldI64(value: timestampField.value),
+        'challengerSealedMove': AnchorFieldStruct<HoneypotSealedMoveStruct>(value: challengerSealedMoveField.value),
+        'defenderSealedMove': AnchorFieldStruct<HoneypotSealedMoveStruct>(value: defenderSealedMoveField.value),
+        'challengerMove': AnchorFieldEnum<HoneypotMoveTypeEnum>(value: challengerMoveField.value),
+        'defenderMove': AnchorFieldEnum<HoneypotMoveTypeEnum>(value: defenderMoveField.value),
+        'result': AnchorFieldEnum<HoneypotEngageResultEnum>(value: resultField.value),
+        'bump': AnchorFieldU8(value: bumpField.value)});
 
 
   @override
@@ -652,11 +652,6 @@ class HoneypotSealedMoveStruct extends AnchorStruct {
       fields: {
         'hashedMove': AnchorFieldArray<AnchorFieldU8>(value: hashedMoveField.value)});
 
-  @override
-  List<int> serialize() {
-   return fields.entries.map((element) => element.value.serialize())
-       .reduce((value, element) => [...value, ...element]);
-  }
 
   @override
   HoneypotSealedMoveStruct deserialize(List<int> bytes) {
@@ -664,6 +659,15 @@ class HoneypotSealedMoveStruct extends AnchorStruct {
         fields.entries.map((element) => MapEntry(element.key, element.value.deserialize(bytes))));
     return HoneypotSealedMoveStruct.withFields(
         hashedMoveField: deserialized['hashedMove'] as AnchorFieldArray<AnchorFieldU8>);
+  }
+
+  @override
+  Uint8List serialize() {
+    return Uint8List.fromList(
+        fields.values
+            .map((element) => element.serialize())
+            .reduce((value, element) => [...value, ...element])
+    );
   }
 
   static HoneypotSealedMoveStruct factory() {
@@ -707,7 +711,7 @@ class HoneypotRevealedMoveStruct extends AnchorStruct {
   Uint8List serialize() {
     return Uint8List.fromList(
         fields.values
-            .map((element) => (element).serialize())
+            .map((element) => element.serialize())
             .reduce((value, element) => [...value, ...element])
     );
   }
@@ -867,3 +871,4 @@ class HoneypotIllegalRevealError extends AnchorError {
       : super(code: 6007, name: 'IllegalReveal', msg: 'Reveal did not match the commitment');
 
 }
+
