@@ -422,14 +422,14 @@ class AnchorFieldI64 extends AnchorField<int> {
   }
 
   @override
-  AnchorFieldU64 deserialize(List<int> bytes) {
+  AnchorFieldI64 deserialize(List<int> bytes) {
     int result = fromLEByteArray(Uint8List.fromList(bytes.sublist(0, 8)));
     bytes.removeRange(0, 8);
-    return AnchorFieldU64(value: result);
+    return AnchorFieldI64(value: result);
   }
 
-  static AnchorFieldU64 factory() {
-    return AnchorFieldU64(value: 0);
+  static AnchorFieldI64 factory() {
+    return AnchorFieldI64(value: 0);
   }
 }
 
@@ -947,13 +947,15 @@ class AnchorFieldNullableVector<T extends AnchorSerializable> extends AnchorFiel
 
 class AnchorFieldArray<T extends AnchorSerializable> extends AnchorField<T> {
   final List<T> value;
+  final int size;
 
   AnchorFieldArray({
-    required this.value
+    required this.value,
+    required this.size
   }) : super();
 
   AnchorFieldArray<T> withValue(List<T> value) {
-    return AnchorFieldArray(value: value);
+    return AnchorFieldArray(value: value, size: value.length);
   }
 
   @override
@@ -968,8 +970,7 @@ class AnchorFieldArray<T extends AnchorSerializable> extends AnchorField<T> {
 
   @override
   AnchorFieldArray<T> deserialize(List<int> bytes) {
-    int resultLength = fromLEByteArray(Uint8List.fromList(bytes.sublist(0, 4)));
-    bytes.removeRange(0, 4);
+    int resultLength = size;
 
     List<T> result = [];
     for (int i = 0; i < resultLength; i++) {
@@ -982,11 +983,11 @@ class AnchorFieldArray<T extends AnchorSerializable> extends AnchorField<T> {
       result.add(instance.deserialize(bytes) as T);
     }
 
-    return AnchorFieldArray<T>(value: result);
+    return AnchorFieldArray<T>(value: result, size: result.length);
   }
 
-  static AnchorFieldArray<T> factory<T extends AnchorSerializable>() {
-    return AnchorFieldArray<T>(value: []);
+  static AnchorFieldArray<T> factory<T extends AnchorSerializable>(int size) {
+    return AnchorFieldArray<T>(value: [], size: size);
   }
 }
 

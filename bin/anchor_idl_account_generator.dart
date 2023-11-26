@@ -155,14 +155,29 @@ class $className extends ${AnchorAccountClassName()} {
   }
 
   String _generateArgumentFieldMapDefaultParameterInitialization(String idlName, Map<String, dynamic> arg, int index, List<dynamic> types) {
-    return "'${toCamelCase(arg['name'])}': ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}(value: ${AnchorFieldDefaultValue(idlName, arg['type'], types)})";
+    if (ExtendedAnchorFieldClassName(idlName, arg['type'], types).contains("AnchorFieldArray")) {
+      var size = arg["type"]["array"][1];
+      return "'${toCamelCase(arg['name'])}': ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}(value: ${AnchorFieldDefaultValue(idlName, arg['type'], types)}, size: $size)";
+    } else {
+      return "'${toCamelCase(arg['name'])}': ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}(value: ${AnchorFieldDefaultValue(idlName, arg['type'], types)})";
+    }
   }
 
   String _generateArgumentFieldMapParameterInitialization(String idlName, Map<String, dynamic> arg, int index, List<dynamic> types) {
-    return "'${toCamelCase(arg['name'])}': ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}(value: ${toCamelCase(arg['name'])}Field.value)";
+    if (ExtendedAnchorFieldClassName(idlName, arg['type'], types).contains("AnchorFieldArray")) {
+      var size = arg["type"]["array"][1];
+      return "'${toCamelCase(arg['name'])}': ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}(value: ${toCamelCase(arg['name'])}Field.value, size: $size)";
+    } else {
+      return "'${toCamelCase(arg['name'])}': ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}(value: ${toCamelCase(arg['name'])}Field.value)";
+    }
   }
 
   String _generateArgumentFieldDefaultInitialization(String idlName, Map<String, dynamic> arg, int index, List<dynamic> types) {
-    return "${toCamelCase(arg['name'])}Field = ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}(value: ${AnchorFieldDefaultValue(idlName, arg['type'], types)})";
+    if (ExtendedAnchorFieldClassName(idlName, arg['type'], types).contains("AnchorFieldArray")) {
+      var size = arg["type"]["array"][1];
+      return "${toCamelCase(arg['name'])}Field = ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}(value: ${AnchorFieldDefaultValue(idlName, arg['type'], types)}, size: $size)";
+    } else {
+      return "${toCamelCase(arg['name'])}Field = ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}(value: ${AnchorFieldDefaultValue(idlName, arg['type'], types)})";
+    }
   }
 }

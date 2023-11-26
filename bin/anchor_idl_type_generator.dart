@@ -208,24 +208,34 @@ $HalfTab}''';
   }
 
   String _generateStructArgumentFieldDefaultInitialization(String idlName, Map<String, dynamic> arg, int index, List<dynamic> types) {
-    return "${toCamelCase(arg['name'])}Field = ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}(value: ${AnchorFieldDefaultValue(idlName, arg['type'], types)})";
+    if (ExtendedAnchorFieldClassName(idlName, arg['type'], types).contains("AnchorFieldArray")) {
+      var size = arg["type"]["array"][1];
+      return "${toCamelCase(arg['name'])}Field = ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}(value: ${AnchorFieldDefaultValue(idlName, arg['type'], types)}, size: $size)";
+    } else {
+      return "${toCamelCase(arg['name'])}Field = ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}(value: ${AnchorFieldDefaultValue(idlName, arg['type'], types)})";
+    }
   }
 
   String _generateArgumentFieldMapDefaultParameterInitialization(String idlName, Map<String, dynamic> arg, int index, List<dynamic> types) {
-    return "'${toCamelCase(arg['name'])}': ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}(value: ${AnchorFieldDefaultValue(idlName, arg['type'], types)})";
+    if (ExtendedAnchorFieldClassName(idlName, arg['type'], types).contains("AnchorFieldArray")) {
+      var size = arg["type"]["array"][1];
+      return "'${toCamelCase(arg['name'])}': ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}(value: ${AnchorFieldDefaultValue(idlName, arg['type'], types)}, size: $size)";
+    } else {
+      return "'${toCamelCase(arg['name'])}': ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}(value: ${AnchorFieldDefaultValue(idlName, arg['type'], types)})";
+    }
   }
 
   String _generateArgumentFieldMapParameterInitialization(String idlName, Map<String, dynamic> arg, int index, List<dynamic> types) {
-    return "'${toCamelCase(arg['name'])}': ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}(value: ${toCamelCase(arg['name'])}Field.value)";
+    if (ExtendedAnchorFieldClassName(idlName, arg['type'], types).contains("AnchorFieldArray")) {
+      var size = arg["type"]["array"][1];
+      return "'${toCamelCase(arg['name'])}': ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}(value: ${toCamelCase(arg['name'])}Field.value, size: $size)";
+    } else {
+      return "'${toCamelCase(arg['name'])}': ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}(value: ${toCamelCase(arg['name'])}Field.value)";
+    }
   }
-
 
   String _generateDeserializedArgumentFieldMapParameterInitialization(String idlName, Map<String, dynamic> arg, List<dynamic> types) {
-    return "${toCamelCase(arg['name'])}Field: deserialized['${arg['name']}'] as ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}";
-  }
-
-  String _generateSerializedArgumentFieldMapParameterInitialization(String idlName, Map<String, dynamic> arg, List<dynamic> types) {
-    return "${toCamelCase(arg['name'])}Field: deserialized['${arg['name']}'] as ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}";
+      return "${toCamelCase(arg['name'])}Field: deserialized['${arg['name']}'] as ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}";
   }
 
   String _generateEnumOptions(object) {

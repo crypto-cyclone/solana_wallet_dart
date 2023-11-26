@@ -52,7 +52,7 @@ int fromLEByteArray(Uint8List bytes) {
     case 2:
       return view.getInt16(0, Endian.little);
     case 1:
-      return view.getInt8(0);
+      return view.getUint8(0);
     default:
       throw Exception('Unsupported byte length: ${bytes.length}. Supported lengths are 1, 2, 4, and 8.');
   }

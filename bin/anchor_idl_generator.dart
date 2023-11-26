@@ -82,10 +82,13 @@ $className()
 
     var types = idl['types']
         .map((e) {
-          if (e['type']['kind'] != 'struct') {
-            return "";
+          if (e['type']['kind'] == 'struct') {
+            return _generateStructRegistration(idlName, e);
+          } else if (e['type']['kind'] == 'enum') {
+            return _generateEnumRegistration(idlName, e);
           }
-          return _generateStructRegistration(idlName, e);
+
+          return "";;
     });
 
     var typesArgs = idl['types']
@@ -136,6 +139,13 @@ $HalfTab}
     return "serializationRegistry.register<$className>(() => $className());";
   }
 
+  String _generateEnumRegistration(String idlName, enumerator) {
+    var name = enumerator['name'];
+    var className = ExtendedEnumName(idlName, name);
+
+    return "serializationRegistry.register<$className>(() => $className.values.first);";
+  }
+
   String _generateInstructionArgRegistration(String idlName, arg, List<dynamic> types) {
     var className = ExtendedAnchorFieldClassName(idlName, arg['type'], types);
 
@@ -145,9 +155,10 @@ $HalfTab}
       return "serializationRegistry.register<AnchorFieldVector<$typeT>>(() => AnchorFieldVector.factory<$typeT>());";
     }
     if (className.contains("AnchorFieldArray")) {
+      var size = arg["type"]["array"][1];
       var typeT = className.replaceAll('>', '');
       typeT = typeT.split('<').last;
-      return "serializationRegistry.register<AnchorFieldArray<$typeT>>(() => AnchorFieldArray.factory<$typeT>());";
+      return "serializationRegistry.register<AnchorFieldArray<$typeT>>(() => AnchorFieldArray.factory<$typeT>($size));";
     }
     else if (className.contains("AnchorFieldNullableVector")) {
       var typeT = className.replaceAll('>', '');

@@ -34,7 +34,7 @@ class HoneypotAnchorIDL extends AnchorIDL {
   void initialize() {
     serializationRegistry.register<AnchorFieldStruct<HoneypotSealedMoveStruct>>(() => AnchorFieldStruct.factory<HoneypotSealedMoveStruct>());
     serializationRegistry.register<AnchorFieldStruct<HoneypotRevealedMoveStruct>>(() => AnchorFieldStruct.factory<HoneypotRevealedMoveStruct>());
-    serializationRegistry.register<AnchorFieldArray<AnchorFieldU8>>(() => AnchorFieldArray.factory<AnchorFieldU8>());
+    serializationRegistry.register<AnchorFieldArray<AnchorFieldU8>>(() => AnchorFieldArray.factory<AnchorFieldU8>(32));
     serializationRegistry.register<AnchorFieldU64>(() => AnchorFieldU64.factory());
     serializationRegistry.register<AnchorFieldU8>(() => AnchorFieldU8.factory());
     serializationRegistry.register<AnchorFieldI64>(() => AnchorFieldI64.factory());
@@ -45,6 +45,10 @@ class HoneypotAnchorIDL extends AnchorIDL {
     serializationRegistry.register<AnchorFieldEnum<HoneypotEngageResultEnum>>(() => AnchorFieldEnum.factory<HoneypotEngageResultEnum>());
     serializationRegistry.register<HoneypotSealedMoveStruct>(() => HoneypotSealedMoveStruct());
     serializationRegistry.register<HoneypotRevealedMoveStruct>(() => HoneypotRevealedMoveStruct());
+    serializationRegistry.register<HoneypotEngageResultEnum>(() => HoneypotEngageResultEnum.values.first);
+    serializationRegistry.register<HoneypotPlayerStateEnum>(() => HoneypotPlayerStateEnum.values.first);
+    serializationRegistry.register<HoneypotMoveTypeEnum>(() => HoneypotMoveTypeEnum.values.first);
+    serializationRegistry.register<HoneypotGameStateEnum>(() => HoneypotGameStateEnum.values.first);
     serializationRegistry.register<AnchorFieldString>(() => AnchorFieldString.factory());
   }
 
@@ -457,7 +461,7 @@ class HoneypotPlayerAccount extends AnchorAccount {
   final AnchorFieldEnum<HoneypotPlayerStateEnum> stateField;
 
   HoneypotPlayerAccount()
-      : gameIdField = AnchorFieldArray<AnchorFieldU8>(value: []),
+      : gameIdField = AnchorFieldArray<AnchorFieldU8>(value: [], size: 32),
         lamportsField = AnchorFieldU64(value: 0),
         bumpField = AnchorFieldU8(value: 0),
         lastSeenField = AnchorFieldI64(value: 0),
@@ -465,7 +469,7 @@ class HoneypotPlayerAccount extends AnchorAccount {
         super(
           name: 'Player',
           fields: {
-            'gameId': AnchorFieldArray<AnchorFieldU8>(value: []),
+            'gameId': AnchorFieldArray<AnchorFieldU8>(value: [], size: 32),
             'lamports': AnchorFieldU64(value: 0),
             'bump': AnchorFieldU8(value: 0),
             'lastSeen': AnchorFieldI64(value: 0),
@@ -479,7 +483,7 @@ class HoneypotPlayerAccount extends AnchorAccount {
     required this.stateField}) : super(
       name: 'Player',
       fields: {
-        'gameId': AnchorFieldArray<AnchorFieldU8>(value: gameIdField.value),
+        'gameId': AnchorFieldArray<AnchorFieldU8>(value: gameIdField.value, size: 32),
         'lamports': AnchorFieldU64(value: lamportsField.value),
         'bump': AnchorFieldU8(value: bumpField.value),
         'lastSeen': AnchorFieldI64(value: lastSeenField.value),
@@ -512,14 +516,14 @@ class HoneypotGameAccount extends AnchorAccount {
   final AnchorFieldU8 bumpField;
 
   HoneypotGameAccount()
-      : idField = AnchorFieldArray<AnchorFieldU8>(value: []),
+      : idField = AnchorFieldArray<AnchorFieldU8>(value: [], size: 32),
         stateField = AnchorFieldEnum<HoneypotGameStateEnum>(value: HoneypotGameStateEnum.values.first),
         playerCountField = AnchorFieldU64(value: 0),
         bumpField = AnchorFieldU8(value: 0),
         super(
           name: 'Game',
           fields: {
-            'id': AnchorFieldArray<AnchorFieldU8>(value: []),
+            'id': AnchorFieldArray<AnchorFieldU8>(value: [], size: 32),
             'state': AnchorFieldEnum<HoneypotGameStateEnum>(value: HoneypotGameStateEnum.values.first),
             'playerCount': AnchorFieldU64(value: 0),
             'bump': AnchorFieldU8(value: 0)});
@@ -531,7 +535,7 @@ class HoneypotGameAccount extends AnchorAccount {
     required this.bumpField}) : super(
       name: 'Game',
       fields: {
-        'id': AnchorFieldArray<AnchorFieldU8>(value: idField.value),
+        'id': AnchorFieldArray<AnchorFieldU8>(value: idField.value, size: 32),
         'state': AnchorFieldEnum<HoneypotGameStateEnum>(value: stateField.value),
         'playerCount': AnchorFieldU64(value: playerCountField.value),
         'bump': AnchorFieldU8(value: bumpField.value)});
@@ -639,18 +643,18 @@ class HoneypotSealedMoveStruct extends AnchorStruct {
   final AnchorFieldArray<AnchorFieldU8> hashedMoveField;
 
   HoneypotSealedMoveStruct()
-      : hashedMoveField = AnchorFieldArray<AnchorFieldU8>(value: []),
+      : hashedMoveField = AnchorFieldArray<AnchorFieldU8>(value: [], size: 32),
         super(
           name: 'SealedMove',
           fields: {
-            'hashedMove': AnchorFieldArray<AnchorFieldU8>(value: [])});
+            'hashedMove': AnchorFieldArray<AnchorFieldU8>(value: [], size: 32)});
 
 
   HoneypotSealedMoveStruct.withFields({
     required this.hashedMoveField}) : super(
       name: 'SealedMove',
       fields: {
-        'hashedMove': AnchorFieldArray<AnchorFieldU8>(value: hashedMoveField.value)});
+        'hashedMove': AnchorFieldArray<AnchorFieldU8>(value: hashedMoveField.value, size: 32)});
 
 
   @override
