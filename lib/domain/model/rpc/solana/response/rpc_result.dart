@@ -9,7 +9,7 @@ class RPCResult {
     required this.value
   });
 
-  static RPCResult fromJson(Map<String, dynamic> json) {
+  static RPCResult fromJsonObject(Map<String, dynamic> json) {
     final contextJson = json['context'] as Map<String, dynamic>;
     final context = Context.fromJson(contextJson);
     final value = json['value'];
@@ -18,5 +18,9 @@ class RPCResult {
       context: context,
       value: value,
     );
+  }
+
+  static RPCResult fromJsonList(List<dynamic> json) {
+    return RPCResult(value: json);
   }
 }

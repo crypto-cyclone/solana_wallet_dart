@@ -33,7 +33,7 @@ class GetAccountInfoResponse extends RPCSuccessResponse {
       jsonrpc: json['jsonrpc'] as String,
       id: json['id'] as int,
       method: json['method'] as String?,
-      result: RPCResult.fromJson(json['result'] as Map<String, dynamic>),
+      result: RPCResult.fromJsonObject(json['result'] as Map<String, dynamic>),
     );
   }
 }
