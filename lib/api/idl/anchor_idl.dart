@@ -178,15 +178,19 @@ class AnchorAccount extends AnchorSerializable {
   });
 
   consumeDiscriminator(List<int> bytes) {
-    var discriminator = _anchorEncoder.encodeDiscriminator(
-        "", toPascalCase(name)
-    );
+    var discriminator = getDiscriminator();
 
     if (!ListEquality().equals(discriminator, bytes.sublist(0, 8))) {
       throw Exception('Discriminator mismatch');
     }
 
     bytes.removeRange(0, 8);
+  }
+
+  Uint8List getDiscriminator() {
+    return _anchorEncoder.encodeDiscriminator(
+        "", toPascalCase(name)
+    );
   }
 
   @override

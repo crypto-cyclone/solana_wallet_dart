@@ -11,7 +11,6 @@ class GetProgramAccountsResponse extends RPCSuccessResponse {
     super.method,
     required super.result,
   }) {
-    print(super.result!.value.first['account']);
     programAccounts = [...super.result!.value.map((e) => ProgramAccount.fromJson(e))];
   }
 

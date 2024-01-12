@@ -1,7 +1,12 @@
+import 'dart:convert';
+
+import 'package:solana_wallet/api/idl/anchor_idl.dart';
 import 'package:solana_wallet/domain/configuration/solana_configuration.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/request/account_info/get_account_info_request.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/request/latest_blockhash/get_latest_blockhash_request.dart';
+import 'package:solana_wallet/domain/model/rpc/solana/request/program_account/filter.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/request/program_account/get_program_accounts_request.dart';
+import 'package:solana_wallet/domain/model/rpc/solana/request/program_account/memcmp.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/request/rpc_request.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/request/send_transaction/send_transaction_request.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/response/account_info/get_account_info_response.dart';
@@ -9,6 +14,8 @@ import 'package:solana_wallet/domain/model/rpc/solana/response/latest_blockhash/
 import 'package:solana_wallet/domain/model/rpc/solana/response/program_account/get_program_accounts_response.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/response/send_transaction/send_transaction_response.dart';
 import 'package:solana_wallet/domain/service/solana_rpc_service.dart';
+import 'package:solana_wallet/encoder/anchor/anchor_encoder.dart';
+import 'package:solana_wallet/encoder/base58/base_58_encoder.dart';
 import 'package:test/test.dart';
 
 import '../../api/service/http_service_impl.dart';
@@ -18,6 +25,7 @@ void main() {
   group('SolanaRPCService', () {
     late SolanaRPCService solanaRPCService;
     late HttpServiceImpl httpsService;
+    late Base58Encoder base58encoder;
 
     setUp(() {
       httpsService = HttpServiceImpl();
@@ -27,6 +35,7 @@ void main() {
             SolanaNetwork.devnet
           )
       );
+      base58encoder = Base58Encoder();
     });
 
     test('get latest blockhash is success', () async {
@@ -84,10 +93,13 @@ void main() {
 
     test('get program accounts is success', () async {
       httpsService.responseJson = getProgramAccountsResponse;
-      var requestJson = '{"jsonrpc":"2.0","id":${RPCRequest.getProgramAccountsId},"method":"${RPCRequest.getProgramAccountsRPCMethod}","params":["D3Fmzy6k3JnHt6rxxrExxW9MnjdSCBF8A7PfFnyvxZY6",{"commitment":"processed","encoding":"base64"}]}';
+      var requestJson = '{"jsonrpc":"2.0","id":${RPCRequest.getProgramAccountsId},"method":"${RPCRequest.getProgramAccountsRPCMethod}","params":["D3Fmzy6k3JnHt6rxxrExxW9MnjdSCBF8A7PfFnyvxZY6",{"commitment":"processed","encoding":"base64","filters":[{"memcmp":{"offset":0,"bytes":"bSBoKNsSHuj"}}]}]}';
 
       var request = GetProgramAccountsRequest(
-          pubkey: "D3Fmzy6k3JnHt6rxxrExxW9MnjdSCBF8A7PfFnyvxZY6"
+          pubkey: "D3Fmzy6k3JnHt6rxxrExxW9MnjdSCBF8A7PfFnyvxZY6",
+          filters: [
+            Filter(memcmp: MemCmp(offset: 0, bytes: "bSBoKNsSHuj"))
+          ]
       );
 
       expect(request.toJson(), requestJson);
@@ -103,16 +115,16 @@ void main() {
       expect(response.jsonrpc, "2.0");
       expect(response.id, 7);
       expect(response.method, null);
-      expect(response.programAccounts.length, 85);
+      expect(response.programAccounts.length, 10);
 
       var accountInfo = response.programAccounts.first.account;
 
       expect(accountInfo?.executable, false);
-      expect(accountInfo?.lamports?.compareTo(BigInt.parse("4454400")), 0);
+      expect(accountInfo?.lamports?.compareTo(BigInt.parse("1334454400")), 0);
       expect(accountInfo?.owner, "D3Fmzy6k3JnHt6rxxrExxW9MnjdSCBF8A7PfFnyvxZY6");
       expect(accountInfo?.rentEpoch?.compareTo(BigInt.parse("18446744073709551615")), 0);
       expect(accountInfo?.space?.compareTo(BigInt.parse("512")), 0);
-      expect(accountInfo?.data, ["ABu7fcPb69tutgi9bzJHSyotu+16b1GO7Cxoqm/B1a+x1hJTT5Fjo3DF3X6u63S5+ybGYzni15hnjWuwMUa5EK28uZDF/mN+KRChZQAAAAB5ib4Ey8AfidksT+b3i+VWZ9laPTrOhGLrG/Ob5M5+CnvqNfii47O5HrTfdQz3SxgfTIy942jQ9IJHtYmza0+ABAIC/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=","base64"]);
+      expect(accountInfo?.data, ["zd5wB6Wbztp+1x62dX/MjbHPKwBX0mHxWh9b+W4FqcWBPjHUopL5a8CVqQUAAAAA+u7EoWUAAAAAAVhTbFko7eMGzhL5isyR3Z1va5hukh03z7CEFLcEtsCmAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=","base64"]);
     });
 
     test('send transaction is success', () async {

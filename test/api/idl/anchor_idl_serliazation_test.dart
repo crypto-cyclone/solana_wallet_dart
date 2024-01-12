@@ -1,8 +1,5 @@
 import 'dart:typed_data';
 
-import 'package:solana_wallet/api/idl/anchor_idl.dart';
-import 'package:solana_wallet/domain/model/derivation/solana/solana_keypair.dart';
-import 'package:solana_wallet/domain/model/transaction/anchor/anchor_instruction_data.dart';
 import 'package:solana_wallet/domain/service/pda_service.dart';
 import 'package:solana_wallet/encoder/anchor/anchor_encoder.dart';
 import 'package:solana_wallet/encoder/base58/base_58_encoder.dart';
@@ -15,9 +12,6 @@ import 'mocks/honeypot.dart';
 void main() {
   group('AnchorIDL', () {
     late Base58Encoder _base58Encoder;
-    late AnchorEncoder _anchorEncoder;
-    late SolanaEncoder _solanaEncoder;
-    late PDAService _pdaService;
 
     late HoneypotAnchorIDL _idl;
 
@@ -25,9 +19,6 @@ void main() {
 
     setUp(() async {
       _base58Encoder = Base58Encoder();
-      _anchorEncoder = AnchorEncoder();
-      _pdaService = PDAService();
-      _solanaEncoder = SolanaEncoder();
 
       _idl = HoneypotAnchorIDL()
         ..initialize();
@@ -40,7 +31,7 @@ void main() {
           expectBytes.toList());
 
       expect(
-        playerAccount.name, "Player");
+          playerAccount.name, "Player");
 
       expect(
           playerAccount.bumpField.value, 254);
@@ -48,16 +39,16 @@ void main() {
       expect(
           _base58Encoder.encodeBase58(
               Uint8List.fromList(playerAccount.gameIdField.value.map((e) => e.value).toList())),
-        "9Y8d99VrJKmD9QbXMKNiKrQ5xfEJPKkAtT1YGaEPDE7U");
+          "9Y8d99VrJKmD9QbXMKNiKrQ5xfEJPKkAtT1YGaEPDE7U");
 
       expect(
-        playerAccount.lamportsField.value, 0);
+          playerAccount.lamportsField.value, 0);
 
       expect(
-        playerAccount.lastSeenField.value, 1701019200);
+          playerAccount.lastSeenField.value, 1701019200);
 
       expect(
-        playerAccount.stateField.value.value.index, 0);
+          playerAccount.stateField.value.value.index, 0);
     });
   });
 }
