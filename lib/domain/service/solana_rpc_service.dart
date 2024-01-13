@@ -4,10 +4,12 @@ import 'package:logging/logging.dart';
 import 'package:solana_wallet/api/service/http_service.dart';
 import 'package:solana_wallet/domain/configuration/solana_configuration.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/request/account_info/get_account_info_request.dart';
+import 'package:solana_wallet/domain/model/rpc/solana/request/balance/get_balance_request.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/request/latest_blockhash/get_latest_blockhash_request.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/request/program_account/get_program_accounts_request.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/request/send_transaction/send_transaction_request.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/response/account_info/get_account_info_response.dart';
+import 'package:solana_wallet/domain/model/rpc/solana/response/balance/get_balance_response.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/response/latest_blockhash/get_latest_blockhash_response.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/response/program_account/get_program_accounts_response.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/response/rpc_error_response.dart';
@@ -22,12 +24,6 @@ class SolanaRPCService {
   final bool ssl;
 
   late final Uri uri;
-
-  final bigIntFields = [
-    'lamports',
-    'space',
-    'rentEpoch'
-  ];
 
   SolanaRPCService({
     required this.httpService,
@@ -51,14 +47,60 @@ class SolanaRPCService {
     );
 
     if (response.statusCode == 200) {
+      var bigIntFields = [
+        'lamports',
+        'space',
+        'rentEpoch'
+      ];
+
       Map<String, dynamic> jsonMap = _postprocessJson(
-          jsonDecode(_preprocessJson(response.body)));
+          jsonDecode(
+              _preprocessJson(
+                  response.body,
+                  bigIntFields
+              )
+          ),
+          bigIntFields
+      );
 
       if (jsonMap["error"] != null) {
         _logger.severe(jsonMap);
         return RPCErrorResponse.fromJson(jsonMap);
       } else {
         return GetLatestBlockhashResponse.fromJson(jsonMap);
+      }
+    } else {
+      return RPCErrorResponse.fromRequest(request);
+    }
+  }
+
+  Future<RPCResponse> getBalance(GetBalanceRequest request) async {
+    final response = await httpService.post(
+        uri,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: request.toJson()
+    );
+
+    if (response.statusCode == 200) {
+      var bigIntFields = ['value'];
+
+      Map<String, dynamic> jsonMap = _postprocessJson(
+          jsonDecode(
+              _preprocessJson(
+                  response.body,
+                  bigIntFields
+              )
+          ),
+          bigIntFields
+      );
+
+      if (jsonMap["error"] != null) {
+        _logger.severe(jsonMap);
+        return RPCErrorResponse.fromJson(jsonMap);
+      } else {
+        return GetBalanceResponse.fromJson(jsonMap);
       }
     } else {
       return RPCErrorResponse.fromRequest(request);
@@ -75,8 +117,21 @@ class SolanaRPCService {
     );
 
     if (response.statusCode == 200) {
+      var bigIntFields = [
+        'lamports',
+        'space',
+        'rentEpoch'
+      ];
+
       Map<String, dynamic> jsonMap = _postprocessJson(
-          jsonDecode(_preprocessJson(response.body)));
+          jsonDecode(
+              _preprocessJson(
+                  response.body,
+                  bigIntFields
+              )
+          ),
+          bigIntFields
+      );
 
       if (jsonMap["error"] != null) {
         _logger.severe(jsonMap);
@@ -99,8 +154,21 @@ class SolanaRPCService {
     );
 
     if (response.statusCode == 200) {
+      var bigIntFields = [
+        'lamports',
+        'space',
+        'rentEpoch'
+      ];
+
       Map<String, dynamic> jsonMap = _postprocessJson(
-          jsonDecode(_preprocessJson(response.body)));
+          jsonDecode(
+              _preprocessJson(
+                  response.body,
+                  bigIntFields
+              )
+          ),
+          bigIntFields
+      );
 
       if (jsonMap["error"] != null) {
         _logger.severe(jsonMap);
@@ -123,8 +191,21 @@ class SolanaRPCService {
     );
 
     if (response.statusCode == 200) {
+      var bigIntFields = [
+        'lamports',
+        'space',
+        'rentEpoch'
+      ];
+
       Map<String, dynamic> jsonMap = _postprocessJson(
-          jsonDecode(_preprocessJson(response.body)));
+          jsonDecode(
+              _preprocessJson(
+                  response.body,
+                  bigIntFields
+              )
+          ),
+          bigIntFields
+      );
 
       if (jsonMap["error"] != null) {
         _logger.severe(jsonMap);
@@ -137,7 +218,7 @@ class SolanaRPCService {
     }
   }
 
-  String _preprocessJson(String jsonString) {
+  String _preprocessJson(String jsonString, List<String> bigIntFields) {
     for (var key in bigIntFields) {
       var regex = RegExp(r'"' + key + r'"\s*:\s*(\d+)');
       jsonString = jsonString.replaceAllMapped(regex, (match) {
@@ -147,16 +228,16 @@ class SolanaRPCService {
     return jsonString;
   }
 
-  Map<String, dynamic> _postprocessJson(Map<String, dynamic> jsonMap) {
+  Map<String, dynamic> _postprocessJson(Map<String, dynamic> jsonMap, List<String> bigIntFields) {
     jsonMap.forEach((key, value) {
       if (bigIntFields.contains(key) && value is String) {
         jsonMap[key] = BigInt.parse(value);
       } else if (value is Map<String, dynamic>) {
-        _postprocessJson(value);
+        _postprocessJson(value, bigIntFields);
       } else if (value is List) {
         for (var element in value) {
           if (element is Map<String, dynamic>) {
-            _postprocessJson(element);
+            _postprocessJson(element, bigIntFields);
           }
         }
       }

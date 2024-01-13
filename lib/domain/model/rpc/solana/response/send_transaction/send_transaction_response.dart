@@ -1,4 +1,3 @@
-import 'package:solana_wallet/domain/model/rpc/solana/response/rpc_response.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/response/rpc_success_response.dart';
 
 import '../rpc_result.dart';

@@ -1,8 +1,6 @@
-import 'dart:convert';
-
-import 'package:solana_wallet/api/idl/anchor_idl.dart';
 import 'package:solana_wallet/domain/configuration/solana_configuration.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/request/account_info/get_account_info_request.dart';
+import 'package:solana_wallet/domain/model/rpc/solana/request/balance/get_balance_request.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/request/latest_blockhash/get_latest_blockhash_request.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/request/program_account/filter.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/request/program_account/get_program_accounts_request.dart';
@@ -10,11 +8,11 @@ import 'package:solana_wallet/domain/model/rpc/solana/request/program_account/me
 import 'package:solana_wallet/domain/model/rpc/solana/request/rpc_request.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/request/send_transaction/send_transaction_request.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/response/account_info/get_account_info_response.dart';
+import 'package:solana_wallet/domain/model/rpc/solana/response/balance/get_balance_response.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/response/latest_blockhash/get_latest_blockhash_response.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/response/program_account/get_program_accounts_response.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/response/send_transaction/send_transaction_response.dart';
 import 'package:solana_wallet/domain/service/solana_rpc_service.dart';
-import 'package:solana_wallet/encoder/anchor/anchor_encoder.dart';
 import 'package:solana_wallet/encoder/base58/base_58_encoder.dart';
 import 'package:test/test.dart';
 
@@ -60,6 +58,30 @@ void main() {
       expect(latestBlockhashResponse.context?.slot, 2792);
       expect(latestBlockhashResponse.blockhash.blockhash, "EkSnNWid2cvwEVnVx9aBqawnmiCNiDgp3gUdkDPTKN1N");
       expect(latestBlockhashResponse.blockhash.lastValidBlockHeight, 3090);
+    });
+
+    test('get balance is success', () async {
+      httpsService.responseJson = getBalanceResponse;
+      var requestJson = '{"jsonrpc":"2.0","id":${RPCRequest.getBalanceMethodId},"method":"${RPCRequest.getBalanceRPCMethod}","params":["83astBRguLMdt2h5U1Tpdq5tjFoJ6noeGwaY3mDLVcri",{"commitment":"finalized"}]}';
+
+      var request = GetBalanceRequest(
+          address: "83astBRguLMdt2h5U1Tpdq5tjFoJ6noeGwaY3mDLVcri");
+
+      expect(request.toJson(), requestJson);
+
+      var result = await solanaRPCService.getBalance(
+          request
+      );
+
+      expect(result is GetBalanceResponse, true);
+
+      var balanceResponse = result as GetBalanceResponse;
+
+      expect(balanceResponse.jsonrpc, "2.0");
+      expect(balanceResponse.id, RPCRequest.getBalanceMethodId);
+      expect(balanceResponse.method, null);
+      expect(balanceResponse.context?.slot, 1);
+      expect(balanceResponse.balance.compareTo(BigInt.zero), 0);
     });
 
     test('get account info is success', () async {

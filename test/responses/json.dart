@@ -1,3 +1,11 @@
+String getBalanceResponse = '''
+{
+  "jsonrpc": "2.0",
+  "result": { "context": { "slot": 1 }, "value": 0 },
+  "id": 2
+}
+''';
+
 String getProgramAccountsResponse = '''
 {
 	"jsonrpc": "2.0",
