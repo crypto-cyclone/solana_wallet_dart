@@ -224,11 +224,7 @@ class AnchorStruct extends AnchorSerializable {
 }
 
 class AnchorEnum<T extends Enum> extends AnchorSerializable {
-  final T value;
-
-  AnchorEnum({
-    required this.value
-  });
+  AnchorEnum();
 
   AnchorEnum deserialize(List<int> bytes) {
     throw UnimplementedError();
@@ -1148,7 +1144,7 @@ class AnchorFieldEnum<T extends AnchorEnum> extends AnchorField<T> {
 
   static AnchorFieldEnum<AnchorEnum> factory<T>() {
     return AnchorFieldEnum<AnchorEnum>(
-        value: AnchorEnum(value: AnchorEnumDefault.DEFAULT));
+        value: AnchorEnum());
   }
 }
 

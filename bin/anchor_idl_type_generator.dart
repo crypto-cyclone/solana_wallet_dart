@@ -62,8 +62,6 @@ class $className extends ${AnchorStructClassName()} {
 enum $enumName implements AnchorEnum {
   $enumOptions;
   
-  final Enum value = AnchorEnumDefault.DEFAULT;
-  
   @override
   AnchorEnum deserialize(List<int> bytes) {
     var index = bytes[0];

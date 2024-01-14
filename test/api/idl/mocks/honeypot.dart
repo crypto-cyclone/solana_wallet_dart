@@ -755,8 +755,6 @@ enum HoneypotPlayerStateEnum implements AnchorEnum {
   IDLE,
   ENGAGED;
 
-  final Enum value = AnchorEnumDefault.DEFAULT;
-
   @override
   AnchorEnum deserialize(List<int> bytes) {
     var index = bytes[0];

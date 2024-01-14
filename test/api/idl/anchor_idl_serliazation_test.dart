@@ -48,7 +48,7 @@ void main() {
           playerAccount.lastSeenField.value, 1701019200);
 
       expect(
-          playerAccount.stateField.value.value.index, 0);
+          playerAccount.stateField.value.index, 0);
     });
   });
 }
