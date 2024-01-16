@@ -768,9 +768,7 @@ class AnchorFieldPublicKey extends AnchorField<Uint8List> {
 
   @override
   Uint8List serialize() {
-    Uint8List lengthBytes = toLEByteArray(value.length, 4);
     return Uint8List.fromList([
-      ...lengthBytes,
       ...value
     ]);
   }

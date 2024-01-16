@@ -67,6 +67,8 @@ enum $enumName implements AnchorEnum {
     var index = bytes[0];
     var values = $enumName.values;
 
+    bytes.removeRange(0, 1);
+
     if (index < 0 || index >= values.length) {
       throw Exception("Invalid enum index.");
     }
