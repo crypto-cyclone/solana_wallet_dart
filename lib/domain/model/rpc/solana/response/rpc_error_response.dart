@@ -22,7 +22,7 @@ class RPCErrorResponse extends RPCResponse {
   static RPCErrorResponse fromJson(Map<String, dynamic> json) {
     String jsonrpc = json['jsonrpc'] as String;
     int id = json['id'] as int;
-    String method = json['method'] as String;
+    String? method = json['method'] as String?;
     RPCError error = RPCError.fromJson(json['error'] as Map<String, dynamic>);
 
     return RPCErrorResponse(
