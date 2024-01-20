@@ -9,7 +9,8 @@ class HoneypotAnchorIDL extends AnchorIDL {
   final HoneypotEngageInstruction engageInstruction;
   final HoneypotPlayInstruction playInstruction;
   final HoneypotRevealInstruction revealInstruction;
-  final HoneypotDrainInstruction drainInstruction;
+  final HoneypotDrainPlayerInstruction drainPlayerInstruction;
+  final HoneypotDrainGameInstruction drainGameInstruction;
   final HoneypotPlayerAccount playerAccount;
   final HoneypotGameAccount gameAccount;
   final HoneypotEngageAccount engageAccount;
@@ -20,26 +21,28 @@ class HoneypotAnchorIDL extends AnchorIDL {
       engageInstruction = HoneypotEngageInstruction(),
       playInstruction = HoneypotPlayInstruction(),
       revealInstruction = HoneypotRevealInstruction(),
-      drainInstruction = HoneypotDrainInstruction(),
+      drainPlayerInstruction = HoneypotDrainPlayerInstruction(),
+      drainGameInstruction = HoneypotDrainGameInstruction(),
       playerAccount = HoneypotPlayerAccount(),
       gameAccount = HoneypotGameAccount(),
       engageAccount = HoneypotEngageAccount(),
       super(
           version: '0.1.0',
           name: 'honeypot',
-          metadata: AnchorMetadata(address: 'D3Fmzy6k3JnHt6rxxrExxW9MnjdSCBF8A7PfFnyvxZY6')) {
+          metadata: AnchorMetadata(address: '6WE2EY62Pca64J2gLsiAHgHWSXz3EB1szZe5iaZVmp9s')) {
         initialize();
       }
 
   void initialize() {
+      serializationRegistry.register<AnchorFieldArray<AnchorFieldU8>>(() => AnchorFieldArray.factory<AnchorFieldU8>(8));
       serializationRegistry.register<AnchorFieldStruct<HoneypotSealedMoveStruct>>(() => AnchorFieldStruct.factory<HoneypotSealedMoveStruct>());
       serializationRegistry.register<AnchorFieldStruct<HoneypotRevealedMoveStruct>>(() => AnchorFieldStruct.factory<HoneypotRevealedMoveStruct>());
+      serializationRegistry.register<AnchorFieldPublicKey>(() => AnchorFieldPublicKey.factory());
       serializationRegistry.register<AnchorFieldArray<AnchorFieldU8>>(() => AnchorFieldArray.factory<AnchorFieldU8>(32));
       serializationRegistry.register<AnchorFieldU64>(() => AnchorFieldU64.factory());
       serializationRegistry.register<AnchorFieldU8>(() => AnchorFieldU8.factory());
       serializationRegistry.register<AnchorFieldI64>(() => AnchorFieldI64.factory());
       serializationRegistry.register<AnchorFieldEnum<HoneypotPlayerStateEnum>>(() => AnchorFieldEnum.factory<HoneypotPlayerStateEnum>());
-      serializationRegistry.register<AnchorFieldPublicKey>(() => AnchorFieldPublicKey.factory());
       serializationRegistry.register<AnchorFieldEnum<HoneypotGameStateEnum>>(() => AnchorFieldEnum.factory<HoneypotGameStateEnum>());
       serializationRegistry.register<AnchorFieldEnum<HoneypotMoveTypeEnum>>(() => AnchorFieldEnum.factory<HoneypotMoveTypeEnum>());
       serializationRegistry.register<AnchorFieldEnum<HoneypotEngageResultEnum>>(() => AnchorFieldEnum.factory<HoneypotEngageResultEnum>());
@@ -55,6 +58,7 @@ class HoneypotAnchorIDL extends AnchorIDL {
 }
 
 class HoneypotLoginInstruction extends AnchorInstruction {
+  final AnchorFieldArray<AnchorFieldU8> seedField;
   final AnchorInstructionAccount playerAccountAccount;
   final AnchorInstructionAccount gameAccountAccount;
   final AnchorInstructionAccount playerAccount;
@@ -62,7 +66,8 @@ class HoneypotLoginInstruction extends AnchorInstruction {
   final AnchorInstructionAccount recentSlotHashesAccount;
 
     HoneypotLoginInstruction()
-      : playerAccountAccount = AnchorInstructionAccount(name: 'playerAccount', isMut: true, isSigner: false, address: '', index: 0),
+      : seedField = AnchorFieldArray<AnchorFieldU8>(value: []),
+        playerAccountAccount = AnchorInstructionAccount(name: 'playerAccount', isMut: true, isSigner: false, address: '', index: 0),
         gameAccountAccount = AnchorInstructionAccount(name: 'gameAccount', isMut: true, isSigner: false, address: '', index: 1),
         playerAccount = AnchorInstructionAccount(name: 'player', isMut: true, isSigner: true, address: '', index: 2),
         systemProgramAccount = AnchorInstructionAccount(name: 'systemProgram', isMut: false, isSigner: false, address: '', index: 3),
@@ -70,7 +75,7 @@ class HoneypotLoginInstruction extends AnchorInstruction {
       super(
           name: 'login',
           args: {
-            },
+            'seed': AnchorFieldArray<AnchorFieldU8>(value: [])},
           accounts: {
             'playerAccount': AnchorInstructionAccount(name: 'playerAccount', isMut: true, isSigner: false, address: '', index: 0),
             'gameAccount': AnchorInstructionAccount(name: 'gameAccount', isMut: true, isSigner: false, address: '', index: 1),
@@ -78,9 +83,9 @@ class HoneypotLoginInstruction extends AnchorInstruction {
             'systemProgram': AnchorInstructionAccount(name: 'systemProgram', isMut: false, isSigner: false, address: '', index: 3),
             'recentSlotHashes': AnchorInstructionAccount(name: 'recentSlotHashes', isMut: false, isSigner: false, address: '', index: 4)});
   
-    HoneypotLoginInstruction withArgs() {
+    HoneypotLoginInstruction withArgs(List<int> seed) {
       return HoneypotLoginInstruction._withAll(
-        
+        seed,
         playerAccountAccount.address, gameAccountAccount.address, playerAccount.address, systemProgramAccount.address, recentSlotHashesAccount.address,
         true,
         accountsSet
@@ -89,15 +94,16 @@ class HoneypotLoginInstruction extends AnchorInstruction {
   
     HoneypotLoginInstruction withAccounts(String playerAccount, String gameAccount, String player, String systemProgram, String recentSlotHashes) {
       return HoneypotLoginInstruction._withAll(
-        
+        seedField.dartValue().map((e) => e as int).toList(),
         playerAccount, gameAccount, player, systemProgram, recentSlotHashes,
         argsSet,
         true
       );
     }
   
-    HoneypotLoginInstruction._withAll(String playerAccount, String gameAccount, String player, String systemProgram, String recentSlotHashes, bool argsSet, bool accountsSet)
-      : playerAccountAccount = AnchorInstructionAccount(name: 'playerAccount', isMut: true, isSigner: false, address: playerAccount, index: 0),
+    HoneypotLoginInstruction._withAll(List<int> seed, String playerAccount, String gameAccount, String player, String systemProgram, String recentSlotHashes, bool argsSet, bool accountsSet)
+      : seedField = AnchorFieldArray<AnchorFieldU8>(value: seed.map((e) => AnchorFieldU8(value: e)).toList()),
+        playerAccountAccount = AnchorInstructionAccount(name: 'playerAccount', isMut: true, isSigner: false, address: playerAccount, index: 0),
         gameAccountAccount = AnchorInstructionAccount(name: 'gameAccount', isMut: true, isSigner: false, address: gameAccount, index: 1),
         playerAccount = AnchorInstructionAccount(name: 'player', isMut: true, isSigner: true, address: player, index: 2),
         systemProgramAccount = AnchorInstructionAccount(name: 'systemProgram', isMut: false, isSigner: false, address: systemProgram, index: 3),
@@ -105,7 +111,7 @@ class HoneypotLoginInstruction extends AnchorInstruction {
         super(
           name: 'login',
           args: {
-            },
+            'seed': AnchorFieldArray<AnchorFieldU8>(value: seed.map((e) => AnchorFieldU8(value: e)).toList())},
           accounts: {
             'playerAccount': AnchorInstructionAccount(name: 'playerAccount', isMut: true, isSigner: false, address: playerAccount, index: 0),
             'gameAccount': AnchorInstructionAccount(name: 'gameAccount', isMut: true, isSigner: false, address: gameAccount, index: 1),
@@ -291,7 +297,7 @@ class HoneypotPlayInstruction extends AnchorInstruction {
   
     HoneypotPlayInstruction withAccounts(String playerAccount, String opponentAccount, String gameAccount, String engageAccount, String player, String opponent, String systemProgram) {
       return HoneypotPlayInstruction._withAll(
-        sealedMoveField.value,
+        sealedMoveField.dartValue(),
         playerAccount, opponentAccount, gameAccount, engageAccount, player, opponent, systemProgram,
         argsSet,
         true
@@ -367,7 +373,7 @@ class HoneypotRevealInstruction extends AnchorInstruction {
   
     HoneypotRevealInstruction withAccounts(String playerAccount, String opponentAccount, String gameAccount, String engageAccount, String player, String opponent, String systemProgram) {
       return HoneypotRevealInstruction._withAll(
-        revealedMoveField.value,
+        revealedMoveField.dartValue(),
         playerAccount, opponentAccount, gameAccount, engageAccount, player, opponent, systemProgram,
         argsSet,
         true
@@ -400,19 +406,19 @@ class HoneypotRevealInstruction extends AnchorInstruction {
   
 }
 
-class HoneypotDrainInstruction extends AnchorInstruction {
+class HoneypotDrainPlayerInstruction extends AnchorInstruction {
   final AnchorInstructionAccount playerAccountAccount;
   final AnchorInstructionAccount gameAccountAccount;
   final AnchorInstructionAccount playerAccount;
   final AnchorInstructionAccount systemProgramAccount;
 
-    HoneypotDrainInstruction()
+    HoneypotDrainPlayerInstruction()
       : playerAccountAccount = AnchorInstructionAccount(name: 'playerAccount', isMut: true, isSigner: false, address: '', index: 0),
         gameAccountAccount = AnchorInstructionAccount(name: 'gameAccount', isMut: true, isSigner: false, address: '', index: 1),
         playerAccount = AnchorInstructionAccount(name: 'player', isMut: true, isSigner: true, address: '', index: 2),
         systemProgramAccount = AnchorInstructionAccount(name: 'systemProgram', isMut: false, isSigner: false, address: '', index: 3),
       super(
-          name: 'drain',
+          name: 'drainPlayer',
           args: {
             },
           accounts: {
@@ -421,8 +427,8 @@ class HoneypotDrainInstruction extends AnchorInstruction {
             'player': AnchorInstructionAccount(name: 'player', isMut: true, isSigner: true, address: '', index: 2),
             'systemProgram': AnchorInstructionAccount(name: 'systemProgram', isMut: false, isSigner: false, address: '', index: 3)});
   
-    HoneypotDrainInstruction withArgs() {
-      return HoneypotDrainInstruction._withAll(
+    HoneypotDrainPlayerInstruction withArgs() {
+      return HoneypotDrainPlayerInstruction._withAll(
         
         playerAccountAccount.address, gameAccountAccount.address, playerAccount.address, systemProgramAccount.address,
         true,
@@ -430,8 +436,8 @@ class HoneypotDrainInstruction extends AnchorInstruction {
       );
     }
   
-    HoneypotDrainInstruction withAccounts(String playerAccount, String gameAccount, String player, String systemProgram) {
-      return HoneypotDrainInstruction._withAll(
+    HoneypotDrainPlayerInstruction withAccounts(String playerAccount, String gameAccount, String player, String systemProgram) {
+      return HoneypotDrainPlayerInstruction._withAll(
         
         playerAccount, gameAccount, player, systemProgram,
         argsSet,
@@ -439,13 +445,13 @@ class HoneypotDrainInstruction extends AnchorInstruction {
       );
     }
   
-    HoneypotDrainInstruction._withAll(String playerAccount, String gameAccount, String player, String systemProgram, bool argsSet, bool accountsSet)
+    HoneypotDrainPlayerInstruction._withAll(String playerAccount, String gameAccount, String player, String systemProgram, bool argsSet, bool accountsSet)
       : playerAccountAccount = AnchorInstructionAccount(name: 'playerAccount', isMut: true, isSigner: false, address: playerAccount, index: 0),
         gameAccountAccount = AnchorInstructionAccount(name: 'gameAccount', isMut: true, isSigner: false, address: gameAccount, index: 1),
         playerAccount = AnchorInstructionAccount(name: 'player', isMut: true, isSigner: true, address: player, index: 2),
         systemProgramAccount = AnchorInstructionAccount(name: 'systemProgram', isMut: false, isSigner: false, address: systemProgram, index: 3),
         super(
-          name: 'drain',
+          name: 'drainPlayer',
           args: {
             },
           accounts: {
@@ -458,7 +464,57 @@ class HoneypotDrainInstruction extends AnchorInstruction {
   
 }
 
+class HoneypotDrainGameInstruction extends AnchorInstruction {
+  final AnchorInstructionAccount gameAccountAccount;
+  final AnchorInstructionAccount creatorAccount;
+
+    HoneypotDrainGameInstruction()
+      : gameAccountAccount = AnchorInstructionAccount(name: 'gameAccount', isMut: true, isSigner: false, address: '', index: 0),
+        creatorAccount = AnchorInstructionAccount(name: 'creator', isMut: true, isSigner: true, address: '', index: 1),
+      super(
+          name: 'drainGame',
+          args: {
+            },
+          accounts: {
+            'gameAccount': AnchorInstructionAccount(name: 'gameAccount', isMut: true, isSigner: false, address: '', index: 0),
+            'creator': AnchorInstructionAccount(name: 'creator', isMut: true, isSigner: true, address: '', index: 1)});
+  
+    HoneypotDrainGameInstruction withArgs() {
+      return HoneypotDrainGameInstruction._withAll(
+        
+        gameAccountAccount.address, creatorAccount.address,
+        true,
+        accountsSet
+      );
+    }
+  
+    HoneypotDrainGameInstruction withAccounts(String gameAccount, String creator) {
+      return HoneypotDrainGameInstruction._withAll(
+        
+        gameAccount, creator,
+        argsSet,
+        true
+      );
+    }
+  
+    HoneypotDrainGameInstruction._withAll(String gameAccount, String creator, bool argsSet, bool accountsSet)
+      : gameAccountAccount = AnchorInstructionAccount(name: 'gameAccount', isMut: true, isSigner: false, address: gameAccount, index: 0),
+        creatorAccount = AnchorInstructionAccount(name: 'creator', isMut: true, isSigner: true, address: creator, index: 1),
+        super(
+          name: 'drainGame',
+          args: {
+            },
+          accounts: {
+            'gameAccount': AnchorInstructionAccount(name: 'gameAccount', isMut: true, isSigner: false, address: gameAccount, index: 0),
+            'creator': AnchorInstructionAccount(name: 'creator', isMut: true, isSigner: true, address: creator, index: 1)},
+          argsSet: argsSet,
+          accountsSet: accountsSet);
+  
+}
+
 class HoneypotPlayerAccount extends AnchorAccount {
+  final AnchorFieldPublicKey pubkeyField;
+  final AnchorFieldArray<AnchorFieldU8> seedField;
   final AnchorFieldArray<AnchorFieldU8> gameIdField;
   final AnchorFieldU64 lamportsField;
   final AnchorFieldU8 bumpField;
@@ -467,7 +523,9 @@ class HoneypotPlayerAccount extends AnchorAccount {
   final AnchorFieldPublicKey engageAccountField;
   
     HoneypotPlayerAccount()
-      : gameIdField = AnchorFieldArray<AnchorFieldU8>(value: [], size: 32),
+      : pubkeyField = AnchorFieldPublicKey(value: Uint8List(0)),
+        seedField = AnchorFieldArray<AnchorFieldU8>(value: [], size: 8),
+        gameIdField = AnchorFieldArray<AnchorFieldU8>(value: [], size: 32),
         lamportsField = AnchorFieldU64(value: 0),
         bumpField = AnchorFieldU8(value: 0),
         lastSeenField = AnchorFieldI64(value: 0),
@@ -476,6 +534,8 @@ class HoneypotPlayerAccount extends AnchorAccount {
       super(
           name: 'Player',
           fields: {
+            'pubkey': AnchorFieldPublicKey(value: Uint8List(0)),
+            'seed': AnchorFieldArray<AnchorFieldU8>(value: [], size: 8),
             'gameId': AnchorFieldArray<AnchorFieldU8>(value: [], size: 32),
             'lamports': AnchorFieldU64(value: 0),
             'bump': AnchorFieldU8(value: 0),
@@ -484,6 +544,8 @@ class HoneypotPlayerAccount extends AnchorAccount {
             'engageAccount': AnchorFieldPublicKey(value: Uint8List(0))});
   
     HoneypotPlayerAccount.withFields({
+        required this.pubkeyField,
+        required this.seedField,
         required this.gameIdField,
         required this.lamportsField,
         required this.bumpField,
@@ -492,6 +554,8 @@ class HoneypotPlayerAccount extends AnchorAccount {
         required this.engageAccountField}) : super(
           name: 'Player',
           fields: {
+            'pubkey': AnchorFieldPublicKey(value: pubkeyField.value),
+            'seed': AnchorFieldArray<AnchorFieldU8>(value: seedField.value, size: 8),
             'gameId': AnchorFieldArray<AnchorFieldU8>(value: gameIdField.value, size: 32),
             'lamports': AnchorFieldU64(value: lamportsField.value),
             'bump': AnchorFieldU8(value: bumpField.value),
@@ -509,6 +573,8 @@ class HoneypotPlayerAccount extends AnchorAccount {
               MapEntry(element.key, element.value.deserialize(bytes))));
       
       return HoneypotPlayerAccount.withFields(
+          pubkeyField: deserialized['pubkey'] as AnchorFieldPublicKey,
+          seedField: deserialized['seed'] as AnchorFieldArray<AnchorFieldU8>,
           gameIdField: deserialized['gameId'] as AnchorFieldArray<AnchorFieldU8>,
           lamportsField: deserialized['lamports'] as AnchorFieldU64,
           bumpField: deserialized['bump'] as AnchorFieldU8,
@@ -522,12 +588,14 @@ class HoneypotPlayerAccount extends AnchorAccount {
 
 class HoneypotGameAccount extends AnchorAccount {
   final AnchorFieldArray<AnchorFieldU8> idField;
+  final AnchorFieldPublicKey creatorField;
   final AnchorFieldEnum<HoneypotGameStateEnum> stateField;
   final AnchorFieldU64 playerCountField;
   final AnchorFieldU8 bumpField;
   
     HoneypotGameAccount()
       : idField = AnchorFieldArray<AnchorFieldU8>(value: [], size: 32),
+        creatorField = AnchorFieldPublicKey(value: Uint8List(0)),
         stateField = AnchorFieldEnum<HoneypotGameStateEnum>(value: HoneypotGameStateEnum.values.first),
         playerCountField = AnchorFieldU64(value: 0),
         bumpField = AnchorFieldU8(value: 0),
@@ -535,18 +603,21 @@ class HoneypotGameAccount extends AnchorAccount {
           name: 'Game',
           fields: {
             'id': AnchorFieldArray<AnchorFieldU8>(value: [], size: 32),
+            'creator': AnchorFieldPublicKey(value: Uint8List(0)),
             'state': AnchorFieldEnum<HoneypotGameStateEnum>(value: HoneypotGameStateEnum.values.first),
             'playerCount': AnchorFieldU64(value: 0),
             'bump': AnchorFieldU8(value: 0)});
   
     HoneypotGameAccount.withFields({
         required this.idField,
+        required this.creatorField,
         required this.stateField,
         required this.playerCountField,
         required this.bumpField}) : super(
           name: 'Game',
           fields: {
             'id': AnchorFieldArray<AnchorFieldU8>(value: idField.value, size: 32),
+            'creator': AnchorFieldPublicKey(value: creatorField.value),
             'state': AnchorFieldEnum<HoneypotGameStateEnum>(value: stateField.value),
             'playerCount': AnchorFieldU64(value: playerCountField.value),
             'bump': AnchorFieldU8(value: bumpField.value)});
@@ -562,6 +633,7 @@ class HoneypotGameAccount extends AnchorAccount {
       
       return HoneypotGameAccount.withFields(
           idField: deserialized['id'] as AnchorFieldArray<AnchorFieldU8>,
+          creatorField: deserialized['creator'] as AnchorFieldPublicKey,
           stateField: deserialized['state'] as AnchorFieldEnum<HoneypotGameStateEnum>,
           playerCountField: deserialized['playerCount'] as AnchorFieldU64,
           bumpField: deserialized['bump'] as AnchorFieldU8
@@ -669,6 +741,9 @@ class HoneypotSealedMoveStruct extends AnchorStruct {
     
   
   @override
+  dartValue() => this;
+  
+  @override
   HoneypotSealedMoveStruct deserialize(List<int> bytes) {
     var deserialized = Map.fromEntries(
       fields.entries.map((element) => MapEntry(element.key, element.value.deserialize(bytes))));
@@ -714,6 +789,9 @@ class HoneypotRevealedMoveStruct extends AnchorStruct {
     
   
   @override
+  dartValue() => this;
+  
+  @override
   HoneypotRevealedMoveStruct deserialize(List<int> bytes) {
     var deserialized = Map.fromEntries(
       fields.entries.map((element) => MapEntry(element.key, element.value.deserialize(bytes))));
@@ -743,6 +821,9 @@ enum HoneypotEngageResultEnum implements AnchorEnum {
   DEFENDER;
   
   @override
+  int dartValue() => index;
+  
+  @override
   AnchorEnum deserialize(List<int> bytes) {
     var index = bytes[0];
     var values = HoneypotEngageResultEnum.values;
@@ -765,6 +846,9 @@ enum HoneypotEngageResultEnum implements AnchorEnum {
 enum HoneypotPlayerStateEnum implements AnchorEnum {
   IDLE,
   ENGAGED;
+  
+  @override
+  int dartValue() => index;
   
   @override
   AnchorEnum deserialize(List<int> bytes) {
@@ -795,6 +879,9 @@ enum HoneypotMoveTypeEnum implements AnchorEnum {
   AUDIT;
   
   @override
+  int dartValue() => index;
+  
+  @override
   AnchorEnum deserialize(List<int> bytes) {
     var index = bytes[0];
     var values = HoneypotMoveTypeEnum.values;
@@ -818,6 +905,9 @@ enum HoneypotGameStateEnum implements AnchorEnum {
   NEW,
   STARTED,
   ENDED;
+  
+  @override
+  int dartValue() => index;
   
   @override
   AnchorEnum deserialize(List<int> bytes) {
@@ -845,45 +935,57 @@ class HoneypotMaxPlayersReachedError extends AnchorError {
 
 }
 
+class HoneypotMaxLamportsReachedError extends AnchorError {
+  HoneypotMaxLamportsReachedError()
+    : super(code: 6001, name: 'MaxLamportsReached', msg: 'Maximum lamports Reached');
+
+}
+
 class HoneypotInvalidGameError extends AnchorError {
   HoneypotInvalidGameError()
-    : super(code: 6001, name: 'InvalidGame', msg: 'Game ID is not valid');
+    : super(code: 6002, name: 'InvalidGame', msg: 'Game ID is not valid');
 
 }
 
 class HoneypotPlayerOfflineError extends AnchorError {
   HoneypotPlayerOfflineError()
-    : super(code: 6002, name: 'PlayerOffline', msg: 'Player is offline');
+    : super(code: 6003, name: 'PlayerOffline', msg: 'Player is offline');
 
 }
 
 class HoneypotPlayerEngagedError extends AnchorError {
   HoneypotPlayerEngagedError()
-    : super(code: 6003, name: 'PlayerEngaged', msg: 'Player is engaged');
+    : super(code: 6004, name: 'PlayerEngaged', msg: 'Player is engaged');
 
 }
 
 class HoneypotInvalidPlayerStateError extends AnchorError {
   HoneypotInvalidPlayerStateError()
-    : super(code: 6004, name: 'InvalidPlayerState', msg: 'Invalid Player state');
+    : super(code: 6005, name: 'InvalidPlayerState', msg: 'Invalid Player state');
 
 }
 
 class HoneypotInvalidPlayerError extends AnchorError {
   HoneypotInvalidPlayerError()
-    : super(code: 6005, name: 'InvalidPlayer', msg: 'Invalid Player');
+    : super(code: 6006, name: 'InvalidPlayer', msg: 'Invalid Player');
 
 }
 
 class HoneypotMissingCommitmentError extends AnchorError {
   HoneypotMissingCommitmentError()
-    : super(code: 6006, name: 'MissingCommitment', msg: 'One or more player moves have not been committed');
+    : super(code: 6007, name: 'MissingCommitment', msg: 'One or more player moves have not been committed');
 
 }
 
 class HoneypotIllegalRevealError extends AnchorError {
   HoneypotIllegalRevealError()
-    : super(code: 6007, name: 'IllegalReveal', msg: 'Reveal did not match the commitment');
+    : super(code: 6008, name: 'IllegalReveal', msg: 'Reveal did not match the commitment');
+
+}
+
+class HoneypotInvalidCreatorError extends AnchorError {
+  HoneypotInvalidCreatorError()
+    : super(code: 6009, name: 'InvalidCreator', msg: 'Invalid Creator');
 
 }
 

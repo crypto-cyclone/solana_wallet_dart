@@ -1,10 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:solana_wallet/domain/service/pda_service.dart';
-import 'package:solana_wallet/encoder/anchor/anchor_encoder.dart';
 import 'package:solana_wallet/encoder/base58/base_58_encoder.dart';
-import 'package:solana_wallet/encoder/solana/solana_encoder.dart';
 import 'package:test/expect.dart';
 import 'package:test/scaffolding.dart';
 
@@ -16,7 +13,7 @@ void main() {
 
     late HoneypotAnchorIDL _idl;
 
-    const String expectPlayAccount = "zd5wB6WbztonXb3YQrmNSOGK3GZLKH5CDUvlTS0YrGNthKv1jCw2lcCVqQUAAAAA+hgMp2UAAAAAAbddIsBy8jpTyJjNo5IjVKAMUecROcwNxmM5ajQ9Wb/CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+    const String expectPlayAccount = "zd5wB6Wbztq3tNogHsfF/PlNtHG0m4XnFT6aNwRMk+59jiDuk3yggf2INOvWAyDof3tELiFu5yYNXKFGkWupaBfxFwEVh9T7I1qDEAaps3BALG83AQAAAPwLHKxlAAAAAAF29I0QOVKo6Rixqg9w57AmqdeZvIvmcRe5rWxcebtXDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
 
     setUp(() async {
       _base58Encoder = Base58Encoder();
@@ -37,22 +34,22 @@ void main() {
       expect(
           _base58Encoder.encodeBase58(
               playerAccount.engageAccountField.value),
-          "DLmykQGZCraaPVHXnRwpW3GfUf6mPGCXuFzjEmj6y9fw"
+          "91MPefJ6fbYq3KoNsrikAJqgv1pftcx3WhoL4b1hS1H5"
       );
 
       expect(
-          playerAccount.bumpField.value, 250);
+          playerAccount.bumpField.value, 252);
 
       expect(
           _base58Encoder.encodeBase58(
               Uint8List.fromList(playerAccount.gameIdField.value.map((e) => e.value).toList())),
-          "3efojWyvcB8nb1bt19G1wEcyjZrFwGTWC59bx4tNcFtg");
+          "9ado7KVoRnYPua2HabFnTjHxF4tRoPH2UV4nMypUrsMh");
 
       expect(
-          playerAccount.lamportsField.value, 95000000);
+          playerAccount.lamportsField.value, 5225000000);
 
       expect(
-          playerAccount.lastSeenField.value, 1705446424);
+          playerAccount.lastSeenField.value, 1705778187);
 
       expect(
           playerAccount.stateField.value.index, 1);

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:solana_wallet/api/idl/anchor_idl.dart';
@@ -22,94 +23,97 @@ void main() {
     late HoneypotAnchorIDL _idl;
 
     const String expectLoginTransaction =
-        "2WV4KVH2WF6ZjbZ1GwjS64w7Vt2ns" +
-        "pA6eRaLznjQa1fR2n8h8x7717EeMg" +
-        "N6sbeTR7Pfr6bXmvwfRaLpqYB4c1r" +
-        "ZMd2ue6Vh7rVGGbepYnTW3FQHBs9r" +
-        "8rJUcawdHnz97pmnsKWZrQnQhvfoz" +
-        "bAMpm7nMsLrgy4Ui2XtM9DxJNexk5" +
-        "LxVksu4bnXtHVDMiSK2WGGgoUtG3y" +
-        "tgLPgcm8JnHz8uZj9atrupQq9NezV" +
-        "Y7NEskvf4ed531L7rzwRfcATKR6Sq" +
-        "SSicCsbRvv7DHvr8b9CWowmUKcQZt" +
-        "Jf5Sndjts8F6niZa5Ac6zMXLcY47Q" +
-        "kHmJoWez3ak6e8rkXMeHeiQiqwwWk" +
-        "sVTA5JaCqwMwqcSmeXaT6uX8PRAM6" +
-        "29KdtEYGdtaMp1WXKRsA37ndzqtcV" +
-        "YB5UXkMK6zSGxgkUT";
+        "2LaRBvdTzzoxBeHuJ35Gbh3NQUQecj" +
+        "iAax9MTqULSeZHVjzzQyyX1QHK4Cf8" +
+        "WVQVM3rQY8kFEBVDGSWj4oaxiKtN1Q" +
+        "K3HudZu1ZSN9kQoY6WvhqFnRLt625f" +
+        "gYt7RG5yLNi9VitkS9WUfsP21vLcw7" +
+        "UboFU4mhE5yGSAb8sJHdoJy91pLEXP" +
+        "GT8LZDpQCj194FzUjjqAyHaAgUFzBC" +
+        "qoyYkXh13DVA22Chd8pRBYTtJEM7VR" +
+        "tBxnfHiWQyzGwUTLWqVi3i3VrL43eM" +
+        "6x9bz6Ty7Gc8E4NPTY7ok8XDeJ6zzq" +
+        "dWPka7AEKyxtHtD47RDe2RbN54PJSo" +
+        "SzSfHBdNLJem3pr6akNDegjD9dEZJ4" +
+        "Xp7U5h7kGt9RwGFrkjZYNCsBF1otrm" +
+        "3GwLRVXc8G7z812KRxprS2c8mwFFa4" +
+        "aByyk2sDZrdthM";
 
     const String expectPingTransaction =
-        "xaZi5f7h81Unu9LcBt6VDQcaCDqfg" +
-        "DhJXq49nnd8nQh4JxivH5MxZW3DjF" +
-        "r1Rt1NKyDbpiFUGSbk6yVMdaoN223" +
-        "FEakKgUTBuyHDh3edFBxD6AVmrkh6" +
-        "8z6GAp329BiendSXLRFV5y2W7L8Fg" +
-        "aqQmSJUMAEAEartMXB3dwExoC9gyx" +
-        "SHjmpbzc55YXXGzrdD1oowotWmYuW" +
-        "NVPiequFgaAUXsJCirB5C72EBBuGJ" +
-        "DR9YTvpYVhp7QiHwdf9taBtoayNm9" +
-        "4TN5xHpT5BgBzGU6ziPHDRyeMqHSA" +
-        "LC7RVLRRTdywjAxqjCrBmErrieobp" +
-        "1BVLZbuf9xwYc";
+        "sv4Ed3dfUUmvwTCnQocJEE6w5Jqmyh" +
+        "6tDczXnxz6o4hHmV5Q789ELZAwYMCu" +
+        "ks4e1sEeR1ngQC2FDDzBDSBamMGB3K" +
+        "YE8q7jna9DGXx8yCqQ4CAMaD6oCiYb" +
+        "9QTAwnEY6HFv7xCkoUe5sBrBnZ2yRK" +
+        "WwkdsgbyRTEwamptYnDMBx9U1Jwr5U" +
+        "DCf7gz7vGBUZwDsFc2cfZPnF4cR52T" +
+        "UPtxBqZqtBKo8EXiKJvCepbmGBBToU" +
+        "9UhNZEtWppJaqq9WHn1bESzjwnFvhJ" +
+        "JoCF6TBNBHV4NdfY7Dr4YWPg3UmLH4" +
+        "NLDpU9pcVNHcF883ZuicppFf6Ge1N4" +
+        "xG";
 
     const String expectEngageTransaction =
-        "EThQ4oQKZUVRzFLJhuGH8ogQrR3xf2N" +
-        "h1WsMiiip5YTvZV4nM374oxwdAKxRxQ" +
-        "m5iJ38jRkZyJ8WZLdcYHT3P6CHu88dN" +
-        "avEbNG9yDBK9qwJVWpSNLgQuYQ2VWXV" +
-        "CYiWqNad2M4i4tBNvoKpjtXGyXFG6rQ" +
-        "S351cJAywsWVFXVGpn77NbiwpBTv5Ax" +
-        "Yk7zwSqbqbkYTiGgDAQXJRs7eoRLv3d" +
-        "1xVGJQsYR3b1nePK4wgFvdfaAqALNJ9" +
-        "DM8AQ4GoVATr1pSKiUaUQNd9yXyV3f2" +
-        "FaW8CeiAexhowyTcdxXJVGuLsHJGvTu" +
-        "iTVAoBVLbwbNzUZW88P3Hn8n1fS9xMv" +
-        "5G9WAphLyRv786suL3UsC5jVKwm4Cti" +
-        "HPLeCCcgf3W7savtVtyorQqR8Mg6ZsL" +
-        "ggE7Uu2v2QjMxxUY16Xsv38AdN8AhUr" +
-        "KizfCBTkvZoRiUtJtAgr7yXoZrohC53" +
-        "n1aD27JuaEm88LjDMHsPS3zi4zLPXbK" +
-        "1H9Lm8EqPCUsQif2e9";
+        "E8XjDoeFVjxgx9gQQao1cHerAmJ4td" +
+        "5FfqshWJydBDDqZeZDM24KzG7d3igJ" +
+        "2dbTjPsV8eB8pHeC4SDYL3hfLTW815" +
+        "FBUPE3eGEZWiuDdLon8uy64HVY5py8" +
+        "giPcpTbWiiJXKkM7ZRYAZw1kJad1Rm" +
+        "w1uZMKDfivy8TQzMtA2Q3e7VaxLqEr" +
+        "XxdvAnEpCfh7fiFAUi1TpmhMQDzc1b" +
+        "PFf6wWaT4NKaNUEXzdJqXQQWcm4kgU" +
+        "ZH7XCj9PPNvQ7Xrcqz8izwVSjo7ZEk" +
+        "PcsaJHE8YADM4HgDXpHsCzSgZKFzAH" +
+        "f5CXqHEoFXxiUHaq8yKdP4cUVg6ffb" +
+        "6AWp8YQeWnCDQbi1NkUtsSpikPBGQt" +
+        "F2TPqXZvqbsRqRbz7bTG4yiqEoqxBM" +
+        "KjYcHcHGBqLtXqx8WWJxG5T3FKWM34" +
+        "p7xvEPCwrN6sxJFW7jfoA1xWmdDqZb" +
+        "ugWnbxkVAMvuQSiSVkA38PmfcXqQEz" +
+        "Tsvhfs9fySAKoWHeLBgtaqWMfCfeRy" +
+        "bdi5";
 
     const String expectPlayTransaction =
-        "mUc4FH3xYBQz8ntLEcpYNtyRNN36y9" +
-        "73fAQYEnsz5F4qjGTGuku5ow8HNaHU" +
-        "Sv4je8nsyMDc9zvpAaxYZoniEe7kmR" +
-        "T8yYQJT2NB2Jdviz1r3uDWGBNL5hHm" +
-        "h1dErukVAGkRpubzVrpdmohcUa1TEb" +
-        "s5hxnvhZMdxomiLRe5oPsDtb1A2UAb" +
-        "6pFgDEAYhgVLmeA4AXX4UrHhPomAWa" +
-        "YHyuWLKdogyuBUXUmkLVr18FDByqJo" +
-        "v5i4aTt1xRoWgUCXKLxu8V8eH8BEtX" +
-        "TGsZRTg5V7U9nyruoQCDxSgNdFtsJm" +
-        "nuidvybLDXcE59kENRrxuD5W1r1WA7" +
-        "kvKoHqenwMmoakDt1BvgiBk2QybwjM" +
-        "izi9XgdTEG7ACobrwBvZzQCCDZiFMc" +
-        "f2EKaGdTDQobTJSDKoFqkEuqzN2wSe" +
-        "4BG82KE31zCKEAp73C9sWaMnM9CWRC" +
-        "nCTkqi22FTYmvCJwTwRDHGq47Aevpm" +
-        "fUdDbjPro5AtvrQHPBPDJHJx79QB5V" +
-        "Vrjn8NdEXKSWgZSW11njSyF9JHsguk" +
-        "kgNYRwqjiTZL9pnU";
+        "qufmRX7sguiZZ9ozTqM7XhJ1w1QLe" +
+        "A3fZYR7EZ57K69FaJVb4r14Ds6Ec6" +
+        "Ygz5WWGxSFACtkA5t8iTNxptLV7vy" +
+        "j9vbp6k2hp3RwLA1wSB4kzUNHxgDm" +
+        "sfUUay3D1rwdMSrWhFrSJZC31Lrfj" +
+        "6gYLWakjLvCSReLy6w3QvnvFVEjNb" +
+        "Qqa4hvnuamnnm616F1SALX7gFru1B" +
+        "8pDZRdzENGZ9b63oPSs7ndtNNAuJY" +
+        "MGvxsL8GQyiUKkVLHoz7KTsDxWgUr" +
+        "pWjUmHZEGYuwSginkosMsR8LKbpjv" +
+        "d3vSUcByrFYRUqTQukSj8vzUDNsVb" +
+        "4Yy45XRNcp1YWu7mwiVdRCWcoZF17" +
+        "6a5sFdYAaxKANTrFSpP2f9AiH5DPi" +
+        "9qse12xS9PyQVREUcUZfQZmkxBaMN" +
+        "4Mmsg3q87PMYaT2k2HVSTQvSA1sft" +
+        "PVkmjbabQmgt6DLxExNaR9enJ8nEC" +
+        "YFvPYjuRyFBeZ9AMLLadprQoYb19L" +
+        "aFugAWc4ZtDHaFfHbsS4hEvfpQwKg" +
+        "Y2p3Q5MbsMMBHFDrS9ZCXttzHmMpU" +
+        "8MQbz";
 
     const String expectRevealTransaction =
-        "7Gqyuzt1P3gh5f6kkGZPGNsrKS1F9xXM" +
-        "mprZCZbFzHtrSLNeRyG9UJUcCALgdGC6" +
-        "A6xpCAsKUa6zv97T5yfAKsA6iLuwhLEA" +
-        "capeqLRiH7JQFj9skQtkQaqYmXPQEQCy" +
-        "g27GP7NqF3S6PfGCj4vTCCmzCuN6SMXA" +
-        "giyDJ9k35WsgujCm76cSuKQdrqkdcXRK" +
-        "mZE7CTe3J2fsDBFHFoG5XNiBrXCDtosw" +
-        "QbNpWouSbeWESLHNKP1EdZojYudJZ5bQ" +
-        "i2Mg28VT8LzVf6sGeszZ6bZwpceWWY8y" +
-        "E1qZkMHWKtoAC93YJ8EQtrehKudDEJhf" +
-        "bYuj2DWzJwJNU49msXFZp32zBF3fi6mu" +
-        "Zs8NTM3wedFZoRDzitwApR7XUb6LadjV" +
-        "8hFGWRwpXx8eNg3GMRD5vJTFfD59VDsJ" +
-        "jQLFenRNqBuztU5zmJaincYJYmwaTzma" +
-        "nr6WSXZsWHgYnPVjSweFPNxGX7ccQXX9" +
-        "PxWn1br4Y56XRjFFvh2VmSmiobWZYRir" +
-        "LWgTQByPaXsYPUyPrBLdKJqq";
+        "6UdwxW3pHfoZQtzoETGqYdodQ76JASs" +
+        "jeYCYR8Rxj7Q9VKYj2iEHpEs1JVJ4K7" +
+        "JADypguSY91GpCfdnTKSF8K7DLdTFRj" +
+        "mLdEdfJC4AnZLTZWoNyS6nXPSr2A5N4" +
+        "wNneiEkdLhDpDaNoEr3a5bwx8E9hB3s" +
+        "jMU99s7BRDzwfLid8GdP1X8R4tXjDta" +
+        "5CXSDnZ7uCH2J1jQoyuQTGunGDSLH4H" +
+        "6gijZ8MaZz3srNVbzccLbHpo6717wWx" +
+        "5EZGbsMZdpQ3R6mitw2nJcaoFAidUty" +
+        "pBy6wmAuWLLQf83YPCKeZg6zUMvcuAg" +
+        "uAwiGKYga9rY1TWmZqjPqwF34LtmcA5" +
+        "Fz1sihiR4KnWkWpC1qQpNHRRkXVTyKR" +
+        "1CmLtfguZrrjatgr8rkR91LhJUW9XLa" +
+        "AkKby1DzRNbBdxcb9ffScoMTcAejNBk" +
+        "e1SMZzAheaqwhEnKA7yihKVa3QsY7JA" +
+        "nrXA6ofjNAkiDohMmeuwArFXRAUHqpn" +
+        "bCvHUhsDaw6oNGxofewnzgDYnTKt2EP" +
+        "c4N8QgEyy";
 
     setUp(() async {
       _base58Encoder = Base58Encoder();
@@ -125,22 +129,27 @@ void main() {
       var blockhash = "563MEMYqt2tQuaAM6aWwcfgsNdopaetuqABoEAiVnsAk";
       var programId = _idl.metadata.address;
 
-      var signerSecert = "fWPVvAFaVWzRTNKbL51mmCq2eTnbzEpNNTMkMFR3Vta6xEFZBqZg5AeXkm1ANiC4oo4PimyhVBjMuM3x96ckmon";
+      var signerSecret = "fWPVvAFaVWzRTNKbL51mmCq2eTnbzEpNNTMkMFR3Vta6xEFZBqZg5AeXkm1ANiC4oo4PimyhVBjMuM3x96ckmon";
 
-      var player = "8rVNjLGctXjjDBayZ9o4uTKR2h3B8WM6ViYNCpxP7Phz";
+      var player = _base58Encoder.encodeBase58(
+          Uint8List.fromList(_base58Encoder.decodeBase58(signerSecret).getRange(32, 64).toList()));
 
-      var playerAccount = "4LLCGGNYVEkAczfpC52UrPBuwzDepRjTswsbSJUocQ8A";
-      var gameAccount = "Gn4atCUBKtehgfpp6VqZKTknw7tvyRw5BXJBmTNVkJ68";
+      var playerAccount = _base58Encoder.encodeBase58(
+          (await _pdaService.findProgramAddress([utf8.encode("player_account"), _base58Encoder.decodeBase58(player)], programId)).key);
+
+      var gameAccount = _base58Encoder.encodeBase58(
+          (await _pdaService.findProgramAddress([utf8.encode("game_account")], programId)).key);
+
       var systemProgram = "11111111111111111111111111111111";
       var recentSlotHashes = "SysvarS1otHashes111111111111111111111111111";
 
       var playerKeyPair = await SolanaKeyPair(
           _base58Encoder.decodeBase58(player), Uint8List.fromList(
-          _base58Encoder.decodeBase58(signerSecert).take(32).toList()))
+          _base58Encoder.decodeBase58(signerSecret).take(32).toList()))
           .toKeyPair();
 
       var transaction = await HoneypotLoginInstruction()
-          .withArgs()
+          .withArgs([0, 0, 0, 0, 0, 0, 0, 0])
           .withAccounts(
           playerAccount, gameAccount, player, systemProgram, recentSlotHashes)
           .toTransaction(programId, blockhash)
@@ -153,12 +162,12 @@ void main() {
       expect(transaction.message.instructions.length, 1);
       expect(transaction.message.instructions[0].programIdIndex, 4);
       expect(transaction.message.accountAddresses, [
-        '8rVNjLGctXjjDBayZ9o4uTKR2h3B8WM6ViYNCpxP7Phz',
-        '4LLCGGNYVEkAczfpC52UrPBuwzDepRjTswsbSJUocQ8A',
-        'Gn4atCUBKtehgfpp6VqZKTknw7tvyRw5BXJBmTNVkJ68',
-        '11111111111111111111111111111111',
-        'D3Fmzy6k3JnHt6rxxrExxW9MnjdSCBF8A7PfFnyvxZY6',
-        'SysvarS1otHashes111111111111111111111111111',
+        player,
+        playerAccount,
+        gameAccount,
+        systemProgram,
+        programId,
+        recentSlotHashes,
       ]);
       expect(transaction.message.instructions[0].accountIndices,
           Uint8List.fromList([1, 2, 0, 3, 5]));
@@ -178,16 +187,20 @@ void main() {
       var blockhash = "563MEMYqt2tQuaAM6aWwcfgsNdopaetuqABoEAiVnsAk";
       var programId = _idl.metadata.address;
 
-      var signerSecert = "fWPVvAFaVWzRTNKbL51mmCq2eTnbzEpNNTMkMFR3Vta6xEFZBqZg5AeXkm1ANiC4oo4PimyhVBjMuM3x96ckmon";
+      var signerSecret = "fWPVvAFaVWzRTNKbL51mmCq2eTnbzEpNNTMkMFR3Vta6xEFZBqZg5AeXkm1ANiC4oo4PimyhVBjMuM3x96ckmon";
 
-      var player = "8rVNjLGctXjjDBayZ9o4uTKR2h3B8WM6ViYNCpxP7Phz";
+      var player = _base58Encoder.encodeBase58(
+          Uint8List.fromList(_base58Encoder.decodeBase58(signerSecret).getRange(32, 64).toList()));
 
-      var playerAccount = "4LLCGGNYVEkAczfpC52UrPBuwzDepRjTswsbSJUocQ8A";
-      var gameAccount = "Gn4atCUBKtehgfpp6VqZKTknw7tvyRw5BXJBmTNVkJ68";
+      var playerAccount = _base58Encoder.encodeBase58(
+          (await _pdaService.findProgramAddress([utf8.encode("player_account"), _base58Encoder.decodeBase58(player)], programId)).key);
+
+      var gameAccount = _base58Encoder.encodeBase58(
+          (await _pdaService.findProgramAddress([utf8.encode("game_account")], programId)).key);
 
       var playerKeyPair = await SolanaKeyPair(
           _base58Encoder.decodeBase58(player), Uint8List.fromList(
-          _base58Encoder.decodeBase58(signerSecert).take(32).toList()))
+          _base58Encoder.decodeBase58(signerSecret).take(32).toList()))
           .toKeyPair();
 
       var transaction = await HoneypotPingInstruction()
@@ -216,10 +229,10 @@ void main() {
 
       expect(
           transaction.message.accountAddresses, [
-        "8rVNjLGctXjjDBayZ9o4uTKR2h3B8WM6ViYNCpxP7Phz",
-        "4LLCGGNYVEkAczfpC52UrPBuwzDepRjTswsbSJUocQ8A",
-        "Gn4atCUBKtehgfpp6VqZKTknw7tvyRw5BXJBmTNVkJ68",
-        "D3Fmzy6k3JnHt6rxxrExxW9MnjdSCBF8A7PfFnyvxZY6"
+          player,
+          playerAccount,
+          gameAccount,
+          programId
       ]);
 
       expect(
@@ -239,26 +252,36 @@ void main() {
     test('engage instruction to transaction', () async {
       var blockhash = "563MEMYqt2tQuaAM6aWwcfgsNdopaetuqABoEAiVnsAk";
       var programId = _idl.metadata.address;
-      var signerSecert = "fWPVvAFaVWzRTNKbL51mmCq2eTnbzEpNNTMkMFR3Vta6xEFZBqZg5AeXkm1ANiC4oo4PimyhVBjMuM3x96ckmon";
-      
-      var player = "8rVNjLGctXjjDBayZ9o4uTKR2h3B8WM6ViYNCpxP7Phz";
+      var signerSecret = "fWPVvAFaVWzRTNKbL51mmCq2eTnbzEpNNTMkMFR3Vta6xEFZBqZg5AeXkm1ANiC4oo4PimyhVBjMuM3x96ckmon";
+      var signerSecret2 = "2mDoDZb8dPzj8swAJ5uKyeHX3cm2PcNUCqQsFxTb8QQuNWoq7EC7wGVYAhfK82JSvB3V7dkTx4WyN3YPHurgDHvw";
 
-      var challenger = "9XkK1fEkZUKWVNQFZH9kLFkaPmboiF94ofrsZeFAxSut";
-      var defender = "8rVNjLGctXjjDBayZ9o4uTKR2h3B8WM6ViYNCpxP7Phz";
-      
-      var challengerAccount = "AGAH3hkzVWwpYddpU3vuMxFQFev8GeyE5tirCnPnZCgS";
-      var defenderAccount = "4LLCGGNYVEkAczfpC52UrPBuwzDepRjTswsbSJUocQ8A";
+      var player = _base58Encoder.encodeBase58(
+          Uint8List.fromList(_base58Encoder.decodeBase58(signerSecret).getRange(32, 64).toList()));
 
-      var gameAccount = "Gn4atCUBKtehgfpp6VqZKTknw7tvyRw5BXJBmTNVkJ68";
-      var engageAccount = "BYgfK9ZREzcVwAkhQ9wjMtktFcFFzV9x8mT65MrizYri";
+      var challenger = _base58Encoder.encodeBase58(
+          Uint8List.fromList(_base58Encoder.decodeBase58(signerSecret2).getRange(32, 64).toList()));
+
+      var defender = player;
+
+      var challengerAccount = _base58Encoder.encodeBase58(
+          (await _pdaService.findProgramAddress([utf8.encode("player_account"), _base58Encoder.decodeBase58(challenger)], programId)).key);
+
+      var defenderAccount = _base58Encoder.encodeBase58(
+          (await _pdaService.findProgramAddress([utf8.encode("player_account"), _base58Encoder.decodeBase58(defender)], programId)).key);
+
+      var gameAccount = _base58Encoder.encodeBase58(
+          (await _pdaService.findProgramAddress([utf8.encode("game_account")], programId)).key);
+
+      var engageAccount = _base58Encoder.encodeBase58(
+          (await _pdaService.findProgramAddress([utf8.encode("engage_account"), _base58Encoder.decodeBase58(challenger), _base58Encoder.decodeBase58(defender)], programId)).key);
 
       var systemProgram = "11111111111111111111111111111111";
 
       var playerKeyPair = await SolanaKeyPair(
           _base58Encoder.decodeBase58(player), Uint8List.fromList(
-          _base58Encoder.decodeBase58(signerSecert).take(32).toList()))
+          _base58Encoder.decodeBase58(signerSecret).take(32).toList()))
           .toKeyPair();
-      
+
       var transaction = await HoneypotEngageInstruction()
           .withArgs()
           .withAccounts(challengerAccount, defenderAccount, gameAccount, engageAccount, player, challenger, defender, systemProgram)
@@ -282,14 +305,14 @@ void main() {
 
       expect(
           transaction.message.accountAddresses, [
-            "8rVNjLGctXjjDBayZ9o4uTKR2h3B8WM6ViYNCpxP7Phz",
-            "4LLCGGNYVEkAczfpC52UrPBuwzDepRjTswsbSJUocQ8A",
-            "AGAH3hkzVWwpYddpU3vuMxFQFev8GeyE5tirCnPnZCgS",
-            "BYgfK9ZREzcVwAkhQ9wjMtktFcFFzV9x8mT65MrizYri",
-            "Gn4atCUBKtehgfpp6VqZKTknw7tvyRw5BXJBmTNVkJ68",
-            "11111111111111111111111111111111",
-            "9XkK1fEkZUKWVNQFZH9kLFkaPmboiF94ofrsZeFAxSut",
-            "D3Fmzy6k3JnHt6rxxrExxW9MnjdSCBF8A7PfFnyvxZY6"
+            player,
+            defenderAccount,
+            challengerAccount,
+            gameAccount,
+            engageAccount,
+            systemProgram,
+            challenger,
+            programId,
       ]);
 
       expect(
@@ -297,7 +320,7 @@ void main() {
 
       expect(
           transaction.message.instructions[0].accountIndices,
-          Uint8List.fromList([2, 1, 4, 3, 0, 6, 0, 5]));
+          Uint8List.fromList([2, 1, 3, 4, 0, 6, 0, 5]));
 
       AnchorInstructionData instructionData = transaction.message
           .instructions[0].data as AnchorInstructionData;
@@ -311,23 +334,37 @@ void main() {
 
     test('play instruction to transaction', () async {
       var blockhash = "563MEMYqt2tQuaAM6aWwcfgsNdopaetuqABoEAiVnsAk";
+
       var programId = _idl.metadata.address;
-      var signerSecert = "fWPVvAFaVWzRTNKbL51mmCq2eTnbzEpNNTMkMFR3Vta6xEFZBqZg5AeXkm1ANiC4oo4PimyhVBjMuM3x96ckmon";
+      var signerSecret = "fWPVvAFaVWzRTNKbL51mmCq2eTnbzEpNNTMkMFR3Vta6xEFZBqZg5AeXkm1ANiC4oo4PimyhVBjMuM3x96ckmon";
+      var signerSecret2 = "2mDoDZb8dPzj8swAJ5uKyeHX3cm2PcNUCqQsFxTb8QQuNWoq7EC7wGVYAhfK82JSvB3V7dkTx4WyN3YPHurgDHvw";
 
-      var player = "8rVNjLGctXjjDBayZ9o4uTKR2h3B8WM6ViYNCpxP7Phz";
-      var opponent = "9XkK1fEkZUKWVNQFZH9kLFkaPmboiF94ofrsZeFAxSut";
-      
-      var playerAccount = "4LLCGGNYVEkAczfpC52UrPBuwzDepRjTswsbSJUocQ8A";
-      var opponentAccount = "AGAH3hkzVWwpYddpU3vuMxFQFev8GeyE5tirCnPnZCgS";
+      var player = _base58Encoder.encodeBase58(
+          Uint8List.fromList(_base58Encoder.decodeBase58(signerSecret).getRange(32, 64).toList()));
 
-      var gameAccount = "Gn4atCUBKtehgfpp6VqZKTknw7tvyRw5BXJBmTNVkJ68";
-      var engageAccount = "BYgfK9ZREzcVwAkhQ9wjMtktFcFFzV9x8mT65MrizYri";
+      var opponent = _base58Encoder.encodeBase58(
+          Uint8List.fromList(_base58Encoder.decodeBase58(signerSecret2).getRange(32, 64).toList()));
+
+      var defender = player;
+      var challenger = opponent;
+
+      var playerAccount = _base58Encoder.encodeBase58(
+          (await _pdaService.findProgramAddress([utf8.encode("player_account"), _base58Encoder.decodeBase58(player)], programId)).key);
+
+      var opponentAccount = _base58Encoder.encodeBase58(
+          (await _pdaService.findProgramAddress([utf8.encode("player_account"), _base58Encoder.decodeBase58(opponent)], programId)).key);
+
+      var gameAccount = _base58Encoder.encodeBase58(
+          (await _pdaService.findProgramAddress([utf8.encode("game_account")], programId)).key);
+
+      var engageAccount = _base58Encoder.encodeBase58(
+          (await _pdaService.findProgramAddress([utf8.encode("engage_account"), _base58Encoder.decodeBase58(challenger), _base58Encoder.decodeBase58(defender)], programId)).key);
 
       var systemProgram = "11111111111111111111111111111111";
 
       var playerKeyPair = await SolanaKeyPair(
           _base58Encoder.decodeBase58(player), Uint8List.fromList(
-          _base58Encoder.decodeBase58(signerSecert).take(32).toList()))
+          _base58Encoder.decodeBase58(signerSecret).take(32).toList()))
           .toKeyPair();
 
       var rawHashedMove = _base58Encoder.decodeBase58("7Bz6Bkinxwg6ppHDojzh2UeohSxvEqvic8VWptHvxTxL").toList();
@@ -363,14 +400,14 @@ void main() {
 
       expect(
           transaction.message.accountAddresses, [
-        "8rVNjLGctXjjDBayZ9o4uTKR2h3B8WM6ViYNCpxP7Phz",
-        "4LLCGGNYVEkAczfpC52UrPBuwzDepRjTswsbSJUocQ8A",
-        "AGAH3hkzVWwpYddpU3vuMxFQFev8GeyE5tirCnPnZCgS",
-        "BYgfK9ZREzcVwAkhQ9wjMtktFcFFzV9x8mT65MrizYri",
-        "Gn4atCUBKtehgfpp6VqZKTknw7tvyRw5BXJBmTNVkJ68",
-        "11111111111111111111111111111111",
-        "9XkK1fEkZUKWVNQFZH9kLFkaPmboiF94ofrsZeFAxSut",
-        "D3Fmzy6k3JnHt6rxxrExxW9MnjdSCBF8A7PfFnyvxZY6"
+            player,
+            playerAccount,
+            opponentAccount,
+            gameAccount,
+            engageAccount,
+            systemProgram,
+            opponent,
+            programId,
       ]);
 
       expect(
@@ -378,7 +415,7 @@ void main() {
 
       expect(
           transaction.message.instructions[0].accountIndices,
-          Uint8List.fromList([1, 2, 4, 3, 0, 6, 5]));
+          Uint8List.fromList([1, 2, 3, 4, 0, 6, 5]));
 
       AnchorInstructionData instructionData = transaction.message
           .instructions[0].data as AnchorInstructionData;
@@ -393,23 +430,37 @@ void main() {
 
     test('reveal instruction to transaction', () async {
       var blockhash = "563MEMYqt2tQuaAM6aWwcfgsNdopaetuqABoEAiVnsAk";
+
       var programId = _idl.metadata.address;
-      var signerSecert = "fWPVvAFaVWzRTNKbL51mmCq2eTnbzEpNNTMkMFR3Vta6xEFZBqZg5AeXkm1ANiC4oo4PimyhVBjMuM3x96ckmon";
+      var signerSecret = "fWPVvAFaVWzRTNKbL51mmCq2eTnbzEpNNTMkMFR3Vta6xEFZBqZg5AeXkm1ANiC4oo4PimyhVBjMuM3x96ckmon";
+      var signerSecret2 = "2mDoDZb8dPzj8swAJ5uKyeHX3cm2PcNUCqQsFxTb8QQuNWoq7EC7wGVYAhfK82JSvB3V7dkTx4WyN3YPHurgDHvw";
 
-      var player = "8rVNjLGctXjjDBayZ9o4uTKR2h3B8WM6ViYNCpxP7Phz";
-      var opponent = "9XkK1fEkZUKWVNQFZH9kLFkaPmboiF94ofrsZeFAxSut";
+      var player = _base58Encoder.encodeBase58(
+          Uint8List.fromList(_base58Encoder.decodeBase58(signerSecret).getRange(32, 64).toList()));
 
-      var playerAccount = "4LLCGGNYVEkAczfpC52UrPBuwzDepRjTswsbSJUocQ8A";
-      var opponentAccount = "AGAH3hkzVWwpYddpU3vuMxFQFev8GeyE5tirCnPnZCgS";
+      var opponent = _base58Encoder.encodeBase58(
+          Uint8List.fromList(_base58Encoder.decodeBase58(signerSecret2).getRange(32, 64).toList()));
 
-      var gameAccount = "Gn4atCUBKtehgfpp6VqZKTknw7tvyRw5BXJBmTNVkJ68";
-      var engageAccount = "BYgfK9ZREzcVwAkhQ9wjMtktFcFFzV9x8mT65MrizYri";
+      var defender = player;
+      var challenger = opponent;
+
+      var playerAccount = _base58Encoder.encodeBase58(
+          (await _pdaService.findProgramAddress([utf8.encode("player_account"), _base58Encoder.decodeBase58(player)], programId)).key);
+
+      var opponentAccount = _base58Encoder.encodeBase58(
+          (await _pdaService.findProgramAddress([utf8.encode("player_account"), _base58Encoder.decodeBase58(opponent)], programId)).key);
+
+      var gameAccount = _base58Encoder.encodeBase58(
+          (await _pdaService.findProgramAddress([utf8.encode("game_account")], programId)).key);
+
+      var engageAccount = _base58Encoder.encodeBase58(
+          (await _pdaService.findProgramAddress([utf8.encode("engage_account"), _base58Encoder.decodeBase58(challenger), _base58Encoder.decodeBase58(defender)], programId)).key);
 
       var systemProgram = "11111111111111111111111111111111";
 
       var playerKeyPair = await SolanaKeyPair(
           _base58Encoder.decodeBase58(player), Uint8List.fromList(
-          _base58Encoder.decodeBase58(signerSecert).take(32).toList()))
+          _base58Encoder.decodeBase58(signerSecret).take(32).toList()))
           .toKeyPair();
 
       var revealedMove = HoneypotRevealedMoveStruct.withFields(
@@ -444,14 +495,14 @@ void main() {
 
       expect(
           transaction.message.accountAddresses, [
-        "8rVNjLGctXjjDBayZ9o4uTKR2h3B8WM6ViYNCpxP7Phz",
-        "4LLCGGNYVEkAczfpC52UrPBuwzDepRjTswsbSJUocQ8A",
-        "AGAH3hkzVWwpYddpU3vuMxFQFev8GeyE5tirCnPnZCgS",
-        "BYgfK9ZREzcVwAkhQ9wjMtktFcFFzV9x8mT65MrizYri",
-        "Gn4atCUBKtehgfpp6VqZKTknw7tvyRw5BXJBmTNVkJ68",
-        "11111111111111111111111111111111",
-        "9XkK1fEkZUKWVNQFZH9kLFkaPmboiF94ofrsZeFAxSut",
-        "D3Fmzy6k3JnHt6rxxrExxW9MnjdSCBF8A7PfFnyvxZY6"
+            player,
+            playerAccount,
+            opponentAccount,
+            gameAccount,
+            engageAccount,
+            systemProgram,
+            opponent,
+            programId,
       ]);
 
       expect(
@@ -459,7 +510,7 @@ void main() {
 
       expect(
           transaction.message.instructions[0].accountIndices,
-          Uint8List.fromList([1, 2, 4, 3, 0, 6, 5]));
+          Uint8List.fromList([1, 2, 3, 4, 0, 6, 5]));
 
       AnchorInstructionData instructionData = transaction.message
           .instructions[0].data as AnchorInstructionData;

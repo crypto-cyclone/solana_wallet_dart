@@ -240,3 +240,77 @@ String AnchorFieldDartType(
 
   throw ArgumentError('Unknown type structure: $type');
 }
+
+String AnchorFieldDartInitializerType(
+    String idlName,
+    dynamic type,
+    List<dynamic> types) {
+  if (type is String) {
+    switch (type) {
+      case 'string':
+        return '${ExtendedAnchorFieldClassName(idlName, type, types)}(value: e)';
+      case 'u64':
+        return '${ExtendedAnchorFieldClassName(idlName, type, types)}(value: e)';
+      case 'u32':
+        return '${ExtendedAnchorFieldClassName(idlName, type, types)}(value: e)';
+      case 'u16':
+        return '${ExtendedAnchorFieldClassName(idlName, type, types)}(value: e)';
+      case 'u8':
+        return '${ExtendedAnchorFieldClassName(idlName, type, types)}(value: e)';
+      case 'i64':
+        return '${ExtendedAnchorFieldClassName(idlName, type, types)}(value: e)';
+      case 'bytes':
+        return '${ExtendedAnchorFieldClassName(idlName, type, types)}(value: e)';
+      case 'publicKey':
+        return '${ExtendedAnchorFieldClassName(idlName, type, types)}(value: e)';
+      default:
+        return "${toPascalCase(idlName)}${ExtendedAnchorFieldClassName(idlName, type, types)}";
+    }
+  }
+  else if (type is Map) {
+    if (type['array'] != null) {
+      return '.map((e) => ${AnchorFieldDartInitializerType(idlName, type['array'][0], types)}).toList()';
+    }
+
+    return '';
+  }
+
+  throw ArgumentError('Unknown type structure: $type');
+}
+
+String AnchorFieldArrayTypeCaster(
+    String idlName,
+    dynamic type,
+    List<dynamic> types) {
+  if (type is String) {
+    switch (type) {
+      case 'string':
+        return ' as String';
+      case 'u64':
+        return ' as int';
+      case 'u32':
+        return ' as int';
+      case 'u16':
+        return ' as int';
+      case 'u8':
+        return ' as int';
+      case 'i64':
+        return ' as int';
+      case 'bytes':
+        return ' as Uint8List';
+      case 'publicKey':
+        return ' as Uint8List';
+      default:
+        return "${toPascalCase(idlName)}${ExtendedAnchorFieldClassName(idlName, type, types)}";
+    }
+  }
+  else if (type is Map) {
+    if (type['array'] != null) {
+      return '.map((e) => e${AnchorFieldArrayTypeCaster(idlName, type['array'][0], types)}).toList()';
+    }
+
+    return '';
+  }
+
+  throw ArgumentError('Unknown type structure: $type');
+}

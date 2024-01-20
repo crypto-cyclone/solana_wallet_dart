@@ -172,6 +172,8 @@ class AnchorAccount extends AnchorSerializable {
   final String name;
   final Map<String, AnchorField> fields;
 
+  void dartValue() {}
+
   AnchorAccount({
     required this.name,
     required this.fields
@@ -208,6 +210,11 @@ class AnchorStruct extends AnchorSerializable {
   final String name;
   final Map<String, AnchorSerializable> fields;
 
+  @override
+  dartValue() {
+    throw UnimplementedError();
+  }
+
   AnchorStruct({
     required this.name,
     required this.fields
@@ -225,6 +232,11 @@ class AnchorStruct extends AnchorSerializable {
 
 class AnchorEnum<T extends Enum> extends AnchorSerializable {
   AnchorEnum();
+
+  @override
+  dartValue() {
+    throw UnimplementedError();
+  }
 
   AnchorEnum deserialize(List<int> bytes) {
     throw UnimplementedError();
@@ -251,6 +263,11 @@ class AnchorError {
 class AnchorField<T> extends AnchorSerializable {
   AnchorField();
 
+  @override
+  dartValue() {
+    throw UnimplementedError();
+  }
+
   Uint8List serialize() {
     return Uint8List(0);
   }
@@ -262,6 +279,8 @@ class AnchorField<T> extends AnchorSerializable {
 
 class AnchorFieldString extends AnchorField<String> {
   final String value;
+
+  dartValue() => value;
 
   AnchorFieldString({
     required this.value
@@ -292,6 +311,8 @@ class AnchorFieldString extends AnchorField<String> {
 
 class AnchorFieldNullableString extends AnchorField<String?> {
   final String? value;
+
+  String? dartValue() => value;
 
   AnchorFieldNullableString({
     required this.value
@@ -344,6 +365,8 @@ class AnchorFieldNullableString extends AnchorField<String?> {
 class AnchorFieldU64 extends AnchorField<int> {
   final int value;
 
+  int dartValue() => value;
+
   AnchorFieldU64({
     required this.value
   }) : super();
@@ -367,6 +390,8 @@ class AnchorFieldU64 extends AnchorField<int> {
 
 class AnchorFieldNullableU64 extends AnchorField<int?> {
   final int? value;
+
+  int? dartValue() => value;
 
   AnchorFieldNullableU64({
     required this.value
@@ -412,6 +437,8 @@ class AnchorFieldNullableU64 extends AnchorField<int?> {
 class AnchorFieldI64 extends AnchorField<int> {
   final int value;
 
+  int dartValue() => value;
+
   AnchorFieldI64({
     required this.value
   }) : super();
@@ -435,6 +462,8 @@ class AnchorFieldI64 extends AnchorField<int> {
 
 class AnchorFieldNullableI64 extends AnchorField<int?> {
   final int? value;
+
+  int? dartValue() => value;
 
   AnchorFieldNullableI64({
     required int index,
@@ -482,6 +511,8 @@ class AnchorFieldNullableI64 extends AnchorField<int?> {
 class AnchorFieldU32 extends AnchorField<int> {
   final int value;
 
+  int dartValue() => value;
+
   AnchorFieldU32({
     required this.value
   }) : super();
@@ -505,6 +536,8 @@ class AnchorFieldU32 extends AnchorField<int> {
 
 class AnchorFieldNullableU32 extends AnchorField<int?> {
   final int? value;
+
+  int? dartValue() => value;
 
   AnchorFieldNullableU32({
     required this.value
@@ -550,6 +583,8 @@ class AnchorFieldNullableU32 extends AnchorField<int?> {
 class AnchorFieldU16 extends AnchorField<int> {
   final int value;
 
+  int dartValue() => value;
+
   AnchorFieldU16({
     required this.value
   }) : super();
@@ -573,6 +608,8 @@ class AnchorFieldU16 extends AnchorField<int> {
 
 class AnchorFieldNullableU16 extends AnchorField<int?> {
   final int? value;
+
+  int? dartValue() => value;
 
   AnchorFieldNullableU16({
     required this.value
@@ -618,9 +655,15 @@ class AnchorFieldNullableU16 extends AnchorField<int?> {
 class AnchorFieldU8 extends AnchorField<int> {
   final int value;
 
+  int dartValue() => value;
+
   AnchorFieldU8({
-    required this.value
+    this.value = 0
   }) : super();
+
+  AnchorFieldU8 withValue(int value) {
+    return AnchorFieldU8(value: value);
+  }
 
   @override
   Uint8List serialize() {
@@ -641,6 +684,8 @@ class AnchorFieldU8 extends AnchorField<int> {
 
 class AnchorFieldNullableU8 extends AnchorField<int?> {
   final int? value;
+
+  int? dartValue() => value;
 
   AnchorFieldNullableU8({
     required this.value
@@ -686,6 +731,8 @@ class AnchorFieldNullableU8 extends AnchorField<int?> {
 class AnchorFieldBytes extends AnchorField<Uint8List> {
   final Uint8List value;
 
+  Uint8List dartValue() => value;
+
   AnchorFieldBytes({
     required this.value
   }) : super();
@@ -713,6 +760,8 @@ class AnchorFieldBytes extends AnchorField<Uint8List> {
 
 class AnchorFieldNullableBytes extends AnchorField<Uint8List?> {
   final Uint8List? value;
+
+  Uint8List? dartValue() => value;
 
   AnchorFieldNullableBytes({
     required this.value
@@ -762,6 +811,8 @@ class AnchorFieldNullableBytes extends AnchorField<Uint8List?> {
 class AnchorFieldPublicKey extends AnchorField<Uint8List> {
   final Uint8List value;
 
+  Uint8List dartValue() => value;
+
   AnchorFieldPublicKey({
     required this.value
   }) : super();
@@ -787,6 +838,8 @@ class AnchorFieldPublicKey extends AnchorField<Uint8List> {
 
 class AnchorFieldNullablePublicKey extends AnchorField<Uint8List?> {
   final Uint8List? value;
+
+  Uint8List? dartValue() => value;
 
   AnchorFieldNullablePublicKey({
     required this.value
@@ -836,6 +889,9 @@ class AnchorFieldNullablePublicKey extends AnchorField<Uint8List?> {
 class AnchorFieldVector<T extends AnchorSerializable> extends AnchorField<T> {
   final List<T> value;
 
+  List<dynamic>? dartValue() =>
+      value.map((e) => e.dartValue()).toList();
+
   AnchorFieldVector({
     required this.value
   }) : super();
@@ -882,6 +938,9 @@ class AnchorFieldVector<T extends AnchorSerializable> extends AnchorField<T> {
 
 class AnchorFieldNullableVector<T extends AnchorSerializable> extends AnchorField<T> {
   final List<T>? value;
+
+  List<dynamic>? dartValue() =>
+      value?.map((e) => e.dartValue()).toList();
 
   AnchorFieldNullableVector({
     required this.value
@@ -946,12 +1005,15 @@ class AnchorFieldNullableVector<T extends AnchorSerializable> extends AnchorFiel
 class AnchorFieldArray<T extends AnchorSerializable> extends AnchorField<T> {
   final List<T> value;
   final int size;
-
+  
   AnchorFieldArray({
     required this.value,
-    required this.size
+    this.size = 0
   }) : super();
 
+  List<dynamic> dartValue() =>
+      value.map((e) => e.dartValue()).toList();
+  
   AnchorFieldArray<T> withValue(List<T> value) {
     return AnchorFieldArray(value: value, size: value.length);
   }
@@ -991,6 +1053,8 @@ class AnchorFieldArray<T extends AnchorSerializable> extends AnchorField<T> {
 
 class AnchorFieldNullableArray<T extends AnchorSerializable> extends AnchorField<T> {
   final List<T>? value;
+
+  dartValue() => value?.map((e) => e.dartValue()).toList();
 
   AnchorFieldNullableArray({
     required this.value
@@ -1053,6 +1117,8 @@ class AnchorFieldNullableArray<T extends AnchorSerializable> extends AnchorField
 class AnchorFieldStruct<T extends AnchorStruct> extends AnchorField<T> {
   final T value;
 
+  dartValue() => value.dartValue();
+
   AnchorFieldStruct({
     required this.value
   }) : super();
@@ -1082,6 +1148,8 @@ class AnchorFieldStruct<T extends AnchorStruct> extends AnchorField<T> {
 
 class AnchorFieldNullableStruct<T extends AnchorStruct> extends AnchorField<T> {
   final T? value;
+
+  dartValue() => value?.dartValue();
 
   AnchorFieldNullableStruct({
     required this.value
@@ -1116,6 +1184,8 @@ class AnchorFieldNullableStruct<T extends AnchorStruct> extends AnchorField<T> {
 class AnchorFieldEnum<T extends AnchorEnum> extends AnchorField<T> {
   final T value;
 
+  dartValue() => value.dartValue();
+
   AnchorFieldEnum({
     required this.value
   }) : super();
@@ -1149,6 +1219,7 @@ class AnchorFieldEnum<T extends AnchorEnum> extends AnchorField<T> {
 abstract class AnchorSerializable {
   List<int> serialize();
   AnchorSerializable deserialize(List<int> bytes);
+  dynamic dartValue();
 }
 
 enum AnchorEnumDefault { DEFAULT; }

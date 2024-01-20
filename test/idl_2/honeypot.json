@@ -1,5 +1,4 @@
 {
-
   "version": "0.1.0",
   "name": "honeypot",
   "instructions": [
@@ -32,7 +31,17 @@
           "isSigner": false
         }
       ],
-      "args": []
+      "args": [
+        {
+          "name": "seed",
+          "type": {
+            "array": [
+              "u8",
+              8
+            ]
+          }
+        }
+      ]
     },
     {
       "name": "ping",
@@ -210,7 +219,7 @@
       ]
     },
     {
-      "name": "drain",
+      "name": "drainPlayer",
       "accounts": [
         {
           "name": "playerAccount",
@@ -234,6 +243,22 @@
         }
       ],
       "args": []
+    },
+    {
+      "name": "drainGame",
+      "accounts": [
+        {
+          "name": "gameAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "creator",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": []
     }
   ],
   "accounts": [
@@ -242,6 +267,19 @@
       "type": {
         "kind": "struct",
         "fields": [
+          {
+            "name": "pubkey",
+            "type": "publicKey"
+          },
+          {
+            "name": "seed",
+            "type": {
+              "array": [
+                "u8",
+                8
+              ]
+            }
+          },
           {
             "name": "gameId",
             "type": {
@@ -289,6 +327,10 @@
                 32
               ]
             }
+          },
+          {
+            "name": "creator",
+            "type": "publicKey"
           },
           {
             "name": "state",
@@ -484,41 +526,51 @@
     },
     {
       "code": 6001,
+      "name": "MaxLamportsReached",
+      "msg": "Maximum lamports Reached"
+    },
+    {
+      "code": 6002,
       "name": "InvalidGame",
       "msg": "Game ID is not valid"
     },
     {
-      "code": 6002,
+      "code": 6003,
       "name": "PlayerOffline",
       "msg": "Player is offline"
     },
     {
-      "code": 6003,
+      "code": 6004,
       "name": "PlayerEngaged",
       "msg": "Player is engaged"
     },
     {
-      "code": 6004,
+      "code": 6005,
       "name": "InvalidPlayerState",
       "msg": "Invalid Player state"
     },
     {
-      "code": 6005,
+      "code": 6006,
       "name": "InvalidPlayer",
       "msg": "Invalid Player"
     },
     {
-      "code": 6006,
+      "code": 6007,
       "name": "MissingCommitment",
       "msg": "One or more player moves have not been committed"
     },
     {
-      "code": 6007,
+      "code": 6008,
       "name": "IllegalReveal",
       "msg": "Reveal did not match the commitment"
+    },
+    {
+      "code": 6009,
+      "name": "InvalidCreator",
+      "msg": "Invalid Creator"
     }
   ],
   "metadata": {
-    "address": "D3Fmzy6k3JnHt6rxxrExxW9MnjdSCBF8A7PfFnyvxZY6"
+    "address": "6WE2EY62Pca64J2gLsiAHgHWSXz3EB1szZe5iaZVmp9s"
   }
 }

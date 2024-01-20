@@ -31,6 +31,9 @@ class AnchorIDlTypeGenerator {
 
     var defaultConstructor = _generateStructDefaultConstructor(idlName, object, types);
     var withFieldsConstructor = _generateWithFieldsConstructor(idlName, object, types);
+    var dartType = '''
+@override
+  dartValue() => this;''';
     var deserializeFunction = _generateDeserializeFunction(idlName, object, types);
     var serializeFunction = _generateSerializeFunction(idlName, object, types);
     var factoryFunction = _generateFactoryFunction(idlName, object, types);
@@ -42,6 +45,8 @@ class $className extends ${AnchorStructClassName()} {
   $defaultConstructor
   
   $withFieldsConstructor
+  
+  $dartType
   
   $deserializeFunction
   
@@ -61,6 +66,9 @@ class $className extends ${AnchorStructClassName()} {
     return '''
 enum $enumName implements AnchorEnum {
   $enumOptions;
+  
+  @override
+  int dartValue() => index;
   
   @override
   AnchorEnum deserialize(List<int> bytes) {

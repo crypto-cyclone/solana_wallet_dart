@@ -15,7 +15,7 @@ class AnchorInstructionGenerator {
           var defaultConstructor = _generateDefaultConstructor(idlName, instruction, idl['types']);
           var withArgsConstructor = _generateWithArgsConstructor(idlName, instruction, idl['types']);
           var withAllConstructor = _generateWithAllConstructor(idlName, instruction, idl['types']);
-          var withAccountsConstructor = _generateWithAccountsConstructor(idlName, instruction);
+          var withAccountsConstructor = _generateWithAccountsConstructor(idlName, instruction, idl['types']);
 
           return '''
 class $className extends ${AnchorInstructionClassName()} {
@@ -145,7 +145,7 @@ class $className extends ${AnchorInstructionClassName()} {
     }''';
   }
 
-  String _generateWithAccountsConstructor(String idlName, instruction) {
+  String _generateWithAccountsConstructor(String idlName, instruction, List<dynamic> types) {
     var instructionName = instruction['name'];
 
     var className = ExtendedInstructionClassName(idlName, instructionName);
@@ -155,7 +155,15 @@ class $className extends ${AnchorInstructionClassName()} {
         .join(', ');
 
     var argsValues = instruction['args']
-        .map((arg) => "${toCamelCase(arg['name'])}Field.value")
+        .map((arg) {
+          var extendedAnchorFieldClassName = ExtendedAnchorFieldClassName(idlName, arg['type'], types);
+
+          if (extendedAnchorFieldClassName.split('<')[0] == 'AnchorFieldArray' || extendedAnchorFieldClassName.split('<')[0] == 'AnchorFieldNullableArray') {
+            return "${toCamelCase(arg['name'])}Field.dartValue()${AnchorFieldArrayTypeCaster(idlName, arg['type'], types)}";
+          }
+
+          return "${toCamelCase(arg['name'])}Field.dartValue()";
+        })
         .join(', ');
 
     if (argsValues.toString().trim().isNotEmpty) {
@@ -269,7 +277,13 @@ class $className extends ${AnchorInstructionClassName()} {
   }
 
   String _generateArgumentFieldInitialization(String idlName, Map<String, dynamic> arg, int index, List<dynamic> types) {
-    return "${toCamelCase(arg['name'])}Field = ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}(value: ${arg['name']})";
+    var extendedAnchorFieldClassName = ExtendedAnchorFieldClassName(idlName, arg['type'], types);
+
+    if (extendedAnchorFieldClassName.split('<')[0] == 'AnchorFieldArray' || extendedAnchorFieldClassName.split('<')[0] == 'AnchorFieldNullableArray') {
+      return "${toCamelCase(arg['name'])}Field = ${extendedAnchorFieldClassName}(value: ${arg['name']}${AnchorFieldDartInitializerType(idlName, arg['type'], types)})";
+    } else {
+      return "${toCamelCase(arg['name'])}Field = ${extendedAnchorFieldClassName}(value: ${arg['name']})";
+    }
   }
 
   String _generateAccountFieldDeclaration(Map<String, dynamic> account) {
@@ -293,7 +307,13 @@ class $className extends ${AnchorInstructionClassName()} {
   }
 
   String _generateArgumentFieldMapParameterInitialization(String idlName, Map<String, dynamic> arg, int index, List<dynamic> types) {
-    return "'${toCamelCase(arg['name'])}': ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}(value: ${arg['name']})";
+    var extendedAnchorFieldClassName = ExtendedAnchorFieldClassName(idlName, arg['type'], types);
+
+    if (extendedAnchorFieldClassName.split('<')[0] == 'AnchorFieldArray' || extendedAnchorFieldClassName.split('<')[0] == 'AnchorFieldNullableArray') {
+      return "'${toCamelCase(arg['name'])}': ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}(value: ${arg['name']}${AnchorFieldDartInitializerType(idlName, arg['type'], types)})";
+    } else {
+      return "'${toCamelCase(arg['name'])}': ${ExtendedAnchorFieldClassName(idlName, arg['type'], types)}(value: ${arg['name']})";
+    }
   }
 
   String _generateAccountFieldMapParameterInitialization(Map<String, dynamic> account, int index) {
