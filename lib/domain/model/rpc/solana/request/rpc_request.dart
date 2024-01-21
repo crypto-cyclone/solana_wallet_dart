@@ -10,6 +10,7 @@ abstract class RPCRequest {
   static const getTokenAccountsByOwnerMethodId = 5;
   static const getAccountInfoMethodId = 6;
   static const getProgramAccountsId = 7;
+  static const getBlockHeightMethodId = 8;
 
   static const getLatestBlockHashRPCMethod = "getLatestBlockhash";
   static const getBalanceRPCMethod = "getBalance";
@@ -18,6 +19,7 @@ abstract class RPCRequest {
   static const getTokenAccountsByOwnerRPCMethod = "getTokenAccountsByOwner";
   static const getAccountInfoRPCMethod = "getAccountInfo";
   static const getProgramAccountsRPCMethod = "getProgramAccounts";
+  static const getBlockHeightRPCMethod = "getBlockHeight";
 
   RPCRequest({
     this.jsonrpc = "2.0",

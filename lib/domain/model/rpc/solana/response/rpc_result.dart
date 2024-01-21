@@ -20,6 +20,10 @@ class RPCResult {
     );
   }
 
+  static RPCResult fromJsonPrimitive(dynamic json) {
+    return RPCResult(value: json);
+  }
+
   static RPCResult fromJsonList(List<dynamic> json) {
     return RPCResult(value: json);
   }

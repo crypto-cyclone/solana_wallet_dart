@@ -1,6 +1,7 @@
 import 'package:solana_wallet/domain/configuration/solana_configuration.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/request/account_info/get_account_info_request.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/request/balance/get_balance_request.dart';
+import 'package:solana_wallet/domain/model/rpc/solana/request/block_height/get_block_height_request.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/request/latest_blockhash/get_latest_blockhash_request.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/request/program_account/filter.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/request/program_account/get_program_accounts_request.dart';
@@ -9,6 +10,7 @@ import 'package:solana_wallet/domain/model/rpc/solana/request/rpc_request.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/request/send_transaction/send_transaction_request.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/response/account_info/get_account_info_response.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/response/balance/get_balance_response.dart';
+import 'package:solana_wallet/domain/model/rpc/solana/response/block_height/get_block_height_response.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/response/latest_blockhash/get_latest_blockhash_response.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/response/program_account/get_program_accounts_response.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/response/send_transaction/send_transaction_response.dart';
@@ -34,6 +36,28 @@ void main() {
           )
       );
       base58encoder = Base58Encoder();
+    });
+
+    test('get blockHeight is success', () async {
+      httpsService.responseJson = '{"jsonrpc": "2.0","result": 1233,"id": ${RPCRequest.getBlockHeightMethodId}}';
+      var requestJson = '{"jsonrpc":"2.0","id":${RPCRequest.getBlockHeightMethodId},"method":"getBlockHeight","params":[{"commitment":"processed"}]}';
+
+      var request = GetBlockHeightRequest();
+
+      expect(request.toJson(), requestJson);
+
+      var result = await solanaRPCService.getBlockHeight(
+          GetBlockHeightRequest()
+      );
+
+      expect(result is GetBlockHeightResponse, true);
+
+      var blockHeightResponse = result as GetBlockHeightResponse;
+
+      expect(blockHeightResponse.jsonrpc, "2.0");
+      expect(blockHeightResponse.id, RPCRequest.getBlockHeightMethodId);
+      expect(blockHeightResponse.method, null);
+      expect(blockHeightResponse.blockheight, 1233);
     });
 
     test('get latest blockhash is success', () async {

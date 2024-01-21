@@ -5,11 +5,13 @@ import 'package:solana_wallet/api/service/http_service.dart';
 import 'package:solana_wallet/domain/configuration/solana_configuration.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/request/account_info/get_account_info_request.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/request/balance/get_balance_request.dart';
+import 'package:solana_wallet/domain/model/rpc/solana/request/block_height/get_block_height_request.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/request/latest_blockhash/get_latest_blockhash_request.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/request/program_account/get_program_accounts_request.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/request/send_transaction/send_transaction_request.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/response/account_info/get_account_info_response.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/response/balance/get_balance_response.dart';
+import 'package:solana_wallet/domain/model/rpc/solana/response/block_height/get_block_height_response.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/response/latest_blockhash/get_latest_blockhash_response.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/response/program_account/get_program_accounts_response.dart';
 import 'package:solana_wallet/domain/model/rpc/solana/response/rpc_error_response.dart';
@@ -34,6 +36,39 @@ class SolanaRPCService {
       uri = Uri.https(configuration.url, "/");
     } else {
       uri = Uri.http(configuration.url, "/");
+    }
+  }
+
+  Future<RPCResponse> getBlockHeight(GetBlockHeightRequest request) async {
+    final response = await httpService.post(
+        uri,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: request.toJson()
+    );
+
+    if (response.statusCode == 200) {
+      List<String> bigIntFields = [];
+
+      Map<String, dynamic> jsonMap = _postprocessJson(
+          jsonDecode(
+              _preprocessJson(
+                  response.body,
+                  bigIntFields
+              )
+          ),
+          bigIntFields
+      );
+
+      if (jsonMap["error"] != null) {
+        _logger.severe(jsonMap);
+        return RPCErrorResponse.fromJson(jsonMap);
+      } else {
+        return GetBlockHeightResponse.fromJson(jsonMap);
+      }
+    } else {
+      return RPCErrorResponse.fromRequest(request);
     }
   }
 
