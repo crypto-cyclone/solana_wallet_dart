@@ -15,6 +15,8 @@ void main() {
 
     const String expectPlayAccount = "zd5wB6Wbztq3tNogHsfF/PlNtHG0m4XnFT6aNwRMk+59jiDuk3yggf2INOvWAyDof3tELiFu5yYNXKFGkWupaBfxFwEVh9T7I1qDEAaps3BALG83AQAAAPwLHKxlAAAAAAF29I0QOVKo6Rixqg9w57AmqdeZvIvmcRe5rWxcebtXDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
 
+    const String expectEngageAccount = "ABu7fcPb69v/bVG9ZQAAAAADAYtArbkQgCRjSwJTTlpGSnnXUlVgy2NqESzDctmf4NvqR3x8wK7HNKA2sgoHFmxYtd+cv4sfiRktTACHUjNMLP8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKrNWl/VwkoU7h+VlMfthA3QaBvKOEJBJUufpz16F44YAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+
     setUp(() async {
       _base58Encoder = Base58Encoder();
 
@@ -34,7 +36,7 @@ void main() {
       expect(
           _base58Encoder.encodeBase58(
               playerAccount.engageAccountField.value),
-          "91MPefJ6fbYq3KoNsrikAJqgv1pftcx3WhoL4b1hS1H5"
+          "6icWwUemWbjGzsCjcoecssSeeVsyZMrCKyauYcDZqhg"
       );
 
       expect(
@@ -50,9 +52,60 @@ void main() {
 
       expect(
           playerAccount.lastSeenField.value, 1705778187);
+    });
+
+    test('deserialize engage account', () async {
+      var expectBytes = base64.decode(expectEngageAccount);
+
+      HoneypotEngageAccount engageAccount = _idl.engageAccount.deserialize(
+          expectBytes.toList());
 
       expect(
-          playerAccount.stateField.value.index, 1);
+          engageAccount.name, "Engage");
+
+      expect(
+          engageAccount.bumpField.value, 255);
+
+      expect(
+          engageAccount.timestampField.value, 1706905965);
+
+      expect(
+          engageAccount.roundCountField.value, 3);
+
+      expect(
+          engageAccount.statusField.value, HoneypotEngageStatusEnum.READY);
+
+      expect(
+          _base58Encoder.encodeBase58(
+            engageAccount.challengerField.value), "ANasafJr5ZLwYuwfvaLMp3Qt2juTCzADwDwUqDEHGeho");
+
+      expect(
+          _base58Encoder.encodeBase58(
+              engageAccount.defenderField.value), "5p43YBrTBHAhQTMEKHzAoAHmo8zy1nGJieJVhq8MnyR8");
+
+      expect(
+          _base58Encoder.encodeBase58(
+              Uint8List.fromList(
+                  engageAccount.challengerSealedMoveField.value.hashedMoveField.value.map((e) => e.value)
+                      .toList())),
+          "11111111111111111111111111111111");
+
+      expect(
+          _base58Encoder.encodeBase58(
+              Uint8List.fromList(
+                  engageAccount.defenderSealedMoveField.value.hashedMoveField.value.map((e) => e.value)
+                      .toList())),
+          "CVjvavDKF9w7bCYn9GF98HWzKnTt4y96hkZaJnNsL3XD");
+
+      expect(
+          engageAccount.challengerMovesField.value.every((e) => e.value == HoneypotMoveTypeEnum.NONE), true);
+
+      expect(
+          engageAccount.defenderMovesField.value.every((e) => e.value == HoneypotMoveTypeEnum.NONE), true);
+
+      expect(
+          engageAccount.resultsField.value.every((e) => e.value == HoneypotEngageResultEnum.NONE), true);
+
     });
   });
 }

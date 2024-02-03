@@ -314,3 +314,27 @@ String AnchorFieldArrayTypeCaster(
 
   throw ArgumentError('Unknown type structure: $type');
 }
+
+String stripOuterClassName(String typeString) {
+  RegExp pattern = RegExp(r'^[^<]*<(.*)>$');
+
+  Match? match = pattern.firstMatch(typeString);
+
+  if (match != null && match.group(1) != typeString) {
+    return match.group(1)!;
+  } else {
+    return '';
+  }
+}
+
+String stripInnerClassName(String typeString) {
+  RegExp pattern = RegExp(r'^([^<]*)<.*>$');
+
+  Match? match = pattern.firstMatch(typeString);
+
+  if (match != null && match.group(1)!.isNotEmpty) {
+    return match.group(1)!;
+  } else {
+    return '';
+  }
+}

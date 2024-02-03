@@ -67,18 +67,23 @@ $className()
   String _initializeFunctionGenerator(idl) {
     var idlName = idl['name'];
 
-    var instructionArgs = idl['instructions']
+    List<dynamic> instructionArgs = idl['instructions']
         .expand((e) => e['args'] as Iterable)
-        .map((e) => _generateInstructionArgRegistration(idlName, e, idl['types']));
+        .map((e) => _generateInstructionArgRegistration(idlName, e, idl['types']))
+        .toList();
 
-    var accountArgs = idl['accounts']
+    instructionArgs = instructionArgs.expand((e) => e).toList();
+
+    List<dynamic> accountArgs = idl['accounts']
         .expand((e) => e['type']['fields'] as Iterable? ?? [])
         .map((e) {
           if (e == null) {
             return "";
           }
           return _generateInstructionArgRegistration(idlName, e, idl['types']);
-        });
+        }).toList();
+
+    accountArgs = accountArgs.expand((e) => e).toList();
 
     var types = idl['types']
         .map((e) {
@@ -91,14 +96,16 @@ $className()
           return "";;
     });
 
-    var typesArgs = idl['types']
+    List<dynamic> typesArgs = idl['types']
         .expand((e) => e['type']['fields'] as Iterable? ?? [])
         .map((e) {
       if (e == null) {
         return "";
       }
       return _generateInstructionArgRegistration(idlName, e, idl['types']);
-    });
+    }).toList();
+
+    typesArgs = typesArgs.expand((e) => e).toList();
 
     var args = [...instructionArgs, ...accountArgs, ...types, ...typesArgs]
         .where((e) => e != "")
@@ -146,37 +153,117 @@ $HalfTab}
     return "serializationRegistry.register<$className>(() => $className.values.first);";
   }
 
-  String _generateInstructionArgRegistration(String idlName, arg, List<dynamic> types) {
+  List<String> _generateInstructionArgRegistration(String idlName, arg, List<dynamic> types) {
     var className = ExtendedAnchorFieldClassName(idlName, arg['type'], types);
 
     if (className.contains("AnchorFieldVector")) {
-      var typeT = className.replaceAll('>', '');
-      typeT = typeT.split('<').last;
-      return "serializationRegistry.register<AnchorFieldVector<$typeT>>(() => AnchorFieldVector.factory<$typeT>());";
+      var typeClass = className;
+      var typeClassT = stripInnerClassName(className);
+      var typeT = stripOuterClassName(className);
+
+      List<String> initializers = ["serializationRegistry.register<$typeClass>(() => $typeClassT.factory<$typeT>());"];
+
+      typeClass = stripOuterClassName(typeClass);
+      typeClassT = stripInnerClassName(typeClass);
+      typeT = stripOuterClassName(typeT);
+
+      while (typeClass != "" && typeT != "") {
+        initializers.add("serializationRegistry.register<$typeClass>(() => $typeClassT.factory<$typeT>());");
+
+        typeClass = stripOuterClassName(typeClass);
+        typeClassT = stripInnerClassName(typeClass);
+        typeT = stripOuterClassName(typeT);
+      }
+
+      return initializers;
     }
     if (className.contains("AnchorFieldArray")) {
+      var typeClass = className;
+      var typeClassT = stripInnerClassName(className);
+      var typeT = stripOuterClassName(className);
       var size = arg["type"]["array"][1];
-      var typeT = className.replaceAll('>', '');
-      typeT = typeT.split('<').last;
-      return "serializationRegistry.register<AnchorFieldArray<$typeT>>(() => AnchorFieldArray.factory<$typeT>($size));";
+
+      List<String> initializers = ["serializationRegistry.register<$typeClass>(() => $typeClassT.factory<$typeT>($size));"];
+
+      typeClass = stripOuterClassName(typeClass);
+      typeClassT = stripInnerClassName(typeClass);
+      typeT = stripOuterClassName(typeT);
+
+      while (typeClass != "" && typeT != "") {
+        initializers.add("serializationRegistry.register<$typeClass>(() => $typeClassT.factory<$typeT>());");
+
+        typeClass = stripOuterClassName(typeClass);
+        typeClassT = stripInnerClassName(typeClass);
+        typeT = stripOuterClassName(typeT);
+      }
+
+      return initializers;
     }
     else if (className.contains("AnchorFieldNullableVector")) {
-      var typeT = className.replaceAll('>', '');
-      typeT = typeT.split('<').last;
-      return "serializationRegistry.register<AnchorFieldNullableVector<$typeT>>(() => AnchorFieldNullableVector.factory<$typeT>());";
+      var typeClass = className;
+      var typeClassT = stripInnerClassName(className);
+      var typeT = stripOuterClassName(className);
+
+      List<String> initializers = ["serializationRegistry.register<$typeClass>(() => $typeClassT.factory<$typeT>());"];
+
+      typeClass = stripOuterClassName(typeClass);
+      typeClassT = stripInnerClassName(typeClass);
+      typeT = stripOuterClassName(typeT);
+
+      while (typeClass != "" && typeT != "") {
+        initializers.add("serializationRegistry.register<$typeClass>(() => $typeClassT.factory<$typeT>());");
+
+        typeClass = stripOuterClassName(typeClass);
+        typeClassT = stripInnerClassName(typeClass);
+        typeT = stripOuterClassName(typeT);
+      }
+
+      return initializers;
     }
     else if (className.contains("AnchorFieldStruct")) {
-      var typeT = className.replaceAll('>', '');
-      typeT = typeT.split('<').last;
-      return "serializationRegistry.register<AnchorFieldStruct<$typeT>>(() => AnchorFieldStruct.factory<$typeT>());";
+      var typeClass = className;
+      var typeClassT = stripInnerClassName(className);
+      var typeT = stripOuterClassName(className);
+
+      List<String> initializers = ["serializationRegistry.register<$typeClass>(() => $typeClassT.factory<$typeT>());"];
+
+      typeClass = stripOuterClassName(typeClass);
+      typeClassT = stripInnerClassName(typeClass);
+      typeT = stripOuterClassName(typeT);
+
+      while (typeClass != "" && typeT != "") {
+        initializers.add("serializationRegistry.register<$typeClass>(() => $typeClassT.factory<$typeT>());");
+
+        typeClass = stripOuterClassName(typeClass);
+        typeClassT = stripInnerClassName(typeClass);
+        typeT = stripOuterClassName(typeT);
+      }
+
+      return initializers;
     }
     else if (className.contains("AnchorFieldEnum")) {
-      var typeT = className.replaceAll('>', '');
-      typeT = typeT.split('<').last;
-      return "serializationRegistry.register<AnchorFieldEnum<$typeT>>(() => AnchorFieldEnum.factory<$typeT>());";
+      var typeClass = className;
+      var typeClassT = stripInnerClassName(className);
+      var typeT = stripOuterClassName(className);
+
+      List<String> initializers = ["serializationRegistry.register<$typeClass>(() => $typeClassT.factory<$typeT>());"];
+
+      typeClass = stripOuterClassName(typeClass);
+      typeClassT = stripInnerClassName(typeClass);
+      typeT = stripOuterClassName(typeT);
+
+      while (typeClass != "" && typeT != "") {
+        initializers.add("serializationRegistry.register<$typeClass>(() => $typeClassT.factory<$typeT>());");
+
+        typeClass = stripOuterClassName(typeClass);
+        typeClassT = stripInnerClassName(typeClass);
+        typeT = stripOuterClassName(typeT);
+      }
+
+      return initializers;
     }
     else {
-      return "serializationRegistry.register<$className>(() => $className.factory());";
+      return ["serializationRegistry.register<$className>(() => $className.factory());"];
     }
   }
 }

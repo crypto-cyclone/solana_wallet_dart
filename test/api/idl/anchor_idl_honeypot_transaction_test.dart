@@ -23,97 +23,95 @@ void main() {
     late HoneypotAnchorIDL _idl;
 
     const String expectLoginTransaction =
-        "2LaRBvdTzzoxBeHuJ35Gbh3NQUQecj" +
-        "iAax9MTqULSeZHVjzzQyyX1QHK4Cf8" +
-        "WVQVM3rQY8kFEBVDGSWj4oaxiKtN1Q" +
-        "K3HudZu1ZSN9kQoY6WvhqFnRLt625f" +
-        "gYt7RG5yLNi9VitkS9WUfsP21vLcw7" +
-        "UboFU4mhE5yGSAb8sJHdoJy91pLEXP" +
-        "GT8LZDpQCj194FzUjjqAyHaAgUFzBC" +
-        "qoyYkXh13DVA22Chd8pRBYTtJEM7VR" +
-        "tBxnfHiWQyzGwUTLWqVi3i3VrL43eM" +
-        "6x9bz6Ty7Gc8E4NPTY7ok8XDeJ6zzq" +
-        "dWPka7AEKyxtHtD47RDe2RbN54PJSo" +
-        "SzSfHBdNLJem3pr6akNDegjD9dEZJ4" +
-        "Xp7U5h7kGt9RwGFrkjZYNCsBF1otrm" +
-        "3GwLRVXc8G7z812KRxprS2c8mwFFa4" +
-        "aByyk2sDZrdthM";
+        "oK5KQvoP3Xa2FDKD6nC8BA6o3U5hEty"
+        "nhT4e4M2puuoJDaEU9JZAS1AZwmBboG"
+        "LbkZ8WWfc9zEhYiAynnPVsudafoH6i2"
+        "veKjdotAzgKatx74MBonYNUzH9KHhi9"
+        "6vLWpdYBVL9hwkZUQeVnVHryVryDStf"
+        "aRwM22tZQpUmxdVJZVpSTmjoE9qx1v6"
+        "bLZzepDucLdjhzmCdBKzMRA7SsYLbXj"
+        "qGgLjVq3gLgcchBzUpemCLVP287YEN3"
+        "ZMjQYZBUWMAWhasJvDu9fdHYBn48bkD"
+        "Fu5T1gN6W6gHRqh3LNZViMwHYTM9dYW"
+        "PtUdF1ZDzprUXZGLzg488hV6Ff7vYqM"
+        "irRx48rpehGrMANZXkQzXtsj4arBFqu"
+        "6S1Ffs9X9XWaiXU71UUr3Spef6P48Lb"
+        "WNcqEpwfxZKs7U7K1zWFuy2SfdhDi7";
 
     const String expectPingTransaction =
-        "sv4Ed3dfUUmvwTCnQocJEE6w5Jqmyh" +
-        "6tDczXnxz6o4hHmV5Q789ELZAwYMCu" +
-        "ks4e1sEeR1ngQC2FDDzBDSBamMGB3K" +
-        "YE8q7jna9DGXx8yCqQ4CAMaD6oCiYb" +
-        "9QTAwnEY6HFv7xCkoUe5sBrBnZ2yRK" +
-        "WwkdsgbyRTEwamptYnDMBx9U1Jwr5U" +
-        "DCf7gz7vGBUZwDsFc2cfZPnF4cR52T" +
-        "UPtxBqZqtBKo8EXiKJvCepbmGBBToU" +
-        "9UhNZEtWppJaqq9WHn1bESzjwnFvhJ" +
-        "JoCF6TBNBHV4NdfY7Dr4YWPg3UmLH4" +
-        "NLDpU9pcVNHcF883ZuicppFf6Ge1N4" +
-        "xG";
+        "kxDDsqSV3pV31UcZC16KYUBfc2sPpY"
+        "MJPpJ7SEZ7eRwT5MdciV2zBJRFgQ4m"
+        "Hr2Wevdbctp7SJwvwNFs5fKo8GLTRc"
+        "aw1kivNnmPyiuja4Ftq2U4t2cbQPwd"
+        "Vzv8v2cvCsgTb2wSjs8GiSL8j9x41c"
+        "hfM2SXLpVR58ynf33Qtj7yLh4XLrRK"
+        "LvEL19JDJhUJeqrNsuWfhxqEH3ig5t"
+        "3rVAFqEGcC1NbTUTmt1SN1HFRxVW9J"
+        "oivofZ5giGQSW8FqmYshckBucZ5vYe"
+        "y1k6Fy6pZEaEzqzB6Kg7m22kTPVrMm"
+        "LLjjjaNcs25yQU3DRYnupGc3LoYudW"
+        "Ug";
 
     const String expectEngageTransaction =
-        "E8XjDoeFVjxgx9gQQao1cHerAmJ4td" +
-        "5FfqshWJydBDDqZeZDM24KzG7d3igJ" +
-        "2dbTjPsV8eB8pHeC4SDYL3hfLTW815" +
-        "FBUPE3eGEZWiuDdLon8uy64HVY5py8" +
-        "giPcpTbWiiJXKkM7ZRYAZw1kJad1Rm" +
-        "w1uZMKDfivy8TQzMtA2Q3e7VaxLqEr" +
-        "XxdvAnEpCfh7fiFAUi1TpmhMQDzc1b" +
-        "PFf6wWaT4NKaNUEXzdJqXQQWcm4kgU" +
-        "ZH7XCj9PPNvQ7Xrcqz8izwVSjo7ZEk" +
-        "PcsaJHE8YADM4HgDXpHsCzSgZKFzAH" +
-        "f5CXqHEoFXxiUHaq8yKdP4cUVg6ffb" +
-        "6AWp8YQeWnCDQbi1NkUtsSpikPBGQt" +
-        "F2TPqXZvqbsRqRbz7bTG4yiqEoqxBM" +
-        "KjYcHcHGBqLtXqx8WWJxG5T3FKWM34" +
-        "p7xvEPCwrN6sxJFW7jfoA1xWmdDqZb" +
-        "ugWnbxkVAMvuQSiSVkA38PmfcXqQEz" +
-        "Tsvhfs9fySAKoWHeLBgtaqWMfCfeRy" +
-        "bdi5";
+        "rnJKb5Z5sLHj3maNySQAErxEq3WoxbBX"
+        "M7QuCGzKxBdaEDqZxTgned7rPRvovwiT"
+        "odsspCr2bWCSEboVTMLob7Zttt2ECzCD"
+        "M9wmuQWSVtEq1AgzJKaG4r6TUMD7yWP3"
+        "Xno34955RA5CrG3Ypq1m2Ychecd8FrDL"
+        "ZHKRasTftnQykH5dS1Y4kPWKtgYGUyJk"
+        "RigXRGk5mBMMU1BegLWa8w7HEtqFnafi"
+        "Upvnn9yUqwPi25SnLdmpC7R1Adc8PPCY"
+        "WLhjkLx7MtLXde82veusA2aRkbjmhnoK"
+        "Wek3ud4s3tud3wvZEaA4iDwqvSVbHpZS"
+        "1bYghAUAqSRcU49BJBSkeUWocYGFyex6"
+        "EWYhf4WRkJ8Zq8DouHEbARkmRtwpL8E1"
+        "zEX2U7jEqkgDwuuroJS1fze9ok8f3eX3"
+        "LX9g6Cq6WGeHuAP2cXgj6wG1bennX7Cp"
+        "df1QY3oLVtSv3P4JugR1huqYeRumB1yP"
+        "UBDkNGt8E1ZZ1fX98QiQ9jTydGzyK5AC"
+        "CUJ";
+
 
     const String expectPlayTransaction =
-        "qufmRX7sguiZZ9ozTqM7XhJ1w1QLe" +
-        "A3fZYR7EZ57K69FaJVb4r14Ds6Ec6" +
-        "Ygz5WWGxSFACtkA5t8iTNxptLV7vy" +
-        "j9vbp6k2hp3RwLA1wSB4kzUNHxgDm" +
-        "sfUUay3D1rwdMSrWhFrSJZC31Lrfj" +
-        "6gYLWakjLvCSReLy6w3QvnvFVEjNb" +
-        "Qqa4hvnuamnnm616F1SALX7gFru1B" +
-        "8pDZRdzENGZ9b63oPSs7ndtNNAuJY" +
-        "MGvxsL8GQyiUKkVLHoz7KTsDxWgUr" +
-        "pWjUmHZEGYuwSginkosMsR8LKbpjv" +
-        "d3vSUcByrFYRUqTQukSj8vzUDNsVb" +
-        "4Yy45XRNcp1YWu7mwiVdRCWcoZF17" +
-        "6a5sFdYAaxKANTrFSpP2f9AiH5DPi" +
-        "9qse12xS9PyQVREUcUZfQZmkxBaMN" +
-        "4Mmsg3q87PMYaT2k2HVSTQvSA1sft" +
-        "PVkmjbabQmgt6DLxExNaR9enJ8nEC" +
-        "YFvPYjuRyFBeZ9AMLLadprQoYb19L" +
-        "aFugAWc4ZtDHaFfHbsS4hEvfpQwKg" +
-        "Y2p3Q5MbsMMBHFDrS9ZCXttzHmMpU" +
-        "8MQbz";
+        "q6d8pnw5mcVX8UnioWBdBmPJ8JSEAr"
+        "JAtc1apGTtSG526TgsBPtMnwHZRzgD"
+        "6kdSWBCUmnA1RsEezVbWZHshLq5UcU"
+        "6sGo3txW9fqSCm9sHg1a82yoLP9sNt"
+        "aHnRuLtUxJe6cmmvUK15HtD3Fpr641"
+        "yjYHmgZpjpvehug7F7rgDLXRrQKhtn"
+        "aKJDLKadghsVWiroSc1THChaveLCPH"
+        "Sme5eQNBZxA9C9VnutWrtY2pJgmExX"
+        "gVhiAYARrUvucQvcbr6YXmZeEGtYda"
+        "RsF9a9CKjGAbJw7iM1P3RDhn7brnAp"
+        "Xyzd13r3hhyoB1banH5YniFi7pWhh1"
+        "7fgbfWNAyJYfTg3NwtAoQxyiZbPpuM"
+        "mJo1uMoZ1hMGqaYfAiaz6y2qX3arZs"
+        "js9FujdyjvZMmx2nQ1eKJeR6oCAYqE"
+        "MSXmUgDAxCKmaFL4afH2ZyuaFgZVBa"
+        "NrbQf6TG1fQNnRR4SwB4cAcykD5KvD"
+        "8pByzN3pcKYoRacg4pc9rdA3KoLMSX"
+        "mDVxEJFUAE2SGsJyT2YDyJPPUMtYkk"
+        "ATEJX8wAzT4PfaVn";
 
     const String expectRevealTransaction =
-        "6UdwxW3pHfoZQtzoETGqYdodQ76JASs" +
-        "jeYCYR8Rxj7Q9VKYj2iEHpEs1JVJ4K7" +
-        "JADypguSY91GpCfdnTKSF8K7DLdTFRj" +
-        "mLdEdfJC4AnZLTZWoNyS6nXPSr2A5N4" +
-        "wNneiEkdLhDpDaNoEr3a5bwx8E9hB3s" +
-        "jMU99s7BRDzwfLid8GdP1X8R4tXjDta" +
-        "5CXSDnZ7uCH2J1jQoyuQTGunGDSLH4H" +
-        "6gijZ8MaZz3srNVbzccLbHpo6717wWx" +
-        "5EZGbsMZdpQ3R6mitw2nJcaoFAidUty" +
-        "pBy6wmAuWLLQf83YPCKeZg6zUMvcuAg" +
-        "uAwiGKYga9rY1TWmZqjPqwF34LtmcA5" +
-        "Fz1sihiR4KnWkWpC1qQpNHRRkXVTyKR" +
-        "1CmLtfguZrrjatgr8rkR91LhJUW9XLa" +
-        "AkKby1DzRNbBdxcb9ffScoMTcAejNBk" +
-        "e1SMZzAheaqwhEnKA7yihKVa3QsY7JA" +
-        "nrXA6ofjNAkiDohMmeuwArFXRAUHqpn" +
-        "bCvHUhsDaw6oNGxofewnzgDYnTKt2EP" +
-        "c4N8QgEyy";
+        "5TToEQHPJEA9FSKvEEGZsusCvSZkdY3"
+        "oDMxEWMeBdnCneojznxHv7YpULqr1Qq"
+        "4XRwWokATtyz9GA5jRZTnKVjCsKs3k8"
+        "eaP8HXx54A5kTVSXnjE4uXaPf1egMep"
+        "nozFLztvH8tJihF45YDd7h1ZRempby8"
+        "JJfRC5NZHXUzc8WMF4s59GAwxMentBU"
+        "bCGZE2KE5pp7mtvdUMm9v5cLNQCT62j"
+        "wMwtknZRGokbUTeGbgmGyZMzs5wW1LE"
+        "hbBARg9RPn9xUxV6UxfmVAbzzxLorD3"
+        "8gWh3gLaudnBqU352RTDzSMWwskTNFW"
+        "M2yDdp6XsCQTa7pgjQVnWyJeNC6uE1z"
+        "5wC37FUP2HEZdrSvV1VpRU3aofvPtP5"
+        "rTawPmNEQQZK2VB6iQtGwuPzzNp8oyv"
+        "vWENLiiNZVYSU8HfZ5TQSReeUEgtnEd"
+        "4GntcGkah7LsNPnmJi7WxZz8vSHopZw"
+        "r7graC9vG1qXUxPM2YW5yAAAuvw2hag"
+        "nvh2Nu7AJMTMi7SotLaYz3hPRFZGZhf"
+        "9nppCM8JX";
 
     setUp(() async {
       _base58Encoder = Base58Encoder();
@@ -160,17 +158,17 @@ void main() {
       expect(transaction.message.header.noSignedReadOnlyAccounts, 0);
       expect(transaction.message.header.noUnsignedReadOnlyAccounts, 3);
       expect(transaction.message.instructions.length, 1);
-      expect(transaction.message.instructions[0].programIdIndex, 4);
+      expect(transaction.message.instructions[0].programIdIndex, 5);
       expect(transaction.message.accountAddresses, [
         player,
-        playerAccount,
         gameAccount,
+        playerAccount,
         systemProgram,
-        programId,
         recentSlotHashes,
+        programId,
       ]);
       expect(transaction.message.instructions[0].accountIndices,
-          Uint8List.fromList([1, 2, 0, 3, 5]));
+          Uint8List.fromList([2, 1, 0, 3, 4]));
 
       AnchorInstructionData instructionData = transaction.message
           .instructions[0].data as AnchorInstructionData;
@@ -230,14 +228,14 @@ void main() {
       expect(
           transaction.message.accountAddresses, [
           player,
-          playerAccount,
           gameAccount,
+          playerAccount,
           programId
       ]);
 
       expect(
           transaction.message.instructions[0].accountIndices,
-          Uint8List.fromList([1, 2, 0]));
+          Uint8List.fromList([2, 1, 0]));
 
       AnchorInstructionData instructionData = transaction.message
           .instructions[0].data as AnchorInstructionData;
@@ -283,7 +281,7 @@ void main() {
           .toKeyPair();
 
       var transaction = await HoneypotEngageInstruction()
-          .withArgs()
+          .withArgs(3)
           .withAccounts(challengerAccount, defenderAccount, gameAccount, engageAccount, player, challenger, defender, systemProgram)
           .toTransaction(programId, blockhash)
           .signTransaction([playerKeyPair]);
@@ -306,10 +304,10 @@ void main() {
       expect(
           transaction.message.accountAddresses, [
             player,
-            defenderAccount,
+            engageAccount,
             challengerAccount,
             gameAccount,
-            engageAccount,
+            defenderAccount,
             systemProgram,
             challenger,
             programId,
@@ -320,7 +318,7 @@ void main() {
 
       expect(
           transaction.message.instructions[0].accountIndices,
-          Uint8List.fromList([2, 1, 3, 4, 0, 6, 0, 5]));
+          Uint8List.fromList([2, 4, 3, 1, 0, 6, 0, 5]));
 
       AnchorInstructionData instructionData = transaction.message
           .instructions[0].data as AnchorInstructionData;
@@ -401,10 +399,10 @@ void main() {
       expect(
           transaction.message.accountAddresses, [
             player,
-            playerAccount,
+            engageAccount,
             opponentAccount,
             gameAccount,
-            engageAccount,
+            playerAccount,
             systemProgram,
             opponent,
             programId,
@@ -415,7 +413,7 @@ void main() {
 
       expect(
           transaction.message.instructions[0].accountIndices,
-          Uint8List.fromList([1, 2, 3, 4, 0, 6, 5]));
+          Uint8List.fromList([4, 2, 3, 1, 0, 6, 5]));
 
       AnchorInstructionData instructionData = transaction.message
           .instructions[0].data as AnchorInstructionData;
@@ -496,10 +494,10 @@ void main() {
       expect(
           transaction.message.accountAddresses, [
             player,
-            playerAccount,
+            engageAccount,
             opponentAccount,
             gameAccount,
-            engageAccount,
+            playerAccount,
             systemProgram,
             opponent,
             programId,
@@ -510,7 +508,7 @@ void main() {
 
       expect(
           transaction.message.instructions[0].accountIndices,
-          Uint8List.fromList([1, 2, 3, 4, 0, 6, 5]));
+          Uint8List.fromList([4, 2, 3, 1, 0, 6, 5]));
 
       AnchorInstructionData instructionData = transaction.message
           .instructions[0].data as AnchorInstructionData;

@@ -137,8 +137,8 @@ void main() {
       expect(accountInfoResponse.accountInfo.data, ["OZD4GarKfuP80i1oVZ+uPPsiSLQum2MYash6e/sezy6Lygg7qRgpImK0ZuDjFIiW7iDjlcjbXakQr+qSUgkkOgEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA","base64"]);
     });
 
-    test('get program accounts is success', () async {
-      httpsService.responseJson = getProgramAccountsResponse;
+    test('get player program accounts is success', () async {
+      httpsService.responseJson = getPlayerProgramAccountsResponse;
       var requestJson = '{"jsonrpc":"2.0","id":${RPCRequest.getProgramAccountsId},"method":"${RPCRequest.getProgramAccountsRPCMethod}","params":["D3Fmzy6k3JnHt6rxxrExxW9MnjdSCBF8A7PfFnyvxZY6",{"commitment":"processed","encoding":"base64","filters":[{"memcmp":{"offset":0,"bytes":"bSBoKNsSHuj"}}]}]}';
 
       var request = GetProgramAccountsRequest(
@@ -171,6 +171,42 @@ void main() {
       expect(accountInfo?.rentEpoch?.compareTo(BigInt.parse("18446744073709551615")), 0);
       expect(accountInfo?.space?.compareTo(BigInt.parse("512")), 0);
       expect(accountInfo?.data, ["zd5wB6Wbztp+1x62dX/MjbHPKwBX0mHxWh9b+W4FqcWBPjHUopL5a8CVqQUAAAAA+u7EoWUAAAAAAVhTbFko7eMGzhL5isyR3Z1va5hukh03z7CEFLcEtsCmAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=","base64"]);
+    });
+
+    test('get engage program accounts is success', () async {
+      httpsService.responseJson = getEngageProgramAccounts;
+      var requestJson = '{"jsonrpc":"2.0","id":${RPCRequest.getProgramAccountsId},"method":"${RPCRequest.getProgramAccountsRPCMethod}","params":["YaDACN2XQieYWn5hU9ZcvGKGve2w6C87k9xGBgS4exD",{"commitment":"processed","encoding":"base64","filters":[{"memcmp":{"offset":0,"bytes":"123xLgQbw4v"}}]}]}';
+
+      var request = GetProgramAccountsRequest(
+          pubkey: "YaDACN2XQieYWn5hU9ZcvGKGve2w6C87k9xGBgS4exD",
+          filters: [
+            Filter(memcmp: MemCmp(offset: 0, bytes: "123xLgQbw4v"))
+          ]
+      );
+
+      expect(request.toJson(), requestJson);
+
+      var result = await solanaRPCService.getProgramAccounts(
+          request
+      );
+
+      expect(result is GetProgramAccountsResponse, true);
+
+      var response = result as GetProgramAccountsResponse;
+
+      expect(response.jsonrpc, "2.0");
+      expect(response.id, 7);
+      expect(response.method, null);
+      expect(response.programAccounts.length, 3);
+
+      var accountInfo = response.programAccounts.first.account;
+
+      expect(accountInfo?.executable, false);
+      expect(accountInfo?.lamports?.compareTo(BigInt.parse("4454400")), 0);
+      expect(accountInfo?.owner, "YaDACN2XQieYWn5hU9ZcvGKGve2w6C87k9xGBgS4exD");
+      expect(accountInfo?.rentEpoch?.compareTo(BigInt.parse("18446744073709551615")), 0);
+      expect(accountInfo?.space?.compareTo(BigInt.parse("512")), 0);
+      expect(accountInfo?.data, ["ABu7fcPb69v+vFC9ZQAAAAADAYtArbkQgCRjSwJTTlpGSnnXUlVgy2NqESzDctmf4NvqbpJO9L5ZgzeDG4wpsLprXMpp9KkAzNGaoJHyJewMHYwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHmJvgTLwB+J2SxP5veL5VZn2Vo9Os6EYusb85vkzn4KAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=","base64"]);
     });
 
     test('send transaction is success', () async {

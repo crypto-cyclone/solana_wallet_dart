@@ -114,7 +114,12 @@
           "isSigner": false
         }
       ],
-      "args": []
+      "args": [
+        {
+          "name": "roundCount",
+          "type": "u8"
+        }
+      ]
     },
     {
       "name": "play",
@@ -302,12 +307,6 @@
             "type": "i64"
           },
           {
-            "name": "state",
-            "type": {
-              "defined": "PlayerState"
-            }
-          },
-          {
             "name": "engageAccount",
             "type": "publicKey"
           }
@@ -355,16 +354,30 @@
         "kind": "struct",
         "fields": [
           {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "roundCount",
+            "type": "u8"
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": "EngageStatus"
+            }
+          },
+          {
             "name": "challenger",
             "type": "publicKey"
           },
           {
             "name": "defender",
             "type": "publicKey"
-          },
-          {
-            "name": "timestamp",
-            "type": "i64"
           },
           {
             "name": "challengerSealedMove",
@@ -379,26 +392,37 @@
             }
           },
           {
-            "name": "challengerMove",
+            "name": "challengerMoves",
             "type": {
-              "defined": "MoveType"
+              "array": [
+                {
+                  "defined": "MoveType"
+                },
+                10
+              ]
             }
           },
           {
-            "name": "defenderMove",
+            "name": "defenderMoves",
             "type": {
-              "defined": "MoveType"
+              "array": [
+                {
+                  "defined": "MoveType"
+                },
+                10
+              ]
             }
           },
           {
-            "name": "result",
+            "name": "results",
             "type": {
-              "defined": "EngageResult"
+              "array": [
+                {
+                  "defined": "EngageResult"
+                },
+                10
+              ]
             }
-          },
-          {
-            "name": "bump",
-            "type": "u8"
           }
         ]
       }
@@ -461,15 +485,21 @@
       }
     },
     {
-      "name": "PlayerState",
+      "name": "EngageStatus",
       "type": {
         "kind": "enum",
         "variants": [
           {
-            "name": "Idle"
+            "name": "None"
+          },
+          {
+            "name": "Ready"
           },
           {
             "name": "Engaged"
+          },
+          {
+            "name": "Done"
           }
         ]
       }
@@ -541,8 +571,8 @@
     },
     {
       "code": 6004,
-      "name": "PlayerEngaged",
-      "msg": "Player is engaged"
+      "name": "InvalidEngageStatus",
+      "msg": "Invalid engage status"
     },
     {
       "code": 6005,
@@ -568,9 +598,29 @@
       "code": 6009,
       "name": "InvalidCreator",
       "msg": "Invalid Creator"
+    },
+    {
+      "code": 6010,
+      "name": "InvalidPlay",
+      "msg": "Invalid play"
+    },
+    {
+      "code": 6011,
+      "name": "InvalidRoundCount",
+      "msg": "Invalid number of rounds"
+    },
+    {
+      "code": 6012,
+      "name": "RoundCountExceeded",
+      "msg": "Round count exceeded"
+    },
+    {
+      "code": 6013,
+      "name": "ZeroLamportsTrasfer",
+      "msg": "Attempted 0 lamports transfer"
     }
   ],
   "metadata": {
-    "address": "6WE2EY62Pca64J2gLsiAHgHWSXz3EB1szZe5iaZVmp9s"
+    "address": "YaDACN2XQieYWn5hU9ZcvGKGve2w6C87k9xGBgS4exD"
   }
 }

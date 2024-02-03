@@ -1192,7 +1192,7 @@ class AnchorFieldEnum<T extends AnchorEnum> extends AnchorField<T> {
 
   @override
   Uint8List serialize() {
-    return Uint8List.fromList(value.serialize());
+      return Uint8List.fromList(value.serialize());
   }
 
   @override
@@ -1203,16 +1203,21 @@ class AnchorFieldEnum<T extends AnchorEnum> extends AnchorField<T> {
 
     var instance = serializationRegistry.getInstance(T);
 
-    if (instance == null) {
-      throw ArgumentError('Unknown type structure $T');
+    if (instance == null || !(instance is T)) {
+      throw ArgumentError('Unknown type structure $T or not an instance of T');
     }
 
     return AnchorFieldEnum(value: instance.deserialize(bytes) as T);
   }
 
-  static AnchorFieldEnum<AnchorEnum> factory<T>() {
-    return AnchorFieldEnum<AnchorEnum>(
-        value: AnchorEnum());
+  static AnchorFieldEnum<T> factory<T extends AnchorEnum>() {
+    var instance = serializationRegistry.getInstance(T) as T?;
+
+    if (instance == null) {
+      throw ArgumentError('Could not create an instance of $T');
+    }
+
+    return AnchorFieldEnum<T>(value: instance);
   }
 }
 
